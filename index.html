@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Starbound Conquest</title>
+        <link rel="stylesheet" href="styles.css">
+    </head>
+    <body>
+        <nav class="navbar">
+            <label class="ship-info">Add a new ship:</label>
+            <ul class="ship-selection-menu">
+                <li class="ship-class-selection">
+                    <button onclick="add_battleship()" class="ship-class-selection-button">Battleship</button>
+                </li>
+                <li class="ship-class-selection">
+                    <button onclick="add_frigate()" class="ship-class-selection-button">Frigate</button>
+                </li>
+            </ul>
+        </nav>
+        <canvas></canvas>
+        <script src="app.js"></script>
+    </body>
+</html>

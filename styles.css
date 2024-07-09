@@ -1,0 +1,43 @@
+* {
+    font-family: monospace;
+}
+
+body {
+    margin: 0;
+    padding: 0;
+}
+
+.ship-selection-menu {
+    display:contents;
+    list-style: none;
+    padding: 10px;
+    margin-top: 20px;
+    flex-direction: column;
+    align-items: center;
+}
+
+.navbar {
+    display: flex;
+    align-items: center;
+    transition: .3s;
+    background-color: rgb(27, 145, 255);
+}
+
+.ship-info{
+    padding: 10px;
+    font-size: 30px;
+    background-color: rgb(27, 145, 255);
+    color: white;
+}
+
+button {
+    font-size: 20px;
+    padding: 10px;
+    margin: 10px;
+    transition: background-color 0.2s ease-in-out, color 0.2s ease-in-out;
+}
+
+button:hover {
+    background-color: gold;
+    color: white;
+}
