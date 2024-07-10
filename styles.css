@@ -41,3 +41,13 @@ button:hover {
     background-color: gold;
     color: white;
 }
+
+#colors {
+    background-color: white;
+    color: black;
+    font-size: 20px;
+}
+
+.select-team-color {
+    background-color: rgb(27, 145, 255);
+}
