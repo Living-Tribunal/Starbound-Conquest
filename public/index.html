@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Starbound Conquest</title>
+        <link rel="stylesheet" href="/css/styles.css">
+    </head>
+    <body>
+        <nav class="navbar">
+            <label class="ship-info">Add a new ship:</label>
+            <ul class="ship-selection-menu">
+                <li class="ship-class-selection">
+                    <button onclick="add_battleship()" class="ship-class-selection-button">Battleship</button>
+                </li>
+                <li class="ship-class-selection">
+                    <button onclick="add_frigate()" class="ship-class-selection-button">Frigate</button>
+                </li>
+            </ul>
+        </nav>
+        <div class="select-team-color">
+            <label class="ship-info">Choose your Team Color (double click the ship to set its color): </label>
+            <select title="colors" id="colors">
+                <option value="red">Red</option>
+                <option value="green">Green</option>
+                <option value="blue">Blue</option>
+            </select>
+        </div>
+        <canvas></canvas>
+        <script src="js/app.js"></script>
+    </body>
+</html>
