@@ -2,6 +2,9 @@
   "dependencies": {
     "boardgame.io": "^0.50.2",
     "express": "^4.19.2",
-    "nodemon": "^3.1.4"
+    "free-transform": "^0.1.6",
+    "konva": "^9.3.13",
+    "nodemon": "^3.1.4",
+    "socket.io": "^4.7.5"
   }
 }
