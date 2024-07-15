@@ -52,6 +52,15 @@ document.addEventListener("DOMContentLoaded", function() {
         }
     }
 
+    window.clear_storage = function(event) {
+        if (event) event.preventDefault();
+        localStorage.clear();
+        context.clearRect(0, 0, canvas.width, canvas.height);
+        ships = [];
+        console.log("Local storage has been cleared");
+        draw_scene();
+    };
+
     //function to load an image of the background that you want to use
     function load_initial_background_image() {
         let background_image = new Image();
@@ -172,8 +181,10 @@ document.addEventListener("DOMContentLoaded", function() {
         ships.forEach(ship => {
             context.save();
             context.drawImage(ship.image, ship.x, ship.y, ship.width, ship.height);
-            if (ship.highlighted) {
-                draw_circle_and_numbers_around_ship(ship);
+            if (ship.type === "battleship" && ship.highlighted) {
+                draw_circle_and_numbers_around_ship_battleship(ship);
+            } else if (ship.type === "frigate" && ship.highlighted){
+                draw_circle_and_numbers_around_ship_frigate(ship);
             }
             context.restore();
         });
@@ -244,7 +255,7 @@ document.addEventListener("DOMContentLoaded", function() {
         }
     }
 
-    function draw_circle_and_numbers_around_ship(ship) {
+    function draw_circle_and_numbers_around_ship_battleship(ship) {
         context.strokeStyle = stroke_color;
         context.lineWidth = 10;
         context.beginPath();
@@ -252,9 +263,21 @@ document.addEventListener("DOMContentLoaded", function() {
         let centerY = ship.y + ship.height / 2;
         let radius = Math.max(ship.width + 40, ship.height + 40) / 2;
         context.arc(centerX, centerY, radius, 0, 2 * Math.PI);
-        context.arc(centerX + 250, centerY + 150, 30, 5, 150);
-        context.arc(centerX + 150, centerY + 150, 30, 5, 150);
-        context.arc(centerX + 50, centerY + 150, 30, 5, 150);
+        context.stroke();
+
+        context.beginPath();
+        context.lineWidth = 2;
+        context.arc(centerX + 150, centerY + 300, 30, 5, 150);
+        context.stroke();
+
+        context.beginPath();
+        context.lineWidth = 2;
+        context.arc(centerX + 0, centerY + 300,30, 5, 150);
+        context.stroke();
+
+        context.beginPath();
+        context.lineWidth = 2;
+        context.arc(centerX - 150, centerY + 300,30, 5, 150);
         context.stroke();
 
         // Draw numbers around the circle
@@ -268,7 +291,37 @@ document.addEventListener("DOMContentLoaded", function() {
         }
     }
 
-    
+    function draw_circle_and_numbers_around_ship_frigate(ship) {
+        context.strokeStyle = stroke_color;
+        context.lineWidth = 10;
+        context.beginPath();
+        let centerX = ship.x + ship.width / 2;
+        let centerY = ship.y + ship.height / 2;
+        let radius = Math.max(ship.width + 40, ship.height + 40) / 2;
+        context.arc(centerX, centerY, radius, 0, 2 * Math.PI);
+        context.stroke();
+
+        context.beginPath();
+        context.lineWidth = 2;
+        context.arc(centerX + 100, centerY + 200, 30, 5, 150);
+        context.stroke();
+
+        context.beginPath();
+        context.lineWidth = 2;
+        context.arc(centerX - 100, centerY + 200,30, 5, 150);
+        context.stroke();
+
+        // Draw numbers around the circle
+        context.fillStyle = stroke_color;
+        context.font = '20px monospace';
+        for (let i = 0; i < 360; i += 45) {
+            let angle = (i - 90) * Math.PI / 180;
+            let textX = centerX - 17 + (radius + 40) * Math.cos(angle);
+            let textY = centerY + 8 + (radius + 40) * Math.sin(angle);
+            context.fillText(i.toString(), textX, textY);
+        }
+    }
+
 
     document.getElementById("slider").addEventListener('input', (event) => {
         let value = event.target.value;
@@ -282,17 +335,17 @@ document.addEventListener("DOMContentLoaded", function() {
         }
     });
 
-    //event listeners for each mouse event
     canvas.addEventListener('mousedown', mouse_down);
     canvas.addEventListener('mouseup', mouse_up);
     canvas.addEventListener('mousemove', mouse_move);
     canvas.addEventListener('dblclick', double_click);
     canvas.addEventListener('input', rotate);
-    /* canvas.addEventListener('click', scale); */
 
     save_canvas();
 
     load_canvas();
+
+    document.getElementById('clear').addEventListener('click', clear_storage);
 
 });
 
