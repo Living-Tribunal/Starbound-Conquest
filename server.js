@@ -1,4 +1,4 @@
-const port = 3001;
+const port = 3000;
 const fs = require('fs');
 const express = require('express');
 const http = require('http');
