@@ -131,13 +131,12 @@ document.addEventListener("DOMContentLoaded", function() {
         ship_image.onload = function() {
             console.log("Frigate loaded");
             let ship = {
-                id: Date.now(), // Assign a unique id to each ship
+                id: Date.now(),
                 type: 'frigate',
                 x: 100,
                 y: 100,
                 width: 181,
                 height: 250,
-                /* shadowColor: null, */
                 isSelected: false,
                 highlighted: false,
                 rotation_angle: 90,
@@ -175,7 +174,9 @@ document.addEventListener("DOMContentLoaded", function() {
         context.drawImage(background_image, 0, 0, canvas.width, canvas.height);
         ships.forEach(ship => {
             context.save();
-            context.drawImage(ship.image, ship.x, ship.y, ship.width, ship.height);
+            context.translate(ship.x + ship.width / 2, ship.y + ship.height / 2); // Translate to ship center
+            context.rotate(ship.rotation_angle); // Rotate based on ship's rotation angle
+            context.drawImage(shipImages[ship.id], -ship.width / 2, -ship.height / 2, ship.width, ship.height);
             if (ship.type === "battleship" && ship.highlighted) {
                 draw_circle_and_numbers_around_ship_battleship(ship);
             } else if (ship.type === "frigate" && ship.highlighted){
@@ -242,6 +243,7 @@ document.addEventListener("DOMContentLoaded", function() {
                 mouseY >= ship.y && 
                 mouseY <= ship.y + ship.height) {
                 ship.highlighted = !ship.highlighted;
+
                 draw_scene();
                 break;
             }
@@ -251,36 +253,47 @@ document.addEventListener("DOMContentLoaded", function() {
     function draw_circle_and_numbers_around_ship_battleship(ship) {
         context.strokeStyle = stroke_color;
         context.lineWidth = 10;
-        context.beginPath();
-        let centerX = ship.x + ship.width / 2;
-        let centerY = ship.y + ship.height / 2;
+        context.save(); // Save the current context state
+    
+        // Translate to the ship's center
+        context.translate(ship.x + ship.width / 2, ship.y + ship.height / 2);
+    
+        // Rotate based on the ship's current rotation angle
+        context.rotate(ship.rotation_angle);
+    
+        // Draw the circle and numbers relative to the ship's center
         let radius = Math.max(ship.width + 40, ship.height + 40) / 2;
-        context.arc(centerX, centerY, radius, 0, 2 * Math.PI);
+        context.beginPath();
+        context.arc(0, 0, radius, 0, 2 * Math.PI);
         context.stroke();
-
+    
+        // Example positions for circles around the ship
         context.beginPath();
         context.fillStyle = fill_color;
-        context.arc(centerX + 75, centerY + 300, 15, 5, 150);
+        context.arc(75, 300, 15, 0, 2 * Math.PI);
         context.fill();
-
+    
         context.beginPath();
         context.fillStyle = fill_color;
-        context.arc(centerX + 0, centerY + 300, 15, 5, 150);
+        context.arc(0, 300, 15, 0, 2 * Math.PI);
         context.fill();
-
+    
         context.beginPath();
         context.fillStyle = fill_color;
-        context.arc(centerX - 75, centerY + 300, 15, 5, 150);
+        context.arc(-75, 300, 15, 0, 2 * Math.PI);
         context.fill();
-
+    
+        // Example for drawing numbers around the ship
         context.fillStyle = stroke_color;
         context.font = '20px monospace';
         for (let i = 0; i < 360; i += 45) {
             let angle = (i - 90) * Math.PI / 180;
-            let textX = centerX - 17 + (radius + 40) * Math.cos(angle);
-            let textY = centerY + 8 + (radius + 40) * Math.sin(angle);
+            let textX = (radius + 40) * Math.cos(angle);
+            let textY = (radius + 40) * Math.sin(angle);
             context.fillText(i.toString(), textX, textY);
         }
+    
+        context.restore(); // Restore the context to its original state
     }
 
     function draw_circle_and_numbers_around_ship_frigate(ship) {
@@ -314,11 +327,35 @@ document.addEventListener("DOMContentLoaded", function() {
         }
     }
 
+    function rotate_click(event) {
+        event.preventDefault();
+        let mouseX = event.clientX;
+        let mouseY = event.clientY;
+    
+        for (let i = ships.length - 1; i >= 0; i--) {
+            let ship = ships[i];
+            if (mouseX >= ship.x && 
+                mouseX <= ship.x + ship.width && 
+                mouseY >= ship.y && 
+                mouseY <= ship.y + ship.height) {
+    
+                // Adjust rotation angle (for simplicity, rotating by Math.PI/2)
+                ship.rotation_angle += Math.PI / 6;
+    
+                // Emit rotation update to server (if using socket.io)
+                socket.emit('rotateShip', { id: ship.id, rotation_angle: ship.rotation_angle });
+    
+                draw_scene(); // Redraw the scene with the updated ship rotation
+                break;
+            }
+        }
+    }
+
     canvas.addEventListener('mousedown', mouse_down);
     canvas.addEventListener('mouseup', mouse_up);
     canvas.addEventListener('mousemove', mouse_move);
     canvas.addEventListener('dblclick', double_click);
-    /* canvas.addEventListener('input', rotate); */
+    canvas.addEventListener('wheel', rotate_click);
 
     save_canvas();
 
