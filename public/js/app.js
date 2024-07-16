@@ -1,5 +1,5 @@
 //connect socket to local host
-const socket = io('http://147.160.11.15:3000/');
+const socket = io('http://147.160.11.15:3001/');
 
 //getting the DOM
 document.addEventListener("DOMContentLoaded", function() {
@@ -59,6 +59,7 @@ document.addEventListener("DOMContentLoaded", function() {
         ships = [];
         console.log("Local storage has been cleared");
         draw_scene();
+        save_canvas();
     };
 
     //function to load an image of the background that you want to use
@@ -86,13 +87,8 @@ document.addEventListener("DOMContentLoaded", function() {
     let offsetX = 0;
     let offsetY = 0;
     let current_ship_index = -1;
-    /* let ship_shadow_color = "transparent"; */
     let stroke_color = "rgba(98, 207, 245, 0.7)";
-
-    /* let shadow_color_dropdown = document.getElementById("colors");
-    shadow_color_dropdown.addEventListener('change', function(){
-        ship_shadow_color = this.value;
-    });*/
+    let fill_color = "rgba(0, 207, 50, 0.5)";
 
     socket.on('initialize', (initialShips) => {
         initialShips.forEach(shipData => {
@@ -113,17 +109,16 @@ document.addEventListener("DOMContentLoaded", function() {
         ship_image.onload = function() {
             console.log("Battleship loaded");
             let ship = {
-                id: Date.now(), // Assign a unique id to each ship
+                id: Date.now(),
                 type: 'battleship',
                 x: 100,
                 y: 100,
                 width: 230,
                 height: 390,
-                /* shadowColor: null, */
                 isSelected: false,
-                rotation_angle: 0,
+                rotation_angle: 90,
                 highlighted: false,
-                image: ship_image.src // Store image source only
+                image: ship_image.src
             };
             shipImages[ship.id] = ship_image;
             socket.emit('createShip', ship);
@@ -145,7 +140,7 @@ document.addEventListener("DOMContentLoaded", function() {
                 /* shadowColor: null, */
                 isSelected: false,
                 highlighted: false,
-                rotation_angle: 0,
+                rotation_angle: 90,
                 image: ship_image.src,
                 opacity: 1,
             };
@@ -198,16 +193,14 @@ document.addEventListener("DOMContentLoaded", function() {
         for (let i = ships.length - 1; i >= 0; i--) {
             let ship = ships[i];
             if (mouseX >= ship.x && 
-                mouseX <= ship.x + ship.width && 
+                mouseX <= ship.x + ship.width + 100 && 
                 mouseY >= ship.y && 
-                mouseY <= ship.y + ship.height) {
+                mouseY <= ship.y + ship.height + 100) {
                 is_dragging = true;
                 current_ship_index = i;
                 offsetX = mouseX - ship.x;
                 offsetY = mouseY - ship.y;
-                // Deselect all other ships
                 ships.forEach(s => s.isSelected = false);
-                // Select the clicked ship
                 ship.isSelected = true;
                 draw_scene();
                 break;
@@ -237,8 +230,8 @@ document.addEventListener("DOMContentLoaded", function() {
         }
     }
 
+
   function double_click(event) {
-        event.preventDefault();
         let mouseX = event.clientX;
         let mouseY = event.clientY;
 
@@ -266,21 +259,20 @@ document.addEventListener("DOMContentLoaded", function() {
         context.stroke();
 
         context.beginPath();
-        context.lineWidth = 2;
-        context.arc(centerX + 150, centerY + 300, 30, 5, 150);
-        context.stroke();
+        context.fillStyle = fill_color;
+        context.arc(centerX + 75, centerY + 300, 15, 5, 150);
+        context.fill();
 
         context.beginPath();
-        context.lineWidth = 2;
-        context.arc(centerX + 0, centerY + 300,30, 5, 150);
-        context.stroke();
+        context.fillStyle = fill_color;
+        context.arc(centerX + 0, centerY + 300, 15, 5, 150);
+        context.fill();
 
         context.beginPath();
-        context.lineWidth = 2;
-        context.arc(centerX - 150, centerY + 300,30, 5, 150);
-        context.stroke();
+        context.fillStyle = fill_color;
+        context.arc(centerX - 75, centerY + 300, 15, 5, 150);
+        context.fill();
 
-        // Draw numbers around the circle
         context.fillStyle = stroke_color;
         context.font = '20px monospace';
         for (let i = 0; i < 360; i += 45) {
@@ -302,16 +294,16 @@ document.addEventListener("DOMContentLoaded", function() {
         context.stroke();
 
         context.beginPath();
-        context.lineWidth = 2;
-        context.arc(centerX + 100, centerY + 200, 30, 5, 150);
-        context.stroke();
+        context.fillStyle = fill_color;
+        context.arc(centerX + 40, centerY + 250, 15, 5, 150);
+        context.fill();
 
         context.beginPath();
+        context.fillStyle = fill_color;
+        context.arc(centerX - 40, centerY + 250, 15, 5, 150);
         context.lineWidth = 2;
-        context.arc(centerX - 100, centerY + 200,30, 5, 150);
-        context.stroke();
+        context.fill();
 
-        // Draw numbers around the circle
         context.fillStyle = stroke_color;
         context.font = '20px monospace';
         for (let i = 0; i < 360; i += 45) {
@@ -322,24 +314,11 @@ document.addEventListener("DOMContentLoaded", function() {
         }
     }
 
-
-    document.getElementById("slider").addEventListener('input', (event) => {
-        let value = event.target.value;
-        console.log(value);
-    
-        if (current_ship_index !== -1) {
-            let ship = ships[current_ship_index];
-            ship.rotation_angle = parseInt(value); // Assuming value is degrees
-            socket.emit('moveShip', { ...ship, image: { src: ship.image.src } }); // Emit the updated ship data
-            draw_scene(); // Redraw the scene with the updated ship angle
-        }
-    });
-
     canvas.addEventListener('mousedown', mouse_down);
     canvas.addEventListener('mouseup', mouse_up);
     canvas.addEventListener('mousemove', mouse_move);
     canvas.addEventListener('dblclick', double_click);
-    canvas.addEventListener('input', rotate);
+    /* canvas.addEventListener('input', rotate); */
 
     save_canvas();
 
