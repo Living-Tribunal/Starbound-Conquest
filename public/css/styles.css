@@ -60,5 +60,5 @@ button:hover {
     font-size: 20px;
     background-color: rgb(27, 145, 255);
     color: white;
-    transition: .3s;
+    padding: 10px;
 }

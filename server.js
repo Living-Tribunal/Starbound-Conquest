@@ -1,4 +1,4 @@
-const port = 3001;
+const port = 3000;
 const fs = require('fs');
 const express = require('express');
 const http = require('http');
@@ -45,7 +45,7 @@ io.on('connection', (socket) => {
 app.use(express.static(path.join(__dirname, 'public')));
 
 // Route for serving the index.html file
-app.get('/', function(req, res) {
+app.get('/', function(res) {
     fs.readFile(path.join(__dirname, 'public', 'index.html'), function(error, data) {
         if (error){
             res.writeHead(404, {'Content-Type': 'text/plain'});
