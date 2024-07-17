@@ -1,5 +1,5 @@
 //connect socket to local host
-const socket = io('http://147.160.11.15:3000/');
+const socket = io('http://147.160.11.15:3001/');
 
 //getting the DOM
 document.addEventListener("DOMContentLoaded", function() {
@@ -88,7 +88,7 @@ document.addEventListener("DOMContentLoaded", function() {
     let offsetY = 0;
     let current_ship_index = -1;
     let stroke_color = "rgba(98, 207, 245, 0.7)";
-    let fill_color = "rgba(0, 207, 50, 0.5)";
+    let selectedShip = null;
 
     socket.on('initialize', (initialShips) => {
         initialShips.forEach(shipData => {
@@ -116,9 +116,10 @@ document.addEventListener("DOMContentLoaded", function() {
                 width: 230,
                 height: 390,
                 isSelected: false,
-                rotation_angle: 90,
+                rotation_angle: 0,
                 highlighted: false,
-                image: ship_image.src
+                image: ship_image.src,
+                hp: 4,
             };
             shipImages[ship.id] = ship_image;
             socket.emit('createShip', ship);
@@ -139,9 +140,10 @@ document.addEventListener("DOMContentLoaded", function() {
                 height: 250,
                 isSelected: false,
                 highlighted: false,
-                rotation_angle: 90,
+                rotation_angle: 0,
                 image: ship_image.src,
                 opacity: 1,
+                hp: 2,
             };
             shipImages[ship.id] = ship_image;
             socket.emit('createShip', ship);
@@ -174,8 +176,8 @@ document.addEventListener("DOMContentLoaded", function() {
         context.drawImage(background_image, 0, 0, canvas.width, canvas.height);
         ships.forEach(ship => {
             context.save();
-            context.translate(ship.x + ship.width / 2, ship.y + ship.height / 2); // Translate to ship center
-            context.rotate(ship.rotation_angle); // Rotate based on ship's rotation angle
+            context.translate(ship.x + ship.width / 2, ship.y + ship.height / 2);
+            context.rotate(ship.rotation_angle);
             context.drawImage(shipImages[ship.id], -ship.width / 2, -ship.height / 2, ship.width, ship.height);
             if (ship.type === "battleship" && ship.highlighted) {
                 draw_circle_and_numbers_around_ship_battleship(ship);
@@ -184,6 +186,15 @@ document.addEventListener("DOMContentLoaded", function() {
             }
             context.restore();
         });
+
+        // Draw selected ship info
+        /* if (selectedShip) {
+            context.fillStyle = 'white';
+            context.font = '30px monospace';
+            context.fillText(`ID: ${selectedShip.id}`, selectedShip.x - 100, selectedShip.y + 50);
+            context.fillText(`HP: ${selectedShip.hp}`, selectedShip.x - 100, selectedShip.y + 100);
+            context.fillText(`Rotation Angle: ${selectedShip.rotation_angle}`, selectedShip.x - 100, selectedShip.y + 150);
+        } */
     }
 
     function mouse_down(event) {
@@ -202,8 +213,7 @@ document.addEventListener("DOMContentLoaded", function() {
                 offsetX = mouseX - ship.x;
                 offsetY = mouseY - ship.y;
                 ships.forEach(s => s.isSelected = false);
-                ship.isSelected = true;
-                draw_scene();
+            
                 break;
             }
         }
@@ -251,70 +261,47 @@ document.addEventListener("DOMContentLoaded", function() {
     }
 
     function draw_circle_and_numbers_around_ship_battleship(ship) {
+        selectedShip = null;
         context.strokeStyle = stroke_color;
         context.lineWidth = 10;
         context.beginPath();
         let radius = Math.max(ship.width + 40, ship.height + 40) / 2;
         context.arc(0, 0, radius, 0, 2 * Math.PI);
+        selectedShip = ship;
         context.stroke();
-    
-        // Example positions for circles around the ship
-        context.beginPath();
-        context.fillStyle = fill_color;
-        context.arc(75, 300, 15, 0, 2 * Math.PI);
-        context.fill();
-    
-        context.beginPath();
-        context.fillStyle = fill_color;
-        context.arc(0, 300, 15, 0, 2 * Math.PI);
-        context.fill();
-    
-        context.beginPath();
-        context.fillStyle = fill_color;
-        context.arc(-75, 300, 15, 0, 2 * Math.PI);
-        context.fill();
-    
-        // Example for drawing numbers around the ship
-        context.fillStyle = stroke_color;
-        context.font = '20px monospace';
-        for (let i = 0; i < 360; i += 45) {
-            let angle = (i - 90) * Math.PI / 180;
-            let textX = (radius + 40) * Math.cos(angle);
-            let textY = (radius + 40) * Math.sin(angle);
-            context.fillText(i.toString(), textX, textY);
+
+        if (selectedShip) {
+            context.fillStyle = 'white';
+            context.font = '30px monospace';
+            context.fillText(`ID: ${selectedShip.id}`, 10,  50);
+            context.fillText(`HP: ${selectedShip.hp}`, 10, 100);
+            context.fillText(`Ship Type: ${selectedShip.type}`, 10, 150);
         }
     
-        context.restore(); // Restore the context to its original state
-    }
+        context.restore();
+}
 
     function draw_circle_and_numbers_around_ship_frigate(ship) {
+        selectedShip = null;
         context.strokeStyle = stroke_color;
         context.lineWidth = 10;
         context.beginPath();
         let radius = Math.max(ship.width + 40, ship.height + 40) / 2;
         context.arc(0, 0, radius, 0, 2 * Math.PI);
+        selectedShip = ship;
         context.stroke();
 
-        context.beginPath();
-        context.fillStyle = fill_color;
-        context.arc(0 + 40, 0 + 250, 15, 5, 150);
-        context.fill();
-
-        context.beginPath();
-        context.fillStyle = fill_color;
-        context.arc(0 - 40, 0 + 250, 15, 5, 150);
-        context.lineWidth = 2;
-        context.fill();
-
-        context.fillStyle = stroke_color;
-        context.font = '20px monospace';
-        for (let i = 0; i < 360; i += 45) {
-            let angle = (i - 90) * Math.PI / 180;
-            let textX = 0 - 17 + (radius + 40) * Math.cos(angle);
-            let textY = 0 + 8 + (radius + 40) * Math.sin(angle);
-            context.fillText(i.toString(), textX, textY);
+        if (selectedShip) {
+            context.fillStyle = 'white';
+            context.font = '30px monospace';
+            context.fillText(`ID: ${selectedShip.id}`, 10,  50);
+            context.fillText(`HP: ${selectedShip.hp}`, 10, 100);
+            context.fillText(`Ship Type: ${selectedShip.type}`, 10, 150);
         }
+    
+        context.restore();
     }
+
 
     function rotate_click(event) {
         event.preventDefault();
@@ -327,14 +314,16 @@ document.addEventListener("DOMContentLoaded", function() {
                 mouseX <= ship.x + ship.width && 
                 mouseY >= ship.y && 
                 mouseY <= ship.y + ship.height) {
+    
                 ship.rotation_angle += Math.PI / 10;
                 socket.emit('rotateShip', { id: ship.id, rotation_angle: ship.rotation_angle });
     
-                draw_scene();
+                draw_scene(); // Redraw the scene with the updated ship rotation
                 break;
             }
         }
     }
+
 
     canvas.addEventListener('mousedown', mouse_down);
     canvas.addEventListener('mouseup', mouse_up);

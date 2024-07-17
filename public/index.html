@@ -23,11 +23,13 @@
                 </li>
             </ul>
         </nav>
-        <div class="slider-container">
-            <label class="ship-info">Choose your ships rotation angle</label>
-            <input placeholder="0" type="range" id="slider" value="0" min="1" max="360">
+        <div id="shipDetails">
+            <p>Selected Ship ID: <span id="selectedShipId"></span></p>
+            <p>Selected Ship HP: <span id="selectedShipHP"></span></p>
+            <label for="newShipHP">New HP:</label>
+            <input type="number" id="newShipHP">
+            <button onclick="updateShipHP()">Update HP</button>
         </div>
-        <div class="select-team-color">
         </div>
         <canvas id="gameCanvas"></canvas>
         <script src="js/app.js"></script>

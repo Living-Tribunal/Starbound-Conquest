@@ -48,10 +48,17 @@ button:hover {
     font-size: 20px;
 }
 
+#shipDetails,
+.slider-container,
 .select-team-color {
     background-color: rgb(27, 145, 255);
 }
 
-.slider-container {
+#shipDetails {
+    display: flex;
+    align-items: center;
+    font-size: 20px;
     background-color: rgb(27, 145, 255);
+    color: white;
+    transition: .3s;
 }
