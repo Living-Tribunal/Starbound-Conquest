@@ -243,7 +243,7 @@ document.addEventListener("DOMContentLoaded", function() {
 
   function double_click(event) {
         let mouseX = event.clientX;
-        let mouseY = event.clientY;
+        let mouseY = event.clientY - 150;
 
         for (let i = ships.length - 1; i >= 0; i--) {
             let ship = ships[i];
@@ -272,10 +272,9 @@ document.addEventListener("DOMContentLoaded", function() {
         if (selectedShip) {
             context.fillStyle = 'white';
             context.font = '30px monospace';
-            context.fillText(`ID: ${selectedShip.id}`, 10,  50);
-            context.fillText(`HP: ${selectedShip.hp}`, 10, 100);
-            console.log("Hp:" + update_ship_hp);
-            context.fillText(`Ship Type: ${selectedShip.type}`, 10, 150);
+            context.fillText(`ID: ${selectedShip.id}`, 250,  50);
+            context.fillText(`HP: ${selectedShip.hp}`, 250, 100);
+            context.fillText(`Ship Type: ${selectedShip.type}`, 250, 150);
         }
     
         context.restore();
@@ -294,9 +293,9 @@ document.addEventListener("DOMContentLoaded", function() {
         if (selectedShip) {
             context.fillStyle = 'white';
             context.font = '30px monospace';
-            context.fillText(`ID: ${selectedShip.id}`, 10,  50);
-            context.fillText(`HP: ${selectedShip.hp}`, 10, 100);
-            context.fillText(`Ship Type: ${selectedShip.type}`, 10, 150);
+            context.fillText(`ID: ${selectedShip.id}`, 200,  50);
+            context.fillText(`HP: ${selectedShip.hp}`, 200, 100);
+            context.fillText(`Ship Type: ${selectedShip.type}`, 200, 150);
         }
     
         context.restore();
@@ -306,7 +305,7 @@ document.addEventListener("DOMContentLoaded", function() {
     function rotate_click(event) {
         event.preventDefault();
         let mouseX = event.clientX;
-        let mouseY = event.clientY;
+        let mouseY = event.clientY - 100;
     
         for (let i = ships.length - 1; i >= 0; i--) {
             let ship = ships[i];
