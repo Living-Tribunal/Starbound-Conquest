@@ -1,5 +1,5 @@
 //connect socket to local host
-const socket = io('http://147.160.11.15:3001/');
+const socket = io('http://147.160.11.15:3000/');
 
 //getting the DOM
 document.addEventListener("DOMContentLoaded", function() {
@@ -253,17 +253,8 @@ document.addEventListener("DOMContentLoaded", function() {
     function draw_circle_and_numbers_around_ship_battleship(ship) {
         context.strokeStyle = stroke_color;
         context.lineWidth = 10;
-        context.save(); // Save the current context state
-    
-        // Translate to the ship's center
-        context.translate(ship.x + ship.width / 2, ship.y + ship.height / 2);
-    
-        // Rotate based on the ship's current rotation angle
-        context.rotate(ship.rotation_angle);
-    
-        // Draw the circle and numbers relative to the ship's center
-        let radius = Math.max(ship.width + 40, ship.height + 40) / 2;
         context.beginPath();
+        let radius = Math.max(ship.width + 40, ship.height + 40) / 2;
         context.arc(0, 0, radius, 0, 2 * Math.PI);
         context.stroke();
     
@@ -300,20 +291,18 @@ document.addEventListener("DOMContentLoaded", function() {
         context.strokeStyle = stroke_color;
         context.lineWidth = 10;
         context.beginPath();
-        let centerX = ship.x + ship.width / 2;
-        let centerY = ship.y + ship.height / 2;
         let radius = Math.max(ship.width + 40, ship.height + 40) / 2;
-        context.arc(centerX, centerY, radius, 0, 2 * Math.PI);
+        context.arc(0, 0, radius, 0, 2 * Math.PI);
         context.stroke();
 
         context.beginPath();
         context.fillStyle = fill_color;
-        context.arc(centerX + 40, centerY + 250, 15, 5, 150);
+        context.arc(0 + 40, 0 + 250, 15, 5, 150);
         context.fill();
 
         context.beginPath();
         context.fillStyle = fill_color;
-        context.arc(centerX - 40, centerY + 250, 15, 5, 150);
+        context.arc(0 - 40, 0 + 250, 15, 5, 150);
         context.lineWidth = 2;
         context.fill();
 
@@ -321,8 +310,8 @@ document.addEventListener("DOMContentLoaded", function() {
         context.font = '20px monospace';
         for (let i = 0; i < 360; i += 45) {
             let angle = (i - 90) * Math.PI / 180;
-            let textX = centerX - 17 + (radius + 40) * Math.cos(angle);
-            let textY = centerY + 8 + (radius + 40) * Math.sin(angle);
+            let textX = 0 - 17 + (radius + 40) * Math.cos(angle);
+            let textY = 0 + 8 + (radius + 40) * Math.sin(angle);
             context.fillText(i.toString(), textX, textY);
         }
     }
@@ -338,14 +327,10 @@ document.addEventListener("DOMContentLoaded", function() {
                 mouseX <= ship.x + ship.width && 
                 mouseY >= ship.y && 
                 mouseY <= ship.y + ship.height) {
-    
-                // Adjust rotation angle (for simplicity, rotating by Math.PI/2)
-                ship.rotation_angle += Math.PI / 6;
-    
-                // Emit rotation update to server (if using socket.io)
+                ship.rotation_angle += Math.PI / 10;
                 socket.emit('rotateShip', { id: ship.id, rotation_angle: ship.rotation_angle });
     
-                draw_scene(); // Redraw the scene with the updated ship rotation
+                draw_scene();
                 break;
             }
         }
