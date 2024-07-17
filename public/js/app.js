@@ -89,6 +89,7 @@ document.addEventListener("DOMContentLoaded", function() {
     let current_ship_index = -1;
     let stroke_color = "rgba(98, 207, 245, 0.7)";
     let selectedShip = null;
+    let update_ship_hp = 0;
 
     socket.on('initialize', (initialShips) => {
         initialShips.forEach(shipData => {
@@ -150,6 +151,13 @@ document.addEventListener("DOMContentLoaded", function() {
         };
     };
 
+    window.update_hp = function() {
+        update_ship_hp = parseInt(document.getElementById('newShipHP').value);
+        selectedShip.hp = update_ship_hp;
+            socket.emit('updateShipHP', { id: selectedShip.id, hp: selectedShip.hp });
+            draw_scene();
+        };
+
     socket.on('shipCreated', function(shipData) {
         console.log('Ship created by server');
         let ship_image = new Image();
@@ -186,15 +194,6 @@ document.addEventListener("DOMContentLoaded", function() {
             }
             context.restore();
         });
-
-        // Draw selected ship info
-        /* if (selectedShip) {
-            context.fillStyle = 'white';
-            context.font = '30px monospace';
-            context.fillText(`ID: ${selectedShip.id}`, selectedShip.x - 100, selectedShip.y + 50);
-            context.fillText(`HP: ${selectedShip.hp}`, selectedShip.x - 100, selectedShip.y + 100);
-            context.fillText(`Rotation Angle: ${selectedShip.rotation_angle}`, selectedShip.x - 100, selectedShip.y + 150);
-        } */
     }
 
     function mouse_down(event) {
@@ -275,6 +274,7 @@ document.addEventListener("DOMContentLoaded", function() {
             context.font = '30px monospace';
             context.fillText(`ID: ${selectedShip.id}`, 10,  50);
             context.fillText(`HP: ${selectedShip.hp}`, 10, 100);
+            console.log("Hp:" + update_ship_hp);
             context.fillText(`Ship Type: ${selectedShip.type}`, 10, 150);
         }
     
