@@ -1,0 +1,8 @@
+DROP TABLE IF EXISTS game_canvas;
+
+CREATE TABLE IF NOT EXISTS game_canvas(
+    id INTEGER PRIMARY KEY CHECK (id = 1),
+    game BLOB NULL UNIQUE
+);
+
+INSERT INTO game_canvas DEFAULT VALUES;

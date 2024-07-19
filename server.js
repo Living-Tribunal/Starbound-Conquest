@@ -4,6 +4,20 @@ const express = require('express');
 const http = require('http');
 const path = require('path');
 const socketio = require('socket.io');
+const sqlite3 = require('sqlite3').verbose();
+let db = new sqlite3.Database('./public/data/game_canvas.db', (err) =>{
+    if (err) {
+        return console.error(err.message);
+    }
+    console.log('Connected to the in-memory SQLite database.');
+});
+
+db.close((err) =>{
+    if (err) {
+        return console.error(err.message);
+    }
+    console.log('Close the database connection.');
+});
 
 const app = express();
 const server = http.createServer(app);
@@ -20,20 +34,39 @@ io.on('connection', (socket) => {
 
     socket.on('createShip', (ship) => {
         console.log('Ship created');
-        ships.push(ship);
-        io.emit('shipCreated', ship); // Broadcast the new ship to all clients
+        let index = ships.findIndex(s => s.id === ship.id);
+        if (index === -1){
+         ships.push(ship);   
+         io.emit('shipCreated', ship);
+        } // Broadcast the new ship to all clients
     });
 
     socket.on('moveShip', (ship) => {
-        /* console.log('Ship moved:', ship); */
-        // Update the ship position in the server-side array
         let index = ships.findIndex(s => s.id === ship.id);
         if (index !== -1) {
-            ships[index] = ship;
-            /* console.log(ships); */
+            ships[index] = {
+                ...ships[index],
+                ...ship,
+                image: ships[index].image
+            };
         }
-        // Broadcast the moved ship to all clients
         io.emit('shipMoved', ship);
+    });
+
+    socket.on("updateShipHP", (shipData) => {
+        let index = ships.findIndex((s) => s.id === shipData.id);
+        if (index !== -1) {
+          ships[index].hp = shipData.hp;
+          io.emit('shipHPUpdated', ships[index]); // Broadcast the updated HP to all clients
+        }
+    });
+    
+    socket.on("updateShipRotate", (shipData) => {
+        let index = ships.findIndex((s) => s.id === shipData.id);
+        if (index !== -1) {
+          ships[index].rotation_angle = shipData.rotation_angle;
+          io.emit('shipRotated', ships[index]); // Broadcast the updated rotation to all clients
+        }
     });
 
     socket.on('disconnect', () => {

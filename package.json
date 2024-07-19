@@ -1,8 +1,9 @@
 {
   "dependencies": {
     "express": "^4.19.2",
-    "nodemon": "^3.1.4",
     "konva": "^9.3.13",
-    "socket.io": "^4.7.5"
+    "nodemon": "^3.1.4",
+    "socket.io": "^4.7.5",
+    "sqlite3": "^5.1.7"
   }
 }
