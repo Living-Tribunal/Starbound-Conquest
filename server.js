@@ -1,4 +1,4 @@
-const port = 3001;
+const port = 3000;
 const fs = require('fs');
 const express = require('express');
 const http = require('http');
@@ -9,7 +9,7 @@ let db = new sqlite3.Database('./public/data/game_canvas.db', (err) =>{
     if (err) {
         return console.error(err.message);
     }
-    console.log('Connected to the in-memory SQLite database.');
+    console.log('Connected to the SQLite Game Canvas database.');
 });
 
 db.close((err) =>{

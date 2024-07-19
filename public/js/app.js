@@ -1,5 +1,5 @@
 
-const socket = io("http://147.160.11.15:3001/");
+const socket = io("http://147.160.11.15:3000/");
 
 document.addEventListener("DOMContentLoaded", function () {
     //getting canvas element
@@ -11,11 +11,11 @@ document.addEventListener("DOMContentLoaded", function () {
     let offsetX = 0;
     let offsetY = 0;
     let current_ship_index = -1;
-    let stroke_color = "rgba(98, 207, 245, 0.5)";
+    let stroke_color = "rgba(98, 207, 245)";
     let selectedShip = null;
     let update_ship_hp = 0;
     let a = (2 * Math.PI) / 6;
-    let r = 50;
+    let r = 55;
     
     // Pan variables
     let is_panning = false;
@@ -90,6 +90,7 @@ document.addEventListener("DOMContentLoaded", function () {
       context.strokeStyle = 'white';
       context.stroke();
     }
+
   
     socket.on("initialize", (initialShips) => {
       initialShips.forEach((shipData) => {
@@ -114,8 +115,8 @@ document.addEventListener("DOMContentLoaded", function () {
           type: "Battleship",
           x: 100,
           y: 100,
-          width: 115,
-          height: 195,
+          width: 137.9,
+          height: 228.8,
           isSelected: false,
           rotation_angle: 0,
           highlighted: false,
@@ -137,8 +138,32 @@ document.addEventListener("DOMContentLoaded", function () {
           type: "Frigate",
           x: 100,
           y: 100,
-          width: 90,
-          height: 125,
+          width: 108.8,
+          height: 149.6,
+          isSelected: false,
+          highlighted: false,
+          rotation_angle: 0,
+          image: ship_image.src,
+          opacity: 1,
+          hp: 2,
+        };
+        shipImages[ship.id] = ship_image;
+        socket.emit("createShip", ship);
+      };
+    };
+
+    window.add_dreadnought = function () {
+      let ship_image = new Image();
+      ship_image.src = "images/DiableAvionics/diableavionics_pandemonium.png";
+      ship_image.onload = function () {
+        console.log("Dreadnought loaded");
+        let ship = {
+          id: Date.now(),
+          type: "Dreadnought",
+          x: 100,
+          y: 100,
+          width: 284.5,
+          height: 488,
           isSelected: false,
           highlighted: false,
           rotation_angle: 0,
@@ -204,32 +229,31 @@ document.addEventListener("DOMContentLoaded", function () {
     });
   
     function draw_scene() {
-        context.clearRect(0, 0, canvas.width, canvas.height);
-        context.save();
-        context.translate(panX, panY);
-        context.drawImage(background_image, 0, 0, canvas.width, canvas.height);
-        drawGrid(canvas.width, canvas.height);
-        ships.forEach((ship) => {
+      context.clearRect(0, 0, canvas.width, canvas.height);
+      context.save();
+      context.translate(panX, panY);
+      context.drawImage(background_image, 0, 0, canvas.width, canvas.height);
+      drawGrid(canvas.width, canvas.height);
+      ships.forEach((ship) => {
           context.save();
           context.translate(ship.x + ship.width / 2, ship.y + ship.height / 2);
           context.rotate(ship.rotation_angle);
           context.drawImage(
-            shipImages[ship.id],
-            -ship.width / 2,
-            -ship.height / 2,
-            ship.width,
-            ship.height
+              shipImages[ship.id],
+              -ship.width / 2,
+              -ship.height / 2,
+              ship.width,
+              ship.height
           );
           if (ship.highlighted) {
-            draw_circle_and_numbers_around_ship(ship);
+              draw_hex_around_ship(ship);
           }
           context.restore();
-        });
-        context.restore();
-        draw_selected_ship_info();
-      }
-      
-  
+      });
+      context.restore();
+      draw_selected_ship_info();
+  }
+    
     function mouse_down(event) {
       event.preventDefault();
       let mouseX = event.clientX - panX;
@@ -240,8 +264,8 @@ document.addEventListener("DOMContentLoaded", function () {
         if (
           mouseX >= ship.x &&
           mouseX <= ship.x + ship.width &&
-          mouseY >= ship.y + 200 &&
-          mouseY <= ship.y + ship.height + 200 
+          mouseY >= ship.y + 70 &&
+          mouseY <= ship.y + ship.height
         ) {
           is_dragging = true;
           current_ship_index = i;
@@ -284,8 +308,8 @@ document.addEventListener("DOMContentLoaded", function () {
         if (
           mouseX >= ship.x &&
           mouseX <= ship.x + ship.width &&
-          mouseY >= ship.y + 200 &&
-          mouseY <= ship.y + ship.height + 200
+          mouseY >= ship.y + 70 &&
+          mouseY <= ship.y + ship.height + 70
         ) {
           ship.highlighted = !ship.highlighted;
           selectedShip = ship.highlighted ? ship : null;
@@ -301,7 +325,25 @@ document.addEventListener("DOMContentLoaded", function () {
       draw_scene();
     }
   
-    function draw_circle_and_numbers_around_ship(ship) {
+    function draw_hex_around_ship(ship) {
+    context.strokeStyle = stroke_color;
+    context.lineWidth = 5;
+    context.beginPath();
+    let radius = Math.max(65, 65) / 2 + 20; // Adjust the size as needed
+    for (let i = 0; i < 6; i++) {
+        let x = -25 + 50 / 2 + radius * Math.cos(a * i);
+        let y = -25 + 50 / 2 + radius * Math.sin(a * i);
+        if (i === 0) {
+            context.moveTo(x, y);
+        } else {
+            context.lineTo(x, y);
+        }
+    }
+    context.closePath();
+    context.stroke();
+}
+
+    /* function draw_circle_and_numbers_around_ship(ship) {
       context.strokeStyle = stroke_color;
       context.lineWidth = 10;
       context.beginPath();
@@ -309,7 +351,7 @@ document.addEventListener("DOMContentLoaded", function () {
       context.arc(0, 0, radius, 0, 2 * Math.PI);
       context.stroke();
     }
-  
+   */
     function draw_selected_ship_info() {
       if (selectedShip) {
         context.fillStyle = "rgba(37, 37, 37, 0.7)";
@@ -336,8 +378,8 @@ document.addEventListener("DOMContentLoaded", function () {
         if (
           mouseX >= ship.x &&
           mouseX <= ship.x + ship.width &&
-          mouseY >= ship.y + 200 &&
-          mouseY <= ship.y + ship.height + 200 
+          mouseY >= ship.y + 70 &&
+          mouseY <= ship.y + ship.height + 70 
         ) {
           ship.rotation_angle += Math.PI / 3;
           socket.emit("updateShipRotate", {
