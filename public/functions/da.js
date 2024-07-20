@@ -15,7 +15,7 @@ export function add_dreadnought(shipImages, socket) {
         highlighted: false,
         rotation_angle: 0,
         image: ship_image.src,
-        opacity: 1,
+        globalAlpha: 1,
         hp: 2,
       };
       shipImages[ship.id] = ship_image;
@@ -31,14 +31,15 @@ export function add_dreadnought(shipImages, socket) {
       let ship = {
         id: Date.now(),
         type: "Battleship",
-        x: 100,
-        y: 100,
+        x: 500,
+        y: 500,
         width: 137.9,
         height: 228.8,
         isSelected: false,
         rotation_angle: 0,
         highlighted: false,
         image: ship_image.src,
+        globalAlpha: 1,
         hp: 4,
       };
       shipImages[ship.id] = ship_image;
@@ -62,7 +63,7 @@ export function add_dreadnought(shipImages, socket) {
         highlighted: false,
         rotation_angle: 0,
         image: ship_image.src,
-        opacity: 1,
+        globalAlpha: 1,
         hp: 2,
       };
       shipImages[ship.id] = ship_image;

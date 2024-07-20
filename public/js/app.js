@@ -4,7 +4,7 @@ import {
   add_battleship,
 } from "../functions/da.js";
 
-const socket = io("http://147.160.11.15:3000/");
+const socket = io("http://147.160.11.15:3001/");
 
 document.addEventListener("DOMContentLoaded", function () {
   let canvas = document.querySelector("canvas");
@@ -16,10 +16,11 @@ document.addEventListener("DOMContentLoaded", function () {
   let offsetY = 0;
   let current_ship_index = -1;
   let stroke_color = "rgba(98, 207, 245)";
+  let hex_stroke = "rgba(98, 207, 245, .2)";
   let selectedShip = null;
   let update_ship_hp = 0;
   let a = (2 * Math.PI) / 6;
-  let r = 55;
+  let r = 40;
 
   // Pan variables
   let is_panning = false;
@@ -34,11 +35,11 @@ document.addEventListener("DOMContentLoaded", function () {
     add_dreadnought: () => add_dreadnought(shipImages, socket),
   });
 
-  canvas.width = window.innerWidth + 1200;
-  canvas.height = window.innerHeight + 200;
+  canvas.width = 1706;
+  canvas.height = 1706;
 
   let background_image = new Image();
-  background_image.src = "../images/backgroundimage/starsr.jpg";
+  background_image.src = "../images/backgroundimage/kol_bg_2.png";
 
   function save_canvas() {
     const dataURL = canvas.toDataURL();
@@ -81,7 +82,7 @@ document.addEventListener("DOMContentLoaded", function () {
       context.lineTo(x + r * Math.cos(a * i), y + r * Math.sin(a * i));
     }
     context.closePath();
-    context.strokeStyle = "white";
+    context.strokeStyle = hex_stroke;
     context.stroke();
   }
 
@@ -89,7 +90,7 @@ document.addEventListener("DOMContentLoaded", function () {
     initialShips.forEach((shipData) => {
       let ship_image = new Image();
       ship_image.onload = function () {
-        let ship = { ...shipData, image: ship_image };
+        let ship = { ...shipData, image: ship_image, isSelected: false, highlighted: false };
         ships.push(ship);
         draw_scene();
       };
@@ -158,31 +159,51 @@ document.addEventListener("DOMContentLoaded", function () {
     context.translate(panX, panY);
     context.drawImage(background_image, 0, 0, canvas.width, canvas.height);
     drawGrid();
+
     ships.forEach((ship) => {
-      context.save();
-      context.translate(ship.x + ship.width / 2, ship.y + ship.height / 2);
-      context.rotate(ship.rotation_angle);
-      context.drawImage(
-        shipImages[ship.id],
-        -ship.width / 2,
-        -ship.height / 2,
-        ship.width,
-        ship.height
-      );
-      if (ship.highlighted) {
-        draw_hex_around_ship(ship);
-      }
-      context.restore();
+        context.save();
+        context.translate(ship.x + ship.width / 2, ship.y + ship.height / 2);
+        context.rotate(ship.rotation_angle);
+        
+        if (ship.isSelected) {
+            context.globalAlpha = 0.5;
+        } else {
+            context.globalAlpha = 1.0;
+        }
+        
+        context.drawImage(
+            shipImages[ship.id],
+            -ship.width / 2,
+            -ship.height / 2,
+            ship.width,
+            ship.height
+        );
+        
+        if (ship.highlighted) {
+            draw_hex_around_ship(ship);
+        }
+        
+        context.restore();
     });
+    
+    context.globalAlpha = 1.0;
     context.restore();
     draw_selected_ship_info();
-  }
+}
+
 
   function draw_hex_around_ship(ship) {
     context.strokeStyle = stroke_color;
     context.lineWidth = 5;
+
     context.beginPath();
-    let radius = Math.max(65, 65) / 2 + 20; // Adjust the size as needed
+    let radius2 = Math.max(ship.width + 40, ship.height + 40) / 2;
+    context.arc(0, 0, radius2, 0, 2 * Math.PI);
+    context.stroke();
+    context.closePath();
+
+    context.beginPath();
+    let radius = Math.max(40, 40) / 2 + 20; // Adjust the size as needed
     for (let i = 0; i < 6; i++) {
       let x = -25 + 50 / 2 + radius * Math.cos(a * i);
       let y = -25 + 50 / 2 + radius * Math.sin(a * i);
@@ -198,15 +219,21 @@ document.addEventListener("DOMContentLoaded", function () {
 
   function draw_selected_ship_info() {
     if (selectedShip) {
-      context.fillStyle = "rgba(37, 37, 37, 0.7)";
-      context.font = "30px monospace";
-      context.beginPath();
-      context.rect(4, 15, 400, 150);
-      context.fill();
-      context.fillStyle = "white";
-      context.fillText(`ID: ${selectedShip.id}`, 10, 50);
-      context.fillText(`HP: ${selectedShip.hp}`, 10, 100);
-      context.fillText(`Ship Type: ${selectedShip.type}`, 10, 150);
+        context.save();
+        context.translate(0,0);
+        context.fillStyle = "rgba(37, 37, 37, 0.7)";
+        context.font = "30px monospace";
+        context.strokeStyle = stroke_color;
+        context.lineWidth = 2
+        context.beginPath();
+        context.rect(4, 15, 400, 150);
+        context.fill();
+        context.stroke();
+        context.fillStyle = "white";
+        context.fillText(`ID: ${selectedShip.id}`, 10, 50);
+        context.fillText(`HP: ${selectedShip.hp}`, 10, 100);
+        context.fillText(`Ship Type: ${selectedShip.type}`, 10, 150);
+        context.restore();
     }
   }
 
@@ -223,47 +250,72 @@ document.addEventListener("DOMContentLoaded", function () {
     draw_scene();
   }
 
-  canvas.addEventListener("mousedown", (event) => {
+  canvas.addEventListener("dblclick", (event) => {
     const mouseX = event.clientX - panX;
     const mouseY = event.clientY - panY;
-    let shipClicked = false;
-
+  
     for (let i = ships.length - 1; i >= 0; i--) {
-      let ship = ships[i];
+      const ship = ships[i];
       if (
         mouseX >= ship.x &&
         mouseX <= ship.x + ship.width &&
         mouseY >= ship.y + 70 &&
         mouseY <= ship.y + ship.height + 75
       ) {
-        is_dragging = true;
-        current_ship_index = i;
-        offsetX = mouseX - ship.x;
-        offsetY = mouseY - ship.y;
-        ships.forEach((s) => (s.isSelected = false));
-        shipClicked = true;
+        ships.splice(i, 1);
+        draw_scene();
         break;
       }
     }
+  });
+  
+  canvas.addEventListener("mousedown", (event) => {
+    const mouseX = event.clientX - panX;
+    const mouseY = event.clientY - panY;
+    let shipClicked = false;
+
+    for (let i = ships.length - 1; i >= 0; i--) {
+        let ship = ships[i];
+        if (
+            mouseX >= ship.x + 30 &&
+            mouseX <= ship.x + ship.width &&
+            mouseY >= ship.y + 70 &&
+            mouseY <= ship.y + ship.height + 70
+        ) {
+            is_dragging = true; 
+            current_ship_index = i;
+            offsetX = mouseX - ship.x;
+            offsetY = mouseY - ship.y;
+            ships.forEach((s) => (s.isSelected = false));
+            ship.isSelected = true;
+            ship.highlighted = true;
+            shipClicked = true;
+            break;
+        }
+    }
 
     if (!shipClicked) {
-      is_panning = true;
-      startX = event.clientX - panX;
-      startY = event.clientY - panY;
+        is_panning = true;
+        startX = event.clientX - panX;
+        startY = event.clientY - panY;
     }
 
     canvas.addEventListener("mousemove", on_mouse_move);
-  });
+    draw_scene();  // Ensure to update the scene after setting the selection
+});
 
-  canvas.addEventListener("mouseup", () => {
+
+canvas.addEventListener("mouseup", () => {
     is_dragging = false;
     is_panning = false;
     canvas.removeEventListener("mousemove", on_mouse_move);
     if (current_ship_index !== -1) {
-      ships[current_ship_index].isSelected = false;
-      current_ship_index = -1;
+        ships[current_ship_index].isSelected = false;
+        current_ship_index = -1;
     }
-  });
+    draw_scene();
+});
+
 
   canvas.addEventListener("click", (event) => {
     let mouseX = event.clientX - panX;
@@ -279,7 +331,7 @@ document.addEventListener("DOMContentLoaded", function () {
         mouseY >= ship.y + 70 &&
         mouseY <= ship.y + ship.height + 75
       ) {
-        ship.highlighted = !ship.highlighted;
+        ship.highlighted = true;
         selectedShip = ship.highlighted ? ship : null;
         clickedOnShip = true;
         break;
