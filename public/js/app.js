@@ -9,7 +9,18 @@ import {
     add_dreadnought_da,
 } from "../functions/da.js";
 
-const socket = io("http://147.160.11.15:3001/");
+import {
+  add_fighter_ge,
+  add_frigate_ge, 
+  add_destroyer_ge,
+  add_lightcruiser_ge,
+  add_heavycruiser_ge,
+  add_carrier_ge,
+  add_battleship_ge, 
+  add_dreadnought_ge,
+} from "../functions/ge.js";
+
+const socket = io("http://147.160.11.15:3000/");
 
 document.addEventListener("DOMContentLoaded", function () {
   let canvas = document.querySelector("canvas");
@@ -20,8 +31,8 @@ document.addEventListener("DOMContentLoaded", function () {
   let offsetX = 0;
   let offsetY = 0;
   let current_ship_index = -1;
-  let stroke_color = "rgba(98, 207, 245)";
-  let hex_stroke = "rgba(98, 207, 245, .2)";
+  let stroke_color = "rgba(98, 207, 244)";
+  let hex_stroke = "rgba(98, 207, 245, .4)";
   let selectedShip = null;
   let update_ship_hp = 0;
   let a = (2 * Math.PI) / 6;
@@ -49,7 +60,16 @@ document.addEventListener("DOMContentLoaded", function () {
     add_battleship_da: () => add_battleship_da(shipImages, socket),
     add_carrier_da: () => add_carrier_da(shipImages, socket),
     add_dreadnought_da: () => add_dreadnought_da(shipImages, socket),
-
+  });
+  Object.assign(window, {
+    add_fighter_ge: () => add_fighter_ge(shipImages, socket),
+    add_frigate_ge: () => add_frigate_ge(shipImages, socket),
+    add_destroyer_ge: () => add_destroyer_ge(shipImages, socket),
+    add_lightcruiser_ge: () => add_lightcruiser_ge(shipImages, socket),
+    add_heavycruiser_ge: () => add_heavycruiser_ge(shipImages, socket),
+    add_battleship_ge: () => add_battleship_ge(shipImages, socket),
+    add_carrier_ge: () => add_carrier_ge(shipImages, socket),
+    add_dreadnought_ge: () => add_dreadnought_ge(shipImages, socket),
   });
 
   canvas.width = 2559;
@@ -227,7 +247,7 @@ function draw_scene() {
 
     context.beginPath();
     context.strokeStyle = stroke_color;
-    context.lineWidth = 3;
+    context.lineWidth = 5;
     let radius2 = Math.max(ship.width + 40, ship.height + 40) / 2;
     context.arc(0, 0, radius2, 0, 2 * Math.PI);
     context.stroke();
@@ -310,6 +330,8 @@ function draw_scene() {
     draw_scene();
   }
 
+
+
  canvas.addEventListener("dblclick", (event) => {
     const mouseX = (event.clientX - panX) / zoom;
     const mouseY = (event.clientY - panY) / zoom;
@@ -322,10 +344,9 @@ function draw_scene() {
         mouseY >= ship.y + 70 &&
         mouseY <= ship.y + ship.height + 75
       ) {
-        ships.splice(i, 1);
-        console.log(ships.length);
         ship.highlighted = false;
         selectedShip = null;
+        console.log(ships);
         draw_scene();
         break;
       }
@@ -402,7 +423,6 @@ function draw_scene() {
       ships.forEach((ship) => (ship.highlighted = false));
       selectedShip = null;
     }
-
     draw_scene();
   });
 

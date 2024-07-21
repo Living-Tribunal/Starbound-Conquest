@@ -1,4 +1,4 @@
-const port = 3001;
+const port = 3000;
 const fs = require('fs');
 const express = require('express');
 const http = require('http');
@@ -68,6 +68,7 @@ io.on('connection', (socket) => {
           io.emit('shipRotated', ships[index]);
         }
     });
+
 
     socket.on('disconnect', () => {
         console.log(`Socket ${socket.id} disconnected`);
