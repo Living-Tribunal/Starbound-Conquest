@@ -49,7 +49,7 @@ export function add_fighter_ge(shipImages, socket) {
 
   export function add_destroyer_ge(shipImages, socket) {
     let ship_image = new Image();
-    ship_image.src = "../images/Gensoukyou/FM_Byakuren.png";
+    ship_image.src = "../images/Gensoukyou/FM_Loupgarou.png";
     ship_image.onload = function () {
       console.log("Destroyer loaded");
       let ship = {
@@ -57,8 +57,8 @@ export function add_fighter_ge(shipImages, socket) {
         type: "Destroyer",
         x: 100,
         y: 100,
-        width: 304,
-        height: 384,
+        width: 110,
+        height: 172,
         isSelected: false,
         highlighted: false,
         rotation_angle: 0,
@@ -73,7 +73,7 @@ export function add_fighter_ge(shipImages, socket) {
 
   export function add_lightcruiser_ge(shipImages, socket) {
     let ship_image = new Image();
-    ship_image.src = "../images/Gensoukyou/FM_Hearn.png";
+    ship_image.src = "../images/Gensoukyou/FM_Egret.png";
     ship_image.onload = function () {
       console.log("Light Cruiser loaded");
       let ship = {
@@ -81,8 +81,8 @@ export function add_fighter_ge(shipImages, socket) {
         type: "Light Cruiser",
         x: 100,
         y: 100,
-        width: 196,
-        height: 239,
+        width: 132,
+        height: 270,
         isSelected: false,
         highlighted: false,
         rotation_angle: 0,
@@ -121,7 +121,7 @@ export function add_fighter_ge(shipImages, socket) {
 
   export function add_carrier_ge(shipImages, socket) {
     let ship_image = new Image();
-    ship_image.src = "../images/Gensoukyou/FM_Parasol.png";
+    ship_image.src = "../images/Gensoukyou/FM_Hearn.png";
     ship_image.onload = function () {
       console.log("Carrier loaded");
       let ship = {
@@ -129,8 +129,8 @@ export function add_fighter_ge(shipImages, socket) {
         type: "Carrier",
         x: 100,
         y: 100,
-        width: 114,
-        height: 106,
+        width: 196,
+        height: 239,
         isSelected: false,
         highlighted: false,
         rotation_angle: 0,
