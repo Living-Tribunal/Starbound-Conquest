@@ -7,40 +7,10 @@ body {
     overflow: hidden;
 }
 
-.ship-selection-menu {
-    display:contents;
-    list-style: none;
-    padding: 10px;
-    margin-top: 20px;
-    flex-direction: column;
-    align-items: center;
-}
-
-.navbar {
-    display: flex;
-    align-items: center;
-    transition: .3s;
-    background-color: rgb(17, 17, 17);
-}
-
 .ship-info{
     padding: 10px;
-    font-size: 30px;
+    font-size: 20px;
     background-color: rgb(17, 17, 17);
-    color: white;
-}
-
-button {
-    font-size: 15px;
-    padding: 5px;
-    margin: 5px;
-    transition: background-color 0.2s ease-in-out, color 0.2s ease-in-out;
-    color: white;
-    background-color:  rgb(37, 37, 37);
-}
-
-button:hover {
-    background-color: gold;
     color: white;
 }
 
@@ -62,4 +32,29 @@ button:hover {
 input {
     color: white;
     background-color: rgb(37, 37, 37);
+}
+.ship-selection-menu-title,
+.ship-selection-menu {
+    display: flex;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    padding: 10px;
+    background-color: rgb(17, 17, 17);
+}
+
+button {
+    background-color: rgb(17, 17, 17);
+    color: white;
+}
+
+option {
+    color: white;
+    background-color: rgb(37, 37, 37);
+    font-size: 18px;
+}
+
+select {
+    color: white;
+    background-color: rgb(37, 37, 37);
+    font-size: 18px;
 }

@@ -38,9 +38,9 @@ io.on('connection', (socket) => {
         if (index === -1){
          ships.push(ship);   
          io.emit('shipCreated', ship);
-        } // Broadcast the new ship to all clients
+        }
     });
-
+    
     socket.on('moveShip', (ship) => {
         let index = ships.findIndex(s => s.id === ship.id);
         if (index !== -1) {
@@ -57,7 +57,7 @@ io.on('connection', (socket) => {
         let index = ships.findIndex((s) => s.id === shipData.id);
         if (index !== -1) {
           ships[index].hp = shipData.hp;
-          io.emit('shipHPUpdated', ships[index]); // Broadcast the updated HP to all clients
+          io.emit('shipHPUpdated', ships[index]);
         }
     });
     
@@ -65,7 +65,7 @@ io.on('connection', (socket) => {
         let index = ships.findIndex((s) => s.id === shipData.id);
         if (index !== -1) {
           ships[index].rotation_angle = shipData.rotation_angle;
-          io.emit('shipRotated', ships[index]); // Broadcast the updated rotation to all clients
+          io.emit('shipRotated', ships[index]);
         }
     });
 

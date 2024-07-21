@@ -9,47 +9,62 @@
         <script src="https://unpkg.com/konva@9/konva.min.js"></script>
     </head>
     <body>
-        <nav class="navbar">
-            <label class="ship-info">Add a new ship:</label>
-            <ul class="ship-selection-menu">
-                <select name="Battleships">
-                    <option onclick="add_battleship()">DiableAvionics</option>
-                    <option onclick="add_battleship()">DiableAvionics</option>
-                    <option onclick="add_battleship()">DiableAvionics</option>
-                <li class="ship-class-selection">
-                    <button onclick="add_fighterp()" class="ship-class-selection-button">Fighter</button>
-                </li>
-                <li class="ship-class-selection">
-                    <button onclick="add_frigate()" class="ship-class-selection-button">Frigate</button>
-                </li>
-                <li class="ship-class-selection">
-                    <button onclick="add_destroyer()" class="ship-class-selection-button">Destroyer</button>
-                </li>
-                <li class="ship-class-selection">
-                    <button onclick="add_light_cruiser()" class="ship-class-selection-button">Light Cruiser</button>
-                </li>
-                <li class="ship-class-selection">
-                    <button onclick="add_heavy_cruiser()" class="ship-class-selection-button">Heavy Cruiser</button>
-                </li>
-                <li class="ship-class-selection">
-                    <button onclick="add_carrier()" class="ship-class-selection-button">Carrier</button>
-                </li>
-                <li class="ship-class-selection">
-                    <button onclick="add_battleship()" class="ship-class-selection-button">Battleship</button>
-                </li>
-                <li class="ship-class-selection">
-                    <button onclick="add_dreadnought()" class="ship-class-selection-button">Dreadnought</button>
-                </li
-                <li class=""ship-class-selection>
-                    <div id="shipDetails">
-                        <label for="newShipHP">New HP:</label>
-                        <input type="number" id="newShipHP">
-                        <button onclick="update_hp()">Update HP</button>
-                    </div>
-                </li>
-            </ul>
-        </nav>
+        <label class="ship-info">Click a dropdown to add a new ship, or use the input to adjust a selected ships' HP:</label>
+        <div id="shipDetails">
+            <label for="newShipHP">New HP:</label>
+            <input type="number" id="newShipHP">
+            <button onclick="update_hp()">Update HP</button>
         </div>
+            <div class="ship-selection-menu">
+                <select class="ship-class-selection" name="Fighter">
+                    <option value="0" selected="selected">-Fighters-</option>
+                    <option value="1" onclick="add_fighter_da()">DiableAvionics</option>
+                    <option value="2" onclick="add_fighter()">Volantian</option>
+                    <option value="3" onclick="add_fighter()">DiableAvionics</option>
+                </select>
+                <select class="ship-class-selection" name="Frigate">
+                    <option value="0" selected="selected">-Frigates-</option>
+                    <option value="1" onclick="add_frigate_da()">DiableAvionics</option>
+                    <option value="2" onclick="add_battleship()">Volantian</option>
+                    <option value="3" onclick="add_battleship()">DiableAvionics</option>
+                </select>
+                <select class="ship-class-selection" name="Destroyer">
+                    <option value="0" selected="selected">-Destroyers-</option>
+                    <option value="1" onclick="add_destroyer_da()">DiableAvionics</option>
+                    <option value="2" onclick="add_battleship()">Volantian</option>
+                    <option value="3" onclick="add_battleship()">DiableAvionics</option>
+                </select>
+                <select class="ship-class-selection" name="Light Cruiser">
+                    <option value="0" selected="selected">-Light Cruisers-</option>
+                    <option value="1" onclick="add_lightcruiser_da()">DiableAvionics</option>
+                    <option value="2" onclick="add_battleship()">Volantian</option>
+                    <option value="3" onclick="add_battleship()">DiableAvionics</option>
+                </select>
+                <select class="ship-class-selection" name="Heavy Cruiser">
+                    <option value="0"  selected="selected">-Heavy Cruisers-</option>
+                    <option value="1"  onclick="add_heavycruiser_da()">DiableAvionics</option>
+                    <option value="2"  onclick="add_battleship()">Volantian</option>
+                    <option value="3"  onclick="add_battleship()">DiableAvionics</option>
+                </select>
+                <select class="ship-class-selection" name="Carrier">
+                    <option value="0"  selected="selected">-Carriers-</option>
+                    <option value="1"  onclick="add_carrier_da()">DiableAvionics</option>
+                    <option value="2"  onclick="add_battleship()">Volantian</option>
+                    <option value="3"  onclick="add_battleship()">DiableAvionics</option>
+                </select>
+                <select class="ship-class-selection" name="Battleship">
+                    <option value="0"  selected="selected">-Battleships-</option>
+                    <option value="1"  onclick="add_battleship_da()">DiableAvionics</option>
+                    <option value="2"  onclick="add_battleship()">Volantian</option>
+                    <option value="3"  onclick="add_battleship()">DiableAvionics</option>
+                </select>
+                <select class="ship-class-selection" name="Dreadnought">
+                    <option value="0" selected="selected">-Dreadnoughts-</option>
+                    <option value="1" onclick="add_dreadnought_da()">DiableAvionics</option>
+                    <option value="2" onclick="add_battleship()">Volantian</option>
+                    <option value="3" onclick="add_battleship()">DiableAvionics</option>
+                </select>
+            </div>
         <canvas id="gameCanvas"></canvas>
         <script type="module" src="js/app.js"></script>
     </body>
