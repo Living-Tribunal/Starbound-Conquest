@@ -1,22 +1,22 @@
 import {
-    add_fighter_da,
-    add_frigate_da, 
-    add_destroyer_da,
-    add_lightcruiser_da,
-    add_heavycruiser_da,
-    add_carrier_da,
-    add_battleship_da, 
-    add_dreadnought_da,
+  add_fighter_da,
+  add_frigate_da,
+  add_destroyer_da,
+  add_lightcruiser_da,
+  add_heavycruiser_da,
+  add_carrier_da,
+  add_battleship_da,
+  add_dreadnought_da,
 } from "../functions/da.js";
 
 import {
   add_fighter_ge,
-  add_frigate_ge, 
+  add_frigate_ge,
   add_destroyer_ge,
   add_lightcruiser_ge,
   add_heavycruiser_ge,
   add_carrier_ge,
-  add_battleship_ge, 
+  add_battleship_ge,
   add_dreadnought_ge,
 } from "../functions/ge.js";
 
@@ -175,12 +175,19 @@ document.addEventListener("DOMContentLoaded", function () {
   socket.on("shipCreated", function (shipData) {
     let ship_image = new Image();
     ship_image.onload = function () {
-      let ship = { ...shipData, image: ship_image };
+      let ship = {
+        ...shipData,
+        image: ship_image,
+        isSelected: false,
+        highlighted: false,
+      };
       ships.push(ship);
+      console.log(ships);
       shipImages[ship.id] = ship_image;
       draw_scene();
     };
     ship_image.src = shipData.image;
+    shipImages[shipData.id] = ship_image;
   });
 
   socket.on("shipMoved", function (shipData) {
@@ -202,41 +209,55 @@ document.addEventListener("DOMContentLoaded", function () {
       draw_scene();
     }
   });
- 
-function draw_scene() {
+
+  socket.on("shipDeleted", function (shipData) {
+    // Find the index of the ship to delete
+    let index = ships.findIndex((ship) => ship.id === shipData.id);
+    if (index !== -1) {
+      // Remove the ship from the ships array
+      ships.splice(index, 1);
+      console.log(ships);
+      // Remove the ship image from the shipImages object
+      delete shipImages[shipData.id];
+      // Redraw the scene
+      draw_scene();
+    }
+  });
+
+  function draw_scene() {
     context.clearRect(0, 0, canvas.width, canvas.height);
     context.save();
     context.translate(panX, panY);
     context.scale(zoom, zoom);
     context.drawImage(background_image, 0, 0, canvas.width, canvas.height);
     drawGrid();
-  
+
     ships.forEach((ship) => {
-        context.save();
-        context.translate(ship.x + ship.width / 2, ship.y + ship.height / 2);
-        context.rotate(ship.rotation_angle);
-        
-        if (ship.isSelected) {
-            context.globalAlpha = 0.5;
-        } else {
-            context.globalAlpha = 1.0;
-        }
-        
-        context.drawImage(
-            shipImages[ship.id],
-            -ship.width / 2,
-            -ship.height / 2,
-            ship.width,
-            ship.height
-        );
-        
-        if (ship.highlighted) {
-            draw_hex_around_ship(ship);
-        }
-        
-        context.restore();
+      context.save();
+      context.translate(ship.x + ship.width / 2, ship.y + ship.height / 2);
+      context.rotate(ship.rotation_angle);
+
+      if (ship.isSelected) {
+        context.globalAlpha = 0.5;
+      } else {
+        context.globalAlpha = 1.0;
+      }
+
+      context.drawImage(
+        shipImages[ship.id],
+        -ship.width / 2,
+        -ship.height / 2,
+        ship.width,
+        ship.height
+      );
+
+      if (ship.highlighted) {
+        draw_hex_around_ship(ship);
+      }
+
+      context.restore();
     });
-    
+
     context.globalAlpha = 1.0;
     context.restore();
     draw_selected_ship_info();
@@ -244,7 +265,6 @@ function draw_scene() {
   }
 
   function draw_hex_around_ship(ship) {
-
     context.beginPath();
     context.strokeStyle = stroke_color;
     context.lineWidth = 5;
@@ -277,23 +297,23 @@ function draw_scene() {
     context.strokeStyle = stroke_color;
     context.lineWidth = 2;
     if (zoom < 1) {
-        context.beginPath();
-        context.rect(4, 170, 200, 50);
-        context.fill();
-        context.stroke();
-        context.fillStyle = "white";
-        context.fillText(`Zoom: ${(zoom * 100).toFixed(0)}%`, 10, 205);
-        context.restore();
+      context.beginPath();
+      context.rect(4, 170, 200, 50);
+      context.fill();
+      context.stroke();
+      context.fillStyle = "white";
+      context.fillText(`Zoom: ${(zoom * 100).toFixed(0)}%`, 10, 205);
+      context.restore();
     } else if (zoom > 1) {
-        context.beginPath();
-        context.rect(4, 170, 200, 50);
-        context.fill();
-        context.stroke();
-        context.fillStyle = "white";
-        context.fillText(`Zoom: ${(zoom * 100).toFixed(0)}%`, 10, 205);
-        context.restore();
-    };
-  };
+      context.beginPath();
+      context.rect(4, 170, 200, 50);
+      context.fill();
+      context.stroke();
+      context.fillStyle = "white";
+      context.fillText(`Zoom: ${(zoom * 100).toFixed(0)}%`, 10, 205);
+      context.restore();
+    }
+  }
 
   function draw_selected_ship_info() {
     if (selectedShip) {
@@ -312,7 +332,7 @@ function draw_scene() {
       context.fillText(`ID: ${selectedShip.id}`, 10, 50);
       context.fillText(`HP: ${selectedShip.hp}`, 10, 100);
       context.fillText(`Ship Type: ${selectedShip.type}`, 10, 150);
-      
+
       context.restore();
     }
   }
@@ -330,9 +350,7 @@ function draw_scene() {
     draw_scene();
   }
 
-
-
- canvas.addEventListener("dblclick", (event) => {
+  canvas.addEventListener("dblclick", (event) => {
     const mouseX = (event.clientX - panX) / zoom;
     const mouseY = (event.clientY - panY) / zoom;
 
@@ -341,11 +359,13 @@ function draw_scene() {
       if (
         mouseX >= ship.x &&
         mouseX <= ship.x + ship.width &&
-        mouseY >= ship.y + 70 &&
-        mouseY <= ship.y + ship.height + 75
+        mouseY >= ship.y + 120 &&
+        mouseY <= ship.y + ship.height + 120
       ) {
         ship.highlighted = false;
         selectedShip = null;
+        socket.emit("deleteShip", { id: ship.id });
+        ships.splice(i, 1);
         console.log(ships);
         draw_scene();
         break;
@@ -430,9 +450,9 @@ function draw_scene() {
     event.preventDefault();
     let mouseX = (event.clientX - panX) / zoom;
     let mouseY = (event.clientY - panY) / zoom;
-  
+
     let shipRotated = false;
-  
+
     for (let i = ships.length - 1; i >= 0; i--) {
       let ship = ships[i];
       if (
@@ -450,7 +470,7 @@ function draw_scene() {
         break;
       }
     }
-  
+
     if (!shipRotated) {
       if (event.deltaY < 0 && zoom < maxZoom) {
         zoom += zoomStep;
@@ -458,9 +478,10 @@ function draw_scene() {
         zoom -= zoomStep;
       }
     }
-  
+
     draw_scene();
   });
+  console.log(ships);
 
   save_canvas();
   load_canvas();

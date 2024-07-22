@@ -69,6 +69,16 @@ io.on('connection', (socket) => {
         }
     });
 
+    socket.on("deleteShip", function (shipData) {
+        // Remove the ship from the server-side data store
+        let index = ships.findIndex((ship) => ship.id === shipData.id);
+        if (index !== -1) {
+            ships.splice(index, 1);
+            // Broadcast the deletion to all clients
+            io.emit("shipDeleted", shipData);
+        }
+    });
+
 
     socket.on('disconnect', () => {
         console.log(`Socket ${socket.id} disconnected`);
