@@ -20,7 +20,18 @@ import {
   add_dreadnought_ge,
 } from "../functions/ge.js";
 
-const socket = io("http://147.160.11.15:3000/");
+import {
+    add_fighter_ne,
+    add_frigate_ne,
+    add_destroyer_ne,
+    add_lightcruiser_ne,
+    add_heavycruiser_ne,
+    add_carrier_ne,
+    add_battleship_ne,
+    add_dreadnought_ne,
+  } from "../functions/ne.js";
+
+const socket = io("http://147.160.11.15:3001/");
 
 document.addEventListener("DOMContentLoaded", function () {
   let canvas = document.querySelector("canvas");
@@ -70,6 +81,17 @@ document.addEventListener("DOMContentLoaded", function () {
     add_battleship_ge: () => add_battleship_ge(shipImages, socket),
     add_carrier_ge: () => add_carrier_ge(shipImages, socket),
     add_dreadnought_ge: () => add_dreadnought_ge(shipImages, socket),
+  });
+
+  Object.assign(window, {
+    add_fighter_ne: () => add_fighter_ne(shipImages, socket),
+    add_frigate_ne: () => add_frigate_ne(shipImages, socket),
+    add_destroyer_ne: () => add_destroyer_ne(shipImages, socket),
+    add_lightcruiser_ne: () => add_lightcruiser_ne(shipImages, socket),
+    add_heavycruiser_ne: () => add_heavycruiser_ne(shipImages, socket),
+    add_battleship_ne: () => add_battleship_ne(shipImages, socket),
+    add_carrier_ne: () => add_carrier_ne(shipImages, socket),
+    add_dreadnought_ne: () => add_dreadnought_ne(shipImages, socket),
   });
 
   canvas.width = 2559;
