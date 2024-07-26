@@ -1,7 +1,7 @@
 
-export function add_fighter_ne(shipImages, socket) {
+export function add_fighter_ms(shipImages, socket) {
     let ship_image = new Image();
-    ship_image.src = "../images/Neutrino Corp/neutrino_causality.png";
+    ship_image.src = "../images/Shadow Wing/ms_enlil_red.png";
     ship_image.onload = function () {
       console.log("Fighter loaded");
       let ship = {
@@ -9,8 +9,8 @@ export function add_fighter_ne(shipImages, socket) {
         type: "Fighter",
         x: 100,
         y: 100,
-        width: 76,
-        height: 102,
+        width: 114,
+        height: 87,
         isSelected: false,
         highlighted: false,
         rotation_angle: 0,
@@ -23,9 +23,9 @@ export function add_fighter_ne(shipImages, socket) {
     };
   };
 
-  export function add_frigate_ne(shipImages, socket) {
+  export function add_frigate_ms(shipImages, socket) {
     let ship_image = new Image();
-    ship_image.src = "../images/Neutrino Corp/neutrino_hacksaw.png";
+    ship_image.src = "../images/Shadow Wing/ms_morningstar_red.png";
     ship_image.onload = function () {
       console.log("Frigate loaded");
       let ship = {
@@ -33,8 +33,8 @@ export function add_fighter_ne(shipImages, socket) {
         type: "Frigate",
         x: 100,
         y: 100,
-        width: 110,
-        height: 176,
+        width: 116,
+        height: 172,
         isSelected: false,
         highlighted: false,
         rotation_angle: 0,
@@ -47,9 +47,9 @@ export function add_fighter_ne(shipImages, socket) {
     };
   };
 
-  export function add_destroyer_ne(shipImages, socket) {
+  export function add_destroyer_ms(shipImages, socket) {
     let ship_image = new Image();
-    ship_image.src = "../images/Neutrino Corp/neutrino_lathe.png";
+    ship_image.src = "../images/Shadow Wing/ms_carmine_red.png";
     ship_image.onload = function () {
       console.log("Destroyer loaded");
       let ship = {
@@ -57,8 +57,8 @@ export function add_fighter_ne(shipImages, socket) {
         type: "Destroyer",
         x: 100,
         y: 100,
-        width: 100,
-        height: 172,
+        width: 256,
+        height: 128,
         isSelected: false,
         highlighted: false,
         rotation_angle: 0,
@@ -71,9 +71,9 @@ export function add_fighter_ne(shipImages, socket) {
     };
   };
 
-  export function add_lightcruiser_ne(shipImages, socket) {
+  export function add_lightcruiser_ms(shipImages, socket) {
     let ship_image = new Image();
-    ship_image.src = "../images/Neutrino Corp/neutrino_nirvash.png";
+    ship_image.src = "../images/Shadow Wing/ms_elysium_red.png";
     ship_image.onload = function () {
       console.log("Light Cruiser loaded");
       let ship = {
@@ -81,8 +81,8 @@ export function add_fighter_ne(shipImages, socket) {
         type: "Light Cruiser",
         x: 100,
         y: 100,
-        width: 114,
-        height: 239,
+        width: 200,
+        height: 280,
         isSelected: false,
         highlighted: false,
         rotation_angle: 0,
@@ -95,9 +95,9 @@ export function add_fighter_ne(shipImages, socket) {
     };
   };
 
-  export function add_heavycruiser_ne(shipImages, socket) {
+  export function add_heavycruiser_ms(shipImages, socket) {
     let ship_image = new Image();
-    ship_image.src = "../images/Neutrino Corp/neutrino_theend.png";
+    ship_image.src = "../images/Shadow Wing/ms_charybdis_red.png";
     ship_image.onload = function () {
       console.log("Heavy Cruiser loaded");
       let ship = {
@@ -105,8 +105,8 @@ export function add_fighter_ne(shipImages, socket) {
         type: "Heavy Cruiser",
         x: 100,
         y: 100,
-        width: 166,
-        height: 275,
+        width: 320,
+        height: 230,
         isSelected: false,
         highlighted: false,
         rotation_angle: 0,
@@ -119,9 +119,9 @@ export function add_fighter_ne(shipImages, socket) {
     };
   };
 
-  export function add_carrier_ne(shipImages, socket) {
+  export function add_carrier_ms(shipImages, socket) {
     let ship_image = new Image();
-    ship_image.src = "../images/Neutrino Corp/neutrino_nausicaa.png";
+    ship_image.src = "../images/Shadow Wing/ms_mimir_red.png";
     ship_image.onload = function () {
       console.log("Carrier loaded");
       let ship = {
@@ -129,8 +129,8 @@ export function add_fighter_ne(shipImages, socket) {
         type: "Carrier",
         x: 100,
         y: 100,
-        width: 160,
-        height: 370,
+        width: 250,
+        height: 410,
         isSelected: false,
         highlighted: false,
         rotation_angle: 0,
@@ -143,9 +143,9 @@ export function add_fighter_ne(shipImages, socket) {
     };
   };
 
-  export function add_battleship_ne(shipImages, socket) {
+  export function add_battleship_ms(shipImages, socket) {
     let ship_image = new Image();
-    ship_image.src = "../images/Neutrino Corp/neutrino_bansheenorn.png";
+    ship_image.src = "../images/Shadow Wing/ms_skadi_red.png";
     ship_image.onload = function () {
       console.log("Battleship loaded");
       let ship = {
@@ -153,8 +153,8 @@ export function add_fighter_ne(shipImages, socket) {
         type: "Battleship",
         x: 100,
         y: 100,
-        width: 125,
-        height: 447,
+        width: 440,
+        height: 440,
         isSelected: false,
         rotation_angle: 0,
         highlighted: false,
@@ -168,9 +168,9 @@ export function add_fighter_ne(shipImages, socket) {
   };
 
 
-export function add_dreadnought_ne(shipImages, socket) {
+export function add_dreadnought_ms(shipImages, socket) {
     let ship_image = new Image();
-    ship_image.src = "../images/Neutrino Corp/neutrino_unsung.png";
+    ship_image.src = "../images/Shadow Wing/ms_vardr_red.png";
     ship_image.onload = function () {
       console.log("Dreadnought loaded");
       let ship = {
@@ -178,8 +178,8 @@ export function add_dreadnought_ne(shipImages, socket) {
         type: "Dreadnought",
         x: 100,
         y: 100,
-        width: 188,
-        height: 591,
+        width: 310,
+        height: 443,
         isSelected: false,
         highlighted: false,
         rotation_angle: 0,

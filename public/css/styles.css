@@ -2,9 +2,84 @@
     font-family: monospace;
 }
 
+
+
 body {
     background-color: rgb(17, 17, 17);
     overflow: hidden;
+}
+
+#register-screen,
+#login-screen {
+    background-color: rgb(17, 17, 17);
+    display: flex;
+    justify-content: center;
+    background-image: url("../images/backgroundimage/sbclogo.png");
+    background-position: center;
+    background-repeat: no-repeat;
+    background-attachment: fixed;
+    background-size: contain;
+    height: 130vh;
+    align-items: center;
+}
+
+#comp-app-container{
+    display: flex;
+    background-color: black;
+    color: white;
+    border: solid 2px white;
+    text-decoration: none;
+}
+
+a:link { 
+    text-decoration: none;
+    color: white;
+  } 
+a:visited { 
+    text-decoration: none;
+    color: white; 
+  } 
+a:hover { 
+    text-decoration: none;
+    color: white;
+  } 
+a:active { 
+    text-decoration: none;
+    color: white;
+  }
+
+.login-label{
+    color: white;
+    font-size: 20px;
+}
+
+.login{
+    display: flex;
+    width: 250px;
+    background-color: white;
+    color: black;
+}
+
+a {
+    border: solid 2px white;
+    padding: 10px 20px;
+    background-color: rgb(17, 17, 17);
+    transition: 200ms ease-in;
+}
+
+button:hover,
+a:hover {
+    color: rgb(17, 17, 17);
+    background-color: gold;
+}
+
+button{
+    cursor: pointer;
+    padding: 10px 20px;
+    border-color: white;
+    border-style:solid;
+    margin-top: 10px;
+    transition: 200ms ease-in;
 }
 
 .ship-info{
@@ -66,3 +141,11 @@ select {
     font-size: 18px;
     gap: 80px;
 }
+
+
+    #error {
+        color: rgb(255, 60, 60);
+        font-size: 20px;
+        display: block;
+        margin-top: 10px;
+    }

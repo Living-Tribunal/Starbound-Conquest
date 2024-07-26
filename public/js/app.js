@@ -31,7 +31,40 @@ import {
     add_dreadnought_ne,
   } from "../functions/ne.js";
 
-const socket = io("http://147.160.11.15:3001/");
+  import {
+    add_fighter_vo,
+    add_frigate_vo,
+    add_destroyer_vo,
+    add_lightcruiser_vo,
+    add_heavycruiser_vo,
+    add_carrier_vo,
+    add_battleship_vo,
+    add_dreadnought_vo,
+  } from "../functions/vo.js";
+
+  import {
+    add_fighter_ms,
+    add_frigate_ms,
+    add_destroyer_ms,
+    add_lightcruiser_ms,
+    add_heavycruiser_ms,
+    add_carrier_ms,
+    add_battleship_ms,
+    add_dreadnought_ms,
+  } from "../functions/sw.js";
+
+  import {
+    add_fighter_gr,
+    add_frigate_gr,
+    add_destroyer_gr,
+    add_lightcruiser_gr,
+    add_heavycruiser_gr,
+    add_carrier_gr,
+    add_battleship_gr,
+    add_dreadnought_gr,
+  } from "../functions/gr.js";
+
+const socket = io("http://147.160.11.15:80/");
 
 document.addEventListener("DOMContentLoaded", function () {
   let canvas = document.querySelector("canvas");
@@ -72,6 +105,7 @@ document.addEventListener("DOMContentLoaded", function () {
     add_carrier_da: () => add_carrier_da(shipImages, socket),
     add_dreadnought_da: () => add_dreadnought_da(shipImages, socket),
   });
+  
   Object.assign(window, {
     add_fighter_ge: () => add_fighter_ge(shipImages, socket),
     add_frigate_ge: () => add_frigate_ge(shipImages, socket),
@@ -94,11 +128,44 @@ document.addEventListener("DOMContentLoaded", function () {
     add_dreadnought_ne: () => add_dreadnought_ne(shipImages, socket),
   });
 
+  Object.assign(window, {
+    add_fighter_vo: () => add_fighter_vo(shipImages, socket),
+    add_frigate_vo: () => add_frigate_vo(shipImages, socket),
+    add_destroyer_vo: () => add_destroyer_vo(shipImages, socket),
+    add_lightcruiser_vo: () => add_lightcruiser_vo(shipImages, socket),
+    add_heavycruiser_vo: () => add_heavycruiser_vo(shipImages, socket),
+    add_battleship_vo: () => add_battleship_vo(shipImages, socket),
+    add_carrier_vo: () => add_carrier_vo(shipImages, socket),
+    add_dreadnought_vo: () => add_dreadnought_vo(shipImages, socket),
+  });
+
+  Object.assign(window, {
+    add_fighter_gr: () => add_fighter_gr(shipImages, socket),
+    add_frigate_gr: () => add_frigate_gr(shipImages, socket),
+    add_destroyer_gr: () => add_destroyer_gr(shipImages, socket),
+    add_lightcruiser_gr: () => add_lightcruiser_gr(shipImages, socket),
+    add_heavycruiser_gr: () => add_heavycruiser_gr(shipImages, socket),
+    add_battleship_gr: () => add_battleship_gr(shipImages, socket),
+    add_carrier_gr: () => add_carrier_gr(shipImages, socket),
+    add_dreadnought_gr: () => add_dreadnought_gr(shipImages, socket),
+  });
+
+  Object.assign(window, {
+    add_fighter_ms: () => add_fighter_ms(shipImages, socket),
+    add_frigate_ms: () => add_frigate_ms(shipImages, socket),
+    add_destroyer_ms: () => add_destroyer_ms(shipImages, socket),
+    add_lightcruiser_ms: () => add_lightcruiser_ms(shipImages, socket),
+    add_heavycruiser_ms: () => add_heavycruiser_ms(shipImages, socket),
+    add_battleship_ms: () => add_battleship_ms(shipImages, socket),
+    add_carrier_ms: () => add_carrier_ms(shipImages, socket),
+    add_dreadnought_ms: () => add_dreadnought_ms(shipImages, socket),
+  });
+
   canvas.width = 2559;
   canvas.height = 2559;
 
   let background_image = new Image();
-  background_image.src = "../images/backgroundimage/kol_bg_2.png";
+  background_image.src = "../images/backgroundimage/kol_bg_2.jpg";
 
   function save_canvas() {
     const dataURL = canvas.toDataURL();
