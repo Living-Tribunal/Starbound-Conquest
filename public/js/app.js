@@ -81,6 +81,8 @@ document.addEventListener("DOMContentLoaded", function () {
   let update_ship_hp = 0;
   let a = (2 * Math.PI) / 6;
   let r = 40;
+  let sides_color = 'rgba(245, 39, 39, 0.3)';
+  let front_rear_color = 'rgba(39, 245, 114, 0.3)';
 
   // Pan variables
   let is_panning = false;
@@ -355,12 +357,42 @@ document.addEventListener("DOMContentLoaded", function () {
 
   function draw_hex_around_ship(ship) {
     context.beginPath();
-    context.strokeStyle = stroke_color;
-    context.lineWidth = 5;
+    context.strokeStyle = stroke_color; //right firing angle
+    context.fillStyle = sides_color;
+    context.lineWidth = 2;
+    context.moveTo(0,0);
     let radius2 = Math.max(ship.width + 40, ship.height + 40) / 2;
-    context.arc(0, 0, radius2, 0, 2 * Math.PI);
+    context.arc(0, 0, radius2, -.75, .25 * Math.PI);
     context.stroke();
     context.closePath();
+    context.fill();
+
+    context.beginPath();
+    context.moveTo(0,0); //rear firing angle
+    context.strokeStyle = stroke_color;
+    context.fillStyle = front_rear_color;
+    context.arc(0, 0, radius2, .25* Math.PI, .75 * Math.PI);
+    context.stroke();
+    context.closePath();
+    context.fill();
+
+    context.beginPath();
+    context.moveTo(0,0);
+    context.strokeStyle = stroke_color; //left side
+    context.fillStyle = sides_color;
+    context.arc(0, 0, radius2, .75 * Math.PI, 1.25 * Math.PI);
+    context.stroke();
+    context.closePath();
+    context.fill();
+
+    context.beginPath();
+    context.moveTo(0,0);
+    context.strokeStyle = stroke_color;
+    context.fillStyle = front_rear_color;
+    context.arc(0, 0, radius2, 1.25 * Math.PI, -.75);
+    context.stroke();
+    context.closePath();
+    context.fill();
 
     context.beginPath();
     context.strokeStyle = stroke_color;

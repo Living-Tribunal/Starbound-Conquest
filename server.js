@@ -118,7 +118,7 @@ app.get('/', check_authenticated, (req, res) => {
   })
 
 app.get('/login', check_not_authenticated, (req, res) => {
-    res.render('login')
+    res.render('index') //CHange this to go back to the login
 })
 
 app.post('/login', check_not_authenticated, passport.authenticate('local', {

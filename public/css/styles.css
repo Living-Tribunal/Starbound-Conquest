@@ -2,8 +2,6 @@
     font-family: monospace;
 }
 
-
-
 body {
     background-color: rgb(17, 17, 17);
     overflow: hidden;
@@ -142,10 +140,9 @@ select {
     gap: 80px;
 }
 
-
-    #error {
-        color: rgb(255, 60, 60);
-        font-size: 20px;
-        display: block;
-        margin-top: 10px;
-    }
+#error {
+    color: rgb(255, 60, 60);
+    font-size: 20px;
+    display: block;
+    margin-top: 10px;
+}
