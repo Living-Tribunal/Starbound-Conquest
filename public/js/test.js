@@ -64,7 +64,7 @@ function startDragLine(e) {
         ctx2.moveTo(firstClick[0], firstClick[1]);
         ctx2.lineWidth = 15;
         ctx2.lineTo(cursorX, cursorY);
-        ctx2.strokeStyle = 'rgba(98, 207, 244, .7)';
+        ctx2.strokeStyle = 'rgba(255, 215, 0)'; //color for the line
         ctx2.stroke();
 
         var lineLengthPixels = Math.sqrt(Math.pow(cursorX - firstClick[0], 2) + Math.pow(cursorY - firstClick[1], 2)).toFixed(2);
@@ -72,7 +72,7 @@ function startDragLine(e) {
 
         var midX = (firstClick[0] + cursorX - 100) / 2;
         var midY = (firstClick[1] + cursorY - 100) / 2;
-        ctx2.fillStyle = 'rgba(98, 207, 244)';
+        ctx2.fillStyle = 'rgb(255, 215, 0)'; //color for the texty
         ctx2.font = "40px Monospace";
         ctx2.fillText(lineLengthInches + ' in', midX, midY - 5);
     }, 10);

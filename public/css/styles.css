@@ -68,7 +68,7 @@ a {
 button:hover,
 a:hover {
     color: rgb(17, 17, 17);
-    background-color: gold;
+    background-color: rgb(255, 215, 0);
 }
 
 button{
@@ -176,6 +176,6 @@ select {
 
 #canvas2 {
     position: absolute;
-    border: 3px solid rgba(98, 207, 244);
+    border: 3px solid gold;
     background-color: transparent; /* Make it transparent */
 }
