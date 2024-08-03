@@ -9,7 +9,7 @@ var cursorY;
 var firstClick = [0, 0];
 var intervalLoop = null;
 var drawingEnabled = false;
-var dpi = 96;
+var dpi = 5;
 
 document.getElementById("test").onclick = function () {
     drawingEnabled = !drawingEnabled;
@@ -74,7 +74,7 @@ function startDragLine(e) {
         var midY = (firstClick[1] + cursorY - 100) / 2;
         ctx2.fillStyle = 'rgb(255, 215, 0)'; //color for the texty
         ctx2.font = "40px Monospace";
-        ctx2.fillText(lineLengthInches + ' in', midX, midY - 5);
+        ctx2.fillText(lineLengthInches + ' ft', midX, midY - 5);
     }, 10);
 }
 
