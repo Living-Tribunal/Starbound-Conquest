@@ -9,7 +9,7 @@ var cursorY;
 var firstClick = [0, 0];
 var intervalLoop = null;
 var drawingEnabled = false;
-var dpi = 5;
+var dpi = 15;
 
 document.getElementById("test").onclick = function () {
     drawingEnabled = !drawingEnabled;
@@ -65,6 +65,10 @@ function startDragLine(e) {
         ctx2.lineWidth = 15;
         ctx2.lineTo(cursorX, cursorY);
         ctx2.strokeStyle = 'rgba(255, 215, 0)'; //color for the line
+        ctx2.stroke();
+
+        ctx2.beginPath();
+        ctx2.arc(cursorX, cursorY, 30, 0, 2 * Math.PI);
         ctx2.stroke();
 
         var lineLengthPixels = Math.sqrt(Math.pow(cursorX - firstClick[0], 2) + Math.pow(cursorY - firstClick[1], 2)).toFixed(2);
