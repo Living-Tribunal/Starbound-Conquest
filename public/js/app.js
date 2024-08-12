@@ -64,7 +64,7 @@ import {
     add_dreadnought_gr,
   } from "../functions/gr.js";
 
-const socket = io("http://147.160.11.15:80/");
+  const socket = io("http://starboundconquest.com");
 
 document.addEventListener("DOMContentLoaded", function () {
   let canvas = document.querySelector("canvas");
@@ -169,22 +169,50 @@ document.addEventListener("DOMContentLoaded", function () {
   let background_image = new Image();
   background_image.src = "../images/backgroundimage/kol_bg_2.jpg";
 
+
+  document.getElementById('saveButton').addEventListener('click', save_canvas);
+  document.getElementById('loadButton').addEventListener('click', load_canvas);
+
   function save_canvas() {
-    const dataURL = canvas.toDataURL();
-    localStorage.setItem("savedCanvasData", dataURL);
+    const dataURL = canvas.toDataURL('image/png');
+  /*localStorage.setItem("savedCanvasData", dataURL);*/
+    fetch('/upload-image', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({image: dataURL}),
+    })
+    .then(response => {
+        if (response.ok) {
+            return response.json();
+        }
+        return response.text();
+    })
+    .then(data => {
+      console.log('Success', data);
+      alert("Game was saved Successfully!");
+    })
+    .catch((error) => {
+      console.error('Error:', error)
+    });
   }
 
   function load_canvas() {
-    const load_data = localStorage.getItem("savedCanvasData");
-    if (load_data) {
+      const imageURL = '/uploads/canvas-image.png';
+
       let img = new Image();
-      img.src = load_data;
+      img.src = imageURL;
       img.onload = function () {
-        context.drawImage(img, 0, 0, canvas.width, canvas.height);
+        context.clearRect(0, 0, canvas.width, canvas.height);
+        context.drawImage(background_image, 0, 0, canvas.width, canvas.height);
         drawGrid();
+        
+        context.drawImage(img, 0, 0, canvas.width, canvas.height);
+        draw_scene();
+        alert("Game was loaded Successfully!");
       };
     }
-  }
 
   function init() {
     background_image.onload = function () {
@@ -599,11 +627,7 @@ document.addEventListener("DOMContentLoaded", function () {
         zoom -= zoomStep;
       }
     }
-
     draw_scene();
   });
   console.log(ships);
-
-  save_canvas();
-  load_canvas();
 });

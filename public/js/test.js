@@ -15,13 +15,11 @@ document.getElementById("test").onclick = function () {
     drawingEnabled = !drawingEnabled;
 
     if (drawingEnabled) {
-        // Enable line drawing
         enableLineDrawing();
         document.getElementById("test").textContent = 'Disable Ruler';
         document.getElementById("test").style.backgroundColor = "gold";
         document.getElementById("test").style.color = "black";
     } else {
-        // Disable line drawing
         disableLineDrawing();
         document.getElementById("test").textContent = 'Enable Ruler';
         document.getElementById("test").style.backgroundColor = "rgb(17, 17, 17)";
@@ -34,9 +32,9 @@ function enableLineDrawing() {
     canvas2.style.display = 'block';
 
     // Add event listeners for canvas2
-    canvas2.addEventListener('mousemove', updateCursorPosition, false);
-    canvas2.addEventListener('mousedown', startDragLine, false);
-    canvas2.addEventListener('mouseup', stopDragLine, false);
+    canvas2.addEventListener('mousemove', updateCursorPosition);
+    canvas2.addEventListener('mousedown', startDragLine);
+    canvas2.addEventListener('mouseup', stopDragLine);
 }
 
 function disableLineDrawing() {
@@ -93,18 +91,14 @@ function updateCursorPosition(e) {
     cursorY = e.offsetY;
 }
 
-// Initialize any logic for gameCanvas if needed
-function initGameCanvasLogic() {
-    // Add event listeners or logic for gameCanvas here
+
+/* function initGameCanvasLogic() {
     canvas1.addEventListener('click', function () {
         console.log('gameCanvas clicked');
-        // Add game-specific logic
     });
 }
 
-// Initialize game canvas logic on page load
 window.onload = function () {
     initGameCanvasLogic();
-    // Ensure canvas2 is initially hidden
     canvas2.style.display = 'none';
-};
+}; */
