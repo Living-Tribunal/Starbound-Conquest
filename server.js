@@ -6,6 +6,7 @@ if (process.env.NODE_ENV !== 'production'){
 
 const port = process.env.PORT || 3000
 const express = require('express');
+const sqlite3 = require('sqlite3').verbose();
 const http = require('http');
 const path = require('path');
 const fs = require('fs');
@@ -24,10 +25,10 @@ const cors = require('cors');
 
 app.use(express.json({limit: '10mb'}));
 
-const uploadDir = path.join(__dirname, 'public', 'uploads');
-if (!fs.existsSync(uploadDir)) {
-    fs.mkdirSync(uploadDir);
-}
+const dataDir = path.join(__dirname, 'public', 'data');
+if (!fs.existsSync(dataDir)) {
+    fs.mkdirSync(dataDir, { recursive: true });
+};
 
 // Serve static files from the 'public' directory
 app.use(express.static(path.join(__dirname, 'public')));
@@ -44,6 +45,7 @@ app.use(session({
 app.use(passport.initialize())
 app.use(passport.session())
 app.use(methodOverride('_method'))
+
 
 const corsOptions = {
     origin: [
@@ -76,19 +78,14 @@ initialize_passport(
 )
 console.log('Initializing Passport');
 
-/* let db = new sqlite3.Database('./public/data/game_canvas.db', (err) =>{
+
+let db = new sqlite3.Database('./public/data/ship_data.db', (err) =>{
     if (err) {
         return console.error(err.message);
     }
     console.log('Connected to the SQLite Game Canvas database.');
 });
 
-db.close((err) =>{
-    if (err) {
-        return console.error(err.message);
-    }
-    console.log('Close the database connection.');
-}); */
 
 io.on('connection', (socket) => {
     console.log(`Socket ${socket.id} connected`);
@@ -186,27 +183,76 @@ app.post('/logout', (req, res) => {
     res.redirect('/login');
 });
 
- app.post('/upload-image', express.json(), (req, res) =>{
+app.post('/upload-ship-data', (req, res) => {
     console.log('Received body:', req.body);
 
-    const { image } = req.body;
-    if (!image) {
-        console.error('No image data was received');
-        return res.status(400).json({error: "No Image Data was recieved"});
-    }
-    const base64Data = image.replace(/^data:image\/png;base64,/, "");
-    const filePath = path.join(uploadDir, 'canvas-image.png');
+    const currentShips = req.body.ships;
 
-    fs.writeFile(filePath, base64Data, 'base64', (err) => {
-        if (err) {
-            console.error('Error saving the image:', err);
-            return res.status(500).json({error: 'Error saving the image.'});
-        }
-        console.log('Image saved successfully');
-        res.json({message:'Image uploaded successfully.'});
+    if (!Array.isArray(currentShips)) {
+        console.error('Invalid data format received');
+        return res.status(400).json({ error: "Invalid data format." });
+    }
+
+    // Begin transaction
+    db.serialize(() => {
+        // Prepare to delete obsolete ships
+        const currentShipIds = currentShips.map(ship => ship.id);
+        db.run('BEGIN TRANSACTION');
+
+        // Delete ships not in the current game state
+        db.run('DELETE FROM ships WHERE id NOT IN (' + currentShipIds.map(() => '?').join(', ') + ')', currentShipIds, (err) => {
+            if (err) {
+                console.error("Error deleting obsolete ships:", err);
+                return db.run('ROLLBACK');
+            }
+
+            // Prepare insert/update statement
+            const statement = db.prepare(`
+                INSERT OR REPLACE INTO ships (
+                    id, type, x, y, width, height, isSelected, rotation_angle, highlighted, image, globalAlpha, maxHP, hp
+                ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+            `);
+            currentShips.forEach(ship => {
+                statement.run(
+                    ship.id,
+                    ship.type,
+                    ship.x,
+                    ship.y,
+                    ship.width,
+                    ship.height,
+                    ship.isSelected ? 1 : 0,
+                    ship.rotation_angle,
+                    ship.highlighted ? 1 : 0,
+                    ship.image,
+                    ship.globalAlpha,
+                    ship.maxHP,
+                    ship.hp
+                );
+            });
+
+            statement.finalize();
+            db.run('COMMIT', (err) => {
+                if (err) {
+                    console.error("Transaction commit error:", err);
+                    return res.status(500).json({ error: "Error committing transaction." });
+                }
+                console.log('Ship Data Saved Successfully!');
+                return res.json({ message: "Game saved successfully." });
+            });
+        });
     });
 });
 
+app.get('/load-ship-data', (req, res) => {
+    db.all('SELECT * FROM ships', [], (err, rows) => {
+        if (err) {
+            res.status(500).json({ error: 'Database query failed' });
+            return;
+        }
+        res.json({ ships: rows });
+    });
+});
+  
 function check_authenticated(req, res, next) {
     if (req.isAuthenticated()) {
         return next()

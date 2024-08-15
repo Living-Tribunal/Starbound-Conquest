@@ -94,8 +94,13 @@ document.addEventListener("DOMContentLoaded", function () {
   // Zoom variables
   let zoom = 1;
   const minZoom = 0.5;
-  const maxZoom = 2;
+  const maxZoom = 1;
   const zoomStep = 0.1;
+
+  //damage colors
+  const full = 'rgba(0, 255, 0, 0.25)';
+  const medium = 'rgba(255, 255, 0, 0.25)';
+  const empty = 'rgba(255, 0, 0, 0.25)';
 
   Object.assign(window, {
     add_fighter_da: () => add_fighter_da(shipImages, socket),
@@ -169,19 +174,26 @@ document.addEventListener("DOMContentLoaded", function () {
   let background_image = new Image();
   background_image.src = "../images/backgroundimage/kol_bg_2.jpg";
 
-
-  document.getElementById('saveButton').addEventListener('click', save_canvas);
-  document.getElementById('loadButton').addEventListener('click', load_canvas);
+    document.getElementById('loadButton').addEventListener('click', load_canvas);
+    document.getElementById('saveButton').addEventListener('click', save_canvas);
 
   function save_canvas() {
-    const dataURL = canvas.toDataURL('image/png');
-  /*localStorage.setItem("savedCanvasData", dataURL);*/
-    fetch('/upload-image', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({image: dataURL}),
+    const shipState = ships.map(ship => ({
+      ...ship,
+      image: ship.image.src
+  }));
+
+    const saveData = {
+        ships: shipState
+    };
+
+    fetch('/upload-ship-data', {
+        method: 'POST',
+        mode: 'cors',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(saveData)
     })
     .then(response => {
         if (response.ok) {
@@ -190,29 +202,49 @@ document.addEventListener("DOMContentLoaded", function () {
         return response.text();
     })
     .then(data => {
-      console.log('Success', data);
-      alert("Game was saved Successfully!");
+        console.log('Server response:', data);
     })
-    .catch((error) => {
-      console.error('Error:', error)
-    });
-  }
+    .catch(error => console.error('Error:', error));
+    alert('Game saved successfully.');
+}
 
-  function load_canvas() {
-      const imageURL = '/uploads/canvas-image.png';
+function load_canvas() {
+  fetch('/load-ship-data', {
+    method: 'GET',
+    mode: 'cors',
+  })
+  .then(response => response.json())
+  .then(data => {
+    console.log('Loaded data:', data);
+    console.log('Type of data.ships:', typeof data.ships);
+    console.log('Is data.ships an array?', Array.isArray(data.ships));
 
-      let img = new Image();
-      img.src = imageURL;
-      img.onload = function () {
-        context.clearRect(0, 0, canvas.width, canvas.height);
-        context.drawImage(background_image, 0, 0, canvas.width, canvas.height);
-        drawGrid();
-        
-        context.drawImage(img, 0, 0, canvas.width, canvas.height);
+    const shipsData = Array.isArray(data.ships) ? data.ships : [];
+
+    ships = [];
+    shipImages = {};
+
+    shipsData.forEach((shipData) => {
+      console.log('Processing shipData:', shipData);
+
+      let ship_image = new Image();
+      ship_image.onload = function () {
+        let ship = {
+          ...shipData,
+          image: ship_image,
+          isSelected: false,
+          highlighted: false,
+        };
+        ships.push(ship);
+        shipImages[shipData.id] = ship_image;
         draw_scene();
-        alert("Game was loaded Successfully!");
       };
-    }
+      ship_image.src = shipData.image;
+    });
+    alert('Game loaded successfully.');
+  })
+  .catch(error => console.error('Error loading ship data:', error));
+}
 
   function init() {
     background_image.onload = function () {
@@ -306,7 +338,6 @@ document.addEventListener("DOMContentLoaded", function () {
       draw_scene();
     };
     ship_image.src = shipData.image;
-    shipImages[shipData.id] = ship_image;
   });
 
   socket.on("shipMoved", function (shipData) {
@@ -343,6 +374,37 @@ document.addEventListener("DOMContentLoaded", function () {
     }
   });
 
+  function draw_ship(ship) {
+
+    if (!shipImages[ship.id] || !shipImages[ship.id].complete) {
+      return;
+    };
+
+    context.save();
+    context.translate(ship.x + (ship.width * zoom) / 2, ship.y + (ship.height * zoom) / 2);
+    context.rotate(ship.rotation_angle);
+  
+    if (ship.isSelected) {
+      context.globalAlpha = 0.25;
+    } else {
+      context.globalAlpha = 1.0;
+    }
+  
+    context.drawImage(
+      shipImages[ship.id],
+      -ship.width / 2,
+      -ship.height / 2,
+      ship.width,
+      ship.height
+    );
+  
+    if (ship.highlighted) {
+      draw_hex_around_ship(ship);
+    }
+  
+    context.restore();
+  }
+
   function draw_scene() {
     context.clearRect(0, 0, canvas.width, canvas.height);
     context.save();
@@ -350,33 +412,11 @@ document.addEventListener("DOMContentLoaded", function () {
     context.scale(zoom, zoom);
     context.drawImage(background_image, 0, 0, canvas.width, canvas.height);
     drawGrid();
-
+  
     ships.forEach((ship) => {
-      context.save();
-      context.translate(ship.x + ship.width / 2, ship.y + ship.height / 2);
-      context.rotate(ship.rotation_angle);
-
-      if (ship.isSelected) {
-        context.globalAlpha = 0.5;
-      } else {
-        context.globalAlpha = 1.0;
-      }
-
-      context.drawImage(
-        shipImages[ship.id],
-        -ship.width / 2,
-        -ship.height / 2,
-        ship.width,
-        ship.height
-      );
-
-      if (ship.highlighted) {
-        draw_hex_around_ship(ship);
-      }
-
-      context.restore();
+      draw_ship(ship);
     });
-
+  
     context.globalAlpha = 1.0;
     context.restore();
     draw_selected_ship_info();
@@ -425,7 +465,7 @@ document.addEventListener("DOMContentLoaded", function () {
     context.beginPath();
     context.strokeStyle = stroke_color;
     context.lineWidth = 5;
-    let radius = Math.max(40, 40) / 2 + 20; // Adjust the size as needed
+    let radius = Math.max(40, 40) / 2 + 20;
     for (let i = 0; i < 6; i++) {
       let x = -25 + 50 / 2 + radius * Math.cos(a * i);
       let y = -25 + 50 / 2 + radius * Math.sin(a * i);
@@ -453,38 +493,44 @@ document.addEventListener("DOMContentLoaded", function () {
       context.fillStyle = "white";
       context.fillText(`Zoom: ${(zoom * 100).toFixed(0)}%`, 10, 205);
       context.restore();
-    } else if (zoom > 1) {
-      context.beginPath();
-      context.rect(4, 170, 200, 50);
-      context.fill();
-      context.stroke();
-      context.fillStyle = "white";
-      context.fillText(`Zoom: ${(zoom * 100).toFixed(0)}%`, 10, 205);
-      context.restore();
     }
   }
 
   function draw_selected_ship_info() {
     if (selectedShip) {
-      context.save();
-      context.translate(0, 0);
-      context.fillStyle = "rgba(37, 37, 37, 0.7)";
-      context.font = "30px monospace";
-      context.strokeStyle = stroke_color;
-      context.lineWidth = 2;
+        let maxHP = selectedShip.maxHP;
+        let hpPercentage = (selectedShip.hp / maxHP) * 100;
+        let fillColor;
 
-      context.beginPath();
-      context.rect(4, 15, 400, 150);
-      context.fill();
-      context.stroke();
-      context.fillStyle = "white";
-      context.fillText(`ID: ${selectedShip.id}`, 10, 50);
-      context.fillText(`HP: ${selectedShip.hp}`, 10, 100);
-      context.fillText(`Ship Type: ${selectedShip.type}`, 10, 150);
+        if (hpPercentage > 50) {
+            fillColor = full;
+        } else if (hpPercentage > 0) {
+            fillColor = medium;
+        } else {
+            fillColor = empty;
+        }
 
-      context.restore();
+        context.save();
+        context.translate(0, 0);
+        context.fillStyle = "rgba(37, 37, 37, 0.7)";
+        context.font = "30px monospace";
+        context.lineWidth = 7;
+        
+        context.beginPath();
+        context.strokeStyle = fillColor;
+        context.rect(4, 15, 400, 150);
+        context.fillStyle = fillColor;
+        context.fill();
+        context.stroke();
+
+        context.fillStyle = "white";
+        context.fillText(`ID: ${selectedShip.id}`, 10, 50);
+        context.fillText(`HP: ${selectedShip.hp}`, 10, 100);
+        context.fillText(`Ship Type: ${selectedShip.type}`, 10, 150);
+
+        context.restore();
     }
-  }
+}
 
   function on_mouse_move(event) {
     if (is_dragging && current_ship_index !== -1) {
@@ -508,8 +554,8 @@ document.addEventListener("DOMContentLoaded", function () {
       if (
         mouseX >= ship.x &&
         mouseX <= ship.x + ship.width &&
-        mouseY >= ship.y + 120 &&
-        mouseY <= ship.y + ship.height + 120
+        mouseY >= ship.y + 90 &&
+        mouseY <= ship.y + ship.height + 90
       ) {
         ship.highlighted = false;
         selectedShip = null;
@@ -532,13 +578,14 @@ document.addEventListener("DOMContentLoaded", function () {
       if (
         mouseX >= ship.x &&
         mouseX <= ship.x + ship.width &&
-        mouseY >= ship.y + 120 &&
-        mouseY <= ship.y + ship.height + 120
+        mouseY >= ship.y + 90 &&
+        mouseY <= ship.y + ship.height + 90
       ) {
         is_dragging = true;
         current_ship_index = i;
-        offsetX = mouseX - ship.x;
-        offsetY = mouseY - ship.y;
+        //values for when mouse down and dragging
+        offsetX = (mouseX - ship.x) * zoom;
+        offsetY = (mouseY - ship.y) * zoom;
         ships.forEach((s) => (s.isSelected = false));
         ship.isSelected = true;
         ship.highlighted = true;
@@ -579,8 +626,8 @@ document.addEventListener("DOMContentLoaded", function () {
       if (
         mouseX >= ship.x &&
         mouseX <= ship.x + ship.width &&
-        mouseY >= ship.y + 120 &&
-        mouseY <= ship.y + ship.height + 120
+        mouseY >= ship.y + 90 &&
+        mouseY <= ship.y + ship.height + 90
       ) {
         ship.highlighted = true;
         selectedShip = ship.highlighted ? ship : null;
@@ -607,16 +654,24 @@ document.addEventListener("DOMContentLoaded", function () {
       if (
         mouseX >= ship.x &&
         mouseX <= ship.x + ship.width &&
-        mouseY >= ship.y + 120 &&
-        mouseY <= ship.y + ship.height + 120
-      ) {
+        mouseY >= ship.y + 90 &&
+        mouseY <= ship.y + ship.height + 90
+
+      ) if (event.deltaY > 0) {
         ship.rotation_angle += Math.PI / 3;
         socket.emit("updateShipRotate", {
           id: ship.id,
           rotation_angle: ship.rotation_angle,
         });
         shipRotated = true;
-        break;
+
+      } else if (event.deltaY < 0) {
+        ship.rotation_angle -= Math.PI / 3;
+        socket.emit("updateShipRotate", {
+          id: ship.id,
+          rotation_angle: ship.rotation_angle,
+        });
+        shipRotated = true;
       }
     }
 
@@ -627,7 +682,7 @@ document.addEventListener("DOMContentLoaded", function () {
         zoom -= zoomStep;
       }
     }
+    zoom = Math.max(minZoom, Math.min(maxZoom, zoom));
     draw_scene();
   });
-  console.log(ships);
 });

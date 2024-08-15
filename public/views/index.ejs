@@ -8,100 +8,87 @@
         <script src="https://cdn.socket.io/4.7.5/socket.io.js"></script>
     </head>
     <body>
-        <div id="top-menu">
-            <div id="shipDetails">
-                <label class="ship-info">Click a dropdown to add a new ship</label>
-            </div>
-            <div id="button-container">
-                <label for="newShipHP">New HP:</label>
-                <input type="number" id="newShipHP">
-                <button onclick="update_hp()">Update HP</button>
-                <button id="test">Enable Ruler</button>
-                <button id="saveButton">Save Canvas</button>
-                <button id="loadButton">Load Canvas</button>
-            </div>    
+        <div>
+            <label class="ship-info">Use the dropdown to select ship class then ship faction. Enable ruler to measure distance. Save and Load Cavnas to save/load the game. Enter a selected ships HP, and update its HP Value.</label>
         </div>
-        <div id="selection-labels">
-            <label>Fighters</label>
-            <label>Frigates</label>
-            <label>Destroyers</label>
-            <label>Light Cruisers</label>
-            <label>Heavy Cruisers</label>
-            <label>Carriers</label>
-            <label>Battleships</label>
-            <label>Dreadnoughts</label>
-        </div>
-            <div class="ship-selection-menu">
-                <select aria-label="ship selection" class="ship-class-selection" name="Fighter">
+        <div id="button-container">
+            <label class="ship-label">Ship Class</label>
+            <select id="ship-class" aria-label="ship selection" class="ship-class-selection">
+                <option value="" disabled selected>---Select---</option>
+                <option value="1,2,3,4,5,6">Fighter</option>
+                <option value="7,8,9,10,11,12">Frigate</option>
+                <option value="13,14,15,16,17,18">Destroyer</option>
+                <option value="19,20,21,22,23,24">Light Cruiser</option>
+                <option value="25,26,27,28,29,30">Heavy Cruiser</option>
+                <option value="31,32,33,34,35,36">Carrier</option>
+                <option value="37,38,39,40,41,42">Battleship</option>
+                <option value="43,44,45,46,47,48">Dreadnought</option>
+            </select>
+                <label class="ship-label">Ship Faction</label>
+                <select id="ship-faction" aria-label="ship selection" class="ship-class-selection">
+                    <option value="" disabled selected>---Select---</option>
                     <option value="1" onclick="add_fighter_da()">DiableAvionics</option>
                     <option value="2" onclick="add_fighter_ge()">Gensoukyou</option>
                     <option value="3" onclick="add_fighter_ne()">Neutrino</option>
                     <option value="4" onclick="add_fighter_vo()">Volantian</option>
                     <option value="5" onclick="add_fighter_gr()">Galactic Constellate</option>
                     <option value="6" onclick="add_fighter_ms()">Shadow Wing</option>
+                    <option value="7" onclick="add_frigate_da()">DiableAvionics</option>
+                    <option value="8" onclick="add_frigate_ge()">Gensoukyou</option>
+                    <option value="9" onclick="add_frigate_ne()">Neutrino</option>
+                    <option value="10" onclick="add_frigate_vo()">Volantian</option>
+                    <option value="11" onclick="add_frigate_gr()">Galactic Constellate</option>
+                    <option value="12" onclick="add_frigate_ms()">Shadow Wing</option>
+                    <option value="13" onclick="add_destroyer_da()">DiableAvionics</option>
+                    <option value="14" onclick="add_destroyer_ge()">Gensoukyou</option>
+                    <option value="15" onclick="add_destroyer_ne()">Neutrino</option>
+                    <option value="16" onclick="add_destroyer_vo()">Volantian</option>
+                    <option value="17" onclick="add_destroyer_gr()">Galactic Constellate</option>
+                    <option value="18" onclick="add_destroyer_ms()">Shadow Wing</option>
+                    <option value="19" onclick="add_lightcruiser_da()">DiableAvionics</option>
+                    <option value="20" onclick="add_lightcruiser_ge()">Gensoukyou</option>
+                    <option value="21" onclick="add_lightcruiser_ne()">Neutrino</option>
+                    <option value="22" onclick="add_lightcruiser_vo()">Volantian</option>
+                    <option value="23" onclick="add_lightcruiser_gr()">Galactic Constellate</option>
+                    <option value="24" onclick="add_lightcruiser_ms()">Shadow Wing</option>
+                    <option value="25"  onclick="add_heavycruiser_da()">DiableAvionics</option>
+                    <option value="26"  onclick="add_heavycruiser_ge()">Gensoukyou</option>
+                    <option value="27"  onclick="add_heavycruiser_ne()">Neutrino</option>
+                    <option value="28" onclick="add_lightcruiser_vo()">Volantian</option>
+                    <option value="29" onclick="add_lightcruiser_gr()">Galactic Constellate</option>
+                    <option value="30" onclick="add_lightcruiser_ms()">Shadow Wing</option>
+                    <option value="31"  onclick="add_carrier_da()">DiableAvionics</option>
+                    <option value="32"  onclick="add_carrier_ge()">Gensoukyou</option>
+                    <option value="33"  onclick="add_carrier_ne()">Neutrino</option>
+                    <option value="34"  onclick="add_carrier_vo()">Volantian</option>
+                    <option value="35"  onclick="add_carrier_gr()">Galactic Constellate</option>
+                    <option value="36"  onclick="add_carrier_ms()">Shadow Wing</option>
+                    <option value="37"  onclick="add_battleship_da()">DiableAvionics</option>
+                    <option value="38"  onclick="add_battleship_ge()">Gensoukyou</option>
+                    <option value="39"  onclick="add_battleship_ne()">Neutrino</option>
+                    <option value="40"  onclick="add_battleship_vo()">Volantian</option>
+                    <option value="41"  onclick="add_battleship_gr()">Galactic Constellate</option>
+                    <option value="42"  onclick="add_battleship_ms()">Shadow Wing</option>
+                    <option value="43" onclick="add_dreadnought_da()">DiableAvionics</option>
+                    <option value="44" onclick="add_dreadnought_ge()">Gensoukyou</option>
+                    <option value="45" onclick="add_dreadnought_ne()">Neutrino</option>
+                    <option value="46"  onclick="add_dreadnought_vo()">Volantian</option>
+                    <option value="47"  onclick="add_dreadnought_gr()">Galactic Constellate</option>
+                    <option value="48"  onclick="add_dreadnought_ms()">Shadow Wing</option>
                 </select>
-                <select aria-label="ship selection" class="ship-class-selection" name="Frigate">
-                    <option value="1" onclick="add_frigate_da()">DiableAvionics</option>
-                    <option value="2" onclick="add_frigate_ge()">Gensoukyou</option>
-                    <option value="3" onclick="add_frigate_ne()">Neutrino</option>
-                    <option value="4" onclick="add_frigate_vo()">Volantian</option>
-                    <option value="5" onclick="add_frigate_gr()">Galactic Constellate</option>
-                    <option value="6" onclick="add_frigate_ms()">Shadow Wing</option>
-                </select>
-                <select aria-label="ship selection" class="ship-class-selection" name="Destroyer">
-                    <option value="1" onclick="add_destroyer_da()">DiableAvionics</option>
-                    <option value="2" onclick="add_destroyer_ge()">Gensoukyou</option>
-                    <option value="3" onclick="add_destroyer_ne()">Neutrino</option>
-                    <option value="4" onclick="add_destroyer_vo()">Volantian</option>
-                    <option value="5" onclick="add_destroyer_gr()">Galactic Constellate</option>
-                    <option value="6" onclick="add_destroyer_ms()">Shadow Wing</option>
-                </select>
-                <select aria-label="ship selection" class="ship-class-selection" name="Light Cruiser">
-                    <option value="1" onclick="add_lightcruiser_da()">DiableAvionics</option>
-                    <option value="2" onclick="add_lightcruiser_ge()">Gensoukyou</option>
-                    <option value="3" onclick="add_lightcruiser_ne()">Neutrino</option>
-                    <option value="4" onclick="add_lightcruiser_vo()">Volantian</option>
-                    <option value="5" onclick="add_lightcruiser_gr()">Galactic Constellate</option>
-                    <option value="6" onclick="add_lightcruiser_ms()">Shadow Wing</option>
-                </select>
-                <select aria-label="ship selection" class="ship-class-selection" name="Heavy Cruiser">
-                    <option value="1"  onclick="add_heavycruiser_da()">DiableAvionics</option>
-                    <option value="2"  onclick="add_heavycruiser_ge()">Gensoukyou</option>
-                    <option value="3"  onclick="add_heavycruiser_ne()">Neutrino</option>
-                    <option value="4" onclick="add_lightcruiser_vo()">Volantian</option>
-                    <option value="5" onclick="add_lightcruiser_gr()">Galactic Constellate</option>
-                    <option value="6" onclick="add_lightcruiser_ms()">Shadow Wing</option>
-                </select>
-                <select aria-label="ship selection" class="ship-class-selection" name="Carrier">
-                    <option value="1"  onclick="add_carrier_da()">DiableAvionics</option>
-                    <option value="2"  onclick="add_carrier_ge()">Gensoukyou</option>
-                    <option value="3"  onclick="add_carrier_ne()">Neutrino</option>
-                    <option value="4"  onclick="add_carrier_vo()">Volantian</option>
-                    <option value="5"  onclick="add_carrier_gr()">Galactic Constellate</option>
-                    <option value="6"  onclick="add_carrier_ms()">Shadow Wing</option>
-                </select>
-                <select aria-label="ship selection" class="ship-class-selection" name="Battleship">
-                    <option value="1"  onclick="add_battleship_da()">DiableAvionics</option>
-                    <option value="2"  onclick="add_battleship_ge()">Gensoukyou</option>
-                    <option value="3"  onclick="add_battleship_ne()">Neutrino</option>
-                    <option value="4"  onclick="add_battleship_vo()">Volantian</option>
-                    <option value="5"  onclick="add_battleship_gr()">Galactic Constellate</option>
-                    <option value="6"  onclick="add_battleship_ms()">Shadow Wing</option>
-                </select>
-                <select aria-label="ship selection" class="ship-class-selection" name="Dreadnought">
-                    <option value="1" onclick="add_dreadnought_da()">DiableAvionics</option>
-                    <option value="2" onclick="add_dreadnought_ge()">Gensoukyou</option>
-                    <option value="3" onclick="add_dreadnought_ne()">Neutrino</option>
-                    <option value="4"  onclick="add_dreadnought_vo()">Volantian</option>
-                    <option value="5"  onclick="add_dreadnought_gr()">Galactic Constellate</option>
-                    <option value="6"  onclick="add_dreadnought_ms()">Shadow Wing</option>
-                </select>
+                <button id="test">Enable Ruler</button>
+                <button id="saveButton" >Save Canvas</button>
+                <button id="loadButton">Load Canvas</button>
+                <label for="newShipHP">New HP:</label>
+                <input type="number" id="newShipHP">
+                <button onclick="update_hp()">Update HP</button>
             </div>
             <div id=wrapper>
                 <canvas id="gameCanvas" width=2559 height=2559></canvas>
                 <canvas id="canvas2" width=2559 height=2559></canvas>
             </div>
-        <script type="module" src="/js/app.js"></script>
-        <script type="module" src="/js/test.js"></script>
+        <script type="module" src="/js/app.js" defer></script>
+        <script type="module" src="/js/dropdown.js" defer></script>
+        <script type="module" src="/js/test.js" defer></script>
     </body>
 </html>

@@ -16,6 +16,7 @@ export function add_fighter_ms(shipImages, socket) {
         rotation_angle: 0,
         image: ship_image.src,
         globalAlpha: 1,
+        maxHP: 1,
         hp: 1,
       };
       shipImages[ship.id] = ship_image;
@@ -40,6 +41,7 @@ export function add_fighter_ms(shipImages, socket) {
         rotation_angle: 0,
         image: ship_image.src,
         globalAlpha: 1,
+        maxHP: 2,
         hp: 2,
       };
       shipImages[ship.id] = ship_image;
@@ -64,6 +66,7 @@ export function add_fighter_ms(shipImages, socket) {
         rotation_angle: 0,
         image: ship_image.src,
         globalAlpha: 1,
+        maxHP: 3,
         hp: 3,
       };
       shipImages[ship.id] = ship_image;
@@ -88,6 +91,7 @@ export function add_fighter_ms(shipImages, socket) {
         rotation_angle: 0,
         image: ship_image.src,
         globalAlpha: 1,
+        maxHP: 4,
         hp: 4,
       };
       shipImages[ship.id] = ship_image;
@@ -112,6 +116,7 @@ export function add_fighter_ms(shipImages, socket) {
         rotation_angle: 0,
         image: ship_image.src,
         globalAlpha: 1,
+        maxHP: 5,
         hp: 5,
       };
       shipImages[ship.id] = ship_image;
@@ -136,6 +141,7 @@ export function add_fighter_ms(shipImages, socket) {
         rotation_angle: 0,
         image: ship_image.src,
         globalAlpha: 1,
+        maxHP: 7,
         hp: 7,
       };
       shipImages[ship.id] = ship_image;
@@ -160,6 +166,7 @@ export function add_fighter_ms(shipImages, socket) {
         highlighted: false,
         image: ship_image.src,
         globalAlpha: 1,
+        maxHP: 8,
         hp: 8,
       };
       shipImages[ship.id] = ship_image;
@@ -185,6 +192,7 @@ export function add_dreadnought_ms(shipImages, socket) {
         rotation_angle: 0,
         image: ship_image.src,
         globalAlpha: 1,
+        maxHP: 10,
         hp: 10,
       };
       shipImages[ship.id] = ship_image;

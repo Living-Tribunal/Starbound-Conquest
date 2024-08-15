@@ -16,6 +16,7 @@ export function add_fighter_ge(shipImages, socket) {
         rotation_angle: 0,
         image: ship_image.src,
         globalAlpha: 1,
+        maxHP: 1,
         hp: 1,
       };
       shipImages[ship.id] = ship_image;
@@ -40,6 +41,7 @@ export function add_fighter_ge(shipImages, socket) {
         rotation_angle: 0,
         image: ship_image.src,
         globalAlpha: 1,
+        maxHP: 2,
         hp: 2,
       };
       shipImages[ship.id] = ship_image;
@@ -64,6 +66,7 @@ export function add_fighter_ge(shipImages, socket) {
         rotation_angle: 0,
         image: ship_image.src,
         globalAlpha: 1,
+        maxHP: 3,
         hp: 3,
       };
       shipImages[ship.id] = ship_image;
@@ -88,6 +91,7 @@ export function add_fighter_ge(shipImages, socket) {
         rotation_angle: 0,
         image: ship_image.src,
         globalAlpha: 1,
+        maxHP: 4,
         hp: 4,
       };
       shipImages[ship.id] = ship_image;
@@ -112,6 +116,7 @@ export function add_fighter_ge(shipImages, socket) {
         rotation_angle: 0,
         image: ship_image.src,
         globalAlpha: 1,
+        maxHP: 5,
         hp: 5,
       };
       shipImages[ship.id] = ship_image;
@@ -121,27 +126,30 @@ export function add_fighter_ge(shipImages, socket) {
 
   export function add_carrier_ge(shipImages, socket) {
     let ship_image = new Image();
-    ship_image.src = "../images/Gensoukyou/FM_Hearn.png";
+    ship_image.src = "http://starboundconquest.com/images/Gensoukyou/FM_Hearn.png";
+
     ship_image.onload = function () {
-      console.log("Carrier loaded");
-      let ship = {
-        id: Date.now(),
-        type: "Carrier",
-        x: 100,
-        y: 100,
-        width: 196,
-        height: 239,
-        isSelected: false,
-        highlighted: false,
-        rotation_angle: 0,
-        image: ship_image.src,
-        globalAlpha: 1,
-        hp: 7,
-      };
-      shipImages[ship.id] = ship_image;
-      socket.emit("createShip", ship);
+        console.log("Carrier loaded");
+        let ship = {
+            id: Date.now(),
+            type: "Carrier",
+            x: 100,
+            y: 100,
+            width: 196,
+            height: 239,
+            isSelected: false,
+            highlighted: false,
+            rotation_angle: 0,
+            image: ship_image.src,
+            globalAlpha: 1,
+            maxHP: 7,
+            hp: 7,
+        };
+        shipImages[ship.id] = ship_image;
+        socket.emit("createShip", ship);
     };
-  };
+}
+
 
   export function add_battleship_ge(shipImages, socket) {
     let ship_image = new Image();
@@ -160,6 +168,7 @@ export function add_fighter_ge(shipImages, socket) {
         highlighted: false,
         image: ship_image.src,
         globalAlpha: 1,
+        maxHP: 8,
         hp: 8,
       };
       shipImages[ship.id] = ship_image;
@@ -185,6 +194,7 @@ export function add_dreadnought_ge(shipImages, socket) {
         rotation_angle: 0,
         image: ship_image.src,
         globalAlpha: 1,
+        maxHP: 10,
         hp: 10,
       };
       shipImages[ship.id] = ship_image;

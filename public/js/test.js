@@ -22,7 +22,7 @@ document.getElementById("test").onclick = function () {
     } else {
         disableLineDrawing();
         document.getElementById("test").textContent = 'Enable Ruler';
-        document.getElementById("test").style.backgroundColor = "rgb(17, 17, 17)";
+        document.getElementById("test").style.backgroundColor = "rgb(37, 37, 37)";
         document.getElementById("test").style.color = "white";
     }
 };
@@ -90,15 +90,3 @@ function updateCursorPosition(e) {
     cursorX = e.offsetX;
     cursorY = e.offsetY;
 }
-
-
-/* function initGameCanvasLogic() {
-    canvas1.addEventListener('click', function () {
-        console.log('gameCanvas clicked');
-    });
-}
-
-window.onload = function () {
-    initGameCanvasLogic();
-    canvas2.style.display = 'none';
-}; */
