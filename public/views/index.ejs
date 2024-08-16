@@ -77,11 +77,28 @@
                     <option value="48"  onclick="add_dreadnought_ms()">Shadow Wing</option>
                 </select>
                 <button id="test">Enable Ruler</button>
-                <button id="saveButton" >Save Canvas</button>
+                <button id="openModal" >Save Canvas</button>
                 <button id="loadButton">Load Canvas</button>
                 <label for="newShipHP">New HP:</label>
                 <input type="number" id="newShipHP">
                 <button onclick="update_hp()">Update HP</button>
+            </div>
+            <div id="myModal" class="modal">
+                <div class="modal-content">
+                    <p>Please ensure you load the previous game save <b>before</b> attempting to save. <br> This will prevent accidentally overwriting or deleting your progress.<br> You only need to do this when first loading the page.</p>
+                    <button id="saveButton" class="save"  >Save Canvas</button>
+                    <span class="close">&times;</span>
+                </div>
+            </div>
+            <div id=wrapper>
+                <canvas id="gameCanvas" width=2559 height=2559></canvas>
+                <canvas id="canvas2" width=2559 height=2559></canvas>
+            </div>
+            <div id="myLoadModal" class="modal">
+                <div class="modal-content">
+                    <p id="load">The game has successfully been loaded.</p>
+                    <span class="loadclose">&times;</span>
+                </div>
             </div>
             <div id=wrapper>
                 <canvas id="gameCanvas" width=2559 height=2559></canvas>
@@ -90,5 +107,7 @@
         <script type="module" src="/js/app.js" defer></script>
         <script type="module" src="/js/dropdown.js" defer></script>
         <script type="module" src="/js/test.js" defer></script>
+        <script type="module" src="/js/modal.js" defer></script>
+        <script type="module" src="/js/load.js" defer></script>
     </body>
 </html>

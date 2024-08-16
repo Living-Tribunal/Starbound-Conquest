@@ -60,9 +60,9 @@ function startDragLine(e) {
 
         ctx2.beginPath();
         ctx2.moveTo(firstClick[0], firstClick[1]);
-        ctx2.lineWidth = 15;
+        ctx2.lineWidth = 10;
         ctx2.lineTo(cursorX, cursorY);
-        ctx2.strokeStyle = 'rgba(255, 215, 0)'; //color for the line
+        ctx2.strokeStyle = 'rgba(255, 215, 0, .5)'; //color for the line
         ctx2.stroke();
 
         ctx2.beginPath();

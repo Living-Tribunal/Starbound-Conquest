@@ -205,7 +205,6 @@ document.addEventListener("DOMContentLoaded", function () {
         console.log('Server response:', data);
     })
     .catch(error => console.error('Error:', error));
-    alert('Game saved successfully.');
 }
 
 function load_canvas() {
