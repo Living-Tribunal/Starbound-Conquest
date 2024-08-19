@@ -76,6 +76,17 @@
                     <option value="47"  onclick="add_dreadnought_gr()">Galactic Constellate</option>
                     <option value="48"  onclick="add_dreadnought_ms()">Shadow Wing</option>
                 </select>
+                <label class="ship-label">Celestial Bodies</label>
+                <select id="ship-class" aria-label="celestial objects" class="ship-class-selection">
+                    <option value="1" onclick="add_planet_azura()">Planet - Azura Prime </option>
+                    <option value="1" onclick="add_planet_crysalon()">Planet - Crysalon </option>
+                    <option value="1" onclick="add_planet_eldoria()">Planet - Eldoria </option>
+                    <option value="1" onclick="add_planet_hesperia()">Planet - Hesperia </option>
+                    <option value="1" onclick="add_planet_pyraxis()">Planet - Pyraxis </option>
+                    <option value="1" onclick="add_planet_moon()">Moon </option>
+                    <option value="2" onclick="add_asteroid()">Asteroid - Single</option>
+                    <option value="2" onclick="add_asteroid_field()">Asteroid - Field</option>
+                </select>
                 <button id="test">Enable Ruler</button>
                 <button id="openModal" >Save Canvas</button>
                 <button id="loadButton">Load Canvas</button>
@@ -86,7 +97,7 @@
             <div id="myModal" class="modal">
                 <div class="modal-content">
                     <p>Please ensure you load the previous game save <b>before</b> attempting to save. <br> This will prevent accidentally overwriting or deleting your progress.<br> You only need to do this when first loading the page.</p>
-                    <button id="saveButton" class="save"  >Save Canvas</button>
+                    <button id="saveButton" class="save" >Save Canvas</button>
                     <span class="close">&times;</span>
                 </div>
             </div>
@@ -99,10 +110,6 @@
                     <p id="load">The game has successfully been loaded.</p>
                     <span class="loadclose">&times;</span>
                 </div>
-            </div>
-            <div id=wrapper>
-                <canvas id="gameCanvas" width=2559 height=2559></canvas>
-                <canvas id="canvas2" width=2559 height=2559></canvas>
             </div>
         <script type="module" src="/js/app.js" defer></script>
         <script type="module" src="/js/dropdown.js" defer></script>

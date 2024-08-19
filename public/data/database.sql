@@ -11,6 +11,6 @@ CREATE TABLE IF NOT EXISTS ships (
   highlighted INTEGER NOT NULL, -- Whether the ship is highlighted (0 or 1)
   image TEXT,                   -- URL or path to the ship's image
   globalAlpha REAL NOT NULL,    -- Alpha value (opacity) of the ship
-  maxHp INTEGER NOT NULL,      -- Ships MAX HP value
+  maxHP INTEGER NOT NULL,      -- Ships MAX HP value
   hp INTEGER NOT NULL           -- Health points of the ship
 );
