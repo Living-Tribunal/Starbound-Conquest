@@ -109,7 +109,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
   // Zoom variables
   let zoom = 1;
-  const minZoom = 0.5;
+  const minZoom = 0.25;
   const maxZoom = 1;
   const zoomStep = 0.1;
 
@@ -176,21 +176,17 @@ document.addEventListener("DOMContentLoaded", function () {
     add_dreadnought_ms: () => add_dreadnought_ms(shipImages, socket),
   });
 
-  canvas.width = 2559;
+  canvas.width = 3838;
   canvas.height = 2559;
 
   let background_image = new Image();
   background_image.src = "../images/backgroundimage/starfield.png";
 
   document.getElementById("loadButton").addEventListener("click", load_canvas);
-  document.getElementById("saveButton").addEventListener("click", save_discord);
+  document.getElementById("saveButton").addEventListener("click", save_canvas);
 
-  function save_discord() {
-    send_message_discord();
-    save_canvas();
-  }
 
-  function send_message_discord(ship) {
+  function send_message_discord() {
     const request = new XMLHttpRequest();
     request.open(
       "POST",
@@ -200,7 +196,7 @@ document.addEventListener("DOMContentLoaded", function () {
     const params = {
       username: "Starbound Conquest",
       avatar_url: "",
-      content: `${ship.type} \nID: ${ship.id} \nwas destroyed`,
+      content: `The game was saved.`,
     };
     request.send(JSON.stringify(params));
   }
@@ -231,6 +227,7 @@ document.addEventListener("DOMContentLoaded", function () {
       })
       .then((data) => {
         console.log("Server response:", data);
+        send_message_discord();
       })
       .catch((error) => console.error("Error:", error));
   }
@@ -398,7 +395,6 @@ document.addEventListener("DOMContentLoaded", function () {
       console.log(ships);
       // Remove the ship image from the shipImages object
       delete shipImages[shipData.id];
-      // Redraw the scene
       draw_scene();
     }
   });
@@ -421,27 +417,22 @@ document.addEventListener("DOMContentLoaded", function () {
     } else {
       context.globalAlpha = 1.0;
     }
-
     context.drawImage(
       shipImages[ship.id],
       -ship.width / 2,
       -ship.height / 2,
       ship.width,
-      ship.height
+      ship.height,
     );
-
-    // Debug hitbox (optional)
-    context.strokeStyle = "red";
-    context.lineWidth = 1;
-    context.strokeRect(
-      -ship.width / 2,
-      -ship.height / 2,
-      ship.width,
-      ship.height
-    );
+    
+    if (ship.type === "CelestialBodies"){
+      context.strokeStyle = "green";
+      context.lineWidth = 2;
+      context.strokeRect(-ship.width / 2, -ship.height / 2, ship.width, ship.height )};
 
     if (ship.highlighted) {
-      draw_hex_around_ship(ship);
+      draw_arc_around_ship(ship);
+      draw_hex_under_ship(ship);
     }
 
     context.restore();
@@ -470,7 +461,7 @@ document.addEventListener("DOMContentLoaded", function () {
     draw_zoom_percentage();
   }
 
-  function draw_hex_around_ship(ship) {
+  function draw_arc_around_ship(ship) {
     if (ship.type != "CelestialBodies") {
       context.beginPath();
       context.strokeStyle = stroke_color; //right firing angle
@@ -509,7 +500,11 @@ document.addEventListener("DOMContentLoaded", function () {
       context.stroke();
       context.closePath();
       context.fill();
+    } 
+  }
 
+  function draw_hex_under_ship(ship) {
+    if (ship.type != "CelestialBodies") {
       context.beginPath();
       context.strokeStyle = stroke_color;
       context.lineWidth = 5;
@@ -525,8 +520,8 @@ document.addEventListener("DOMContentLoaded", function () {
       }
       context.closePath();
       context.stroke();
-    }
   }
+}
 
   function draw_zoom_percentage() {
     context.save();
@@ -629,16 +624,14 @@ document.addEventListener("DOMContentLoaded", function () {
   });
 
   canvas.addEventListener("mousedown", (event) => {
-    // Calculate mouse position relative to canvas
+    
     const mouseX = (event.clientX - canvas.getBoundingClientRect().left - panX) / zoom;
     const mouseY = (event.clientY - canvas.getBoundingClientRect().top - panY) / zoom;
     let shipClicked = false;
 
-    // Loop through ships to detect if any are clicked
     for (let i = ships.length - 1; i >= 0; i--) {
       let ship = ships[i];
 
-      // Calculate ship bounding box
       const shipLeft = ship.x - ship.width / 2;
       const shipRight = ship.x + ship.width / 2;
       const shipTop = ship.y - ship.height / 2;
@@ -648,17 +641,10 @@ document.addEventListener("DOMContentLoaded", function () {
         mouseX >= shipLeft &&
         mouseX <= shipRight &&
         mouseY >= shipTop &&
-        mouseY <= shipBottom &&
-        ship.type != "CelestialBodies"
+        mouseY <= shipBottom
       ) {
         is_dragging = true;
         current_ship_index = i;
-
-        // Calculate offsets for dragging
-        offsetX = (mouseX - ship.x) * zoom;
-        offsetY = (mouseY - ship.y) * zoom;
-
-        // Update selection and highlight
         ships.forEach((s) => (s.isSelected = false));
         ship.isSelected = true;
         ship.highlighted = true;
@@ -666,13 +652,11 @@ document.addEventListener("DOMContentLoaded", function () {
         break;
       }
     }
-
     if (!shipClicked) {
       is_panning = true;
       startX = event.clientX - panX;
       startY = event.clientY - panY;
     }
-
     canvas.addEventListener("mousemove", on_mouse_move);
     draw_scene();
   });
@@ -690,18 +674,14 @@ document.addEventListener("DOMContentLoaded", function () {
 
   canvas.addEventListener("click", (event) => {
     // Calculate mouse position relative to canvas
-    const mouseX =
-      (event.clientX - canvas.getBoundingClientRect().left - panX) / zoom;
-    const mouseY =
-      (event.clientY - canvas.getBoundingClientRect().top - panY) / zoom;
+    const mouseX = (event.clientX - canvas.getBoundingClientRect().left - panX) / zoom;
+    const mouseY = (event.clientY - canvas.getBoundingClientRect().top - panY) / zoom;
 
     let clickedOnShip = false;
 
-    // Loop through ships to check if any are clicked
     for (let i = ships.length - 1; i >= 0; i--) {
       let ship = ships[i];
 
-      // Calculate ship bounding box
       const shipLeft = ship.x - ship.width / 2;
       const shipRight = ship.x + ship.width / 2;
       const shipTop = ship.y - ship.height / 2;
@@ -732,17 +712,15 @@ document.addEventListener("DOMContentLoaded", function () {
     event.preventDefault();
 
     // Calculate mouse position relative to canvas
-    const rect = canvas.getBoundingClientRect();
-    const mouseX = (event.clientX - rect.left - panX) / zoom;
-    const mouseY = (event.clientY - rect.top - panY) / zoom;
+    const mouseX = (event.clientX - canvas.getBoundingClientRect().left - panX) / zoom;
+    const mouseY = (event.clientY - canvas.getBoundingClientRect().top - panY) / zoom;
 
     let shipRotated = false;
 
-    // Loop through ships to check if any are under the mouse
     for (let i = ships.length - 1; i >= 0; i--) {
       let ship = ships[i];
 
-      // Calculate ship bounding box
+  
       const shipLeft = ship.x - ship.width / 2;
       const shipRight = ship.x + ship.width / 2;
       const shipTop = ship.y - ship.height / 2;
@@ -752,9 +730,9 @@ document.addEventListener("DOMContentLoaded", function () {
         mouseX >= shipLeft &&
         mouseX <= shipRight &&
         mouseY >= shipTop &&
-        mouseY <= shipBottom &&
-        ship.type != "CelestialBodies"
+        mouseY <= shipBottom
       ) {
+        //ship rotation increment now its 45deg
         if (event.deltaY > 0) {
           ship.rotation_angle += Math.PI / 4;
         } else if (event.deltaY < 0) {
@@ -765,12 +743,11 @@ document.addEventListener("DOMContentLoaded", function () {
           rotation_angle: ship.rotation_angle,
         });
         shipRotated = true;
-        break; // Exit loop after rotating the ship
+        break;
       }
     }
 
     if (!shipRotated) {
-      // Zoom in or out if no ship is under the mouse
       if (event.deltaY < 0 && zoom < maxZoom) {
         zoom += zoomStep;
       } else if (event.deltaY > 0 && zoom > minZoom) {
