@@ -211,8 +211,10 @@ select {
   .modal-body {padding: 2px 16px;}
 
   #load{
-    font-size: 30px;
-    font-family: monospace
+    font-size: 40px;
+    font-family: monospace;
+    justify-content: center;
+    align-self: center;
   }
     
   /* Modal Content */
@@ -224,7 +226,7 @@ select {
     background-color: rgb(17, 17, 17);
     margin: auto;
     padding: 0;
-    width: 50%;
+    width: 60%;
     animation-name: animatetop;
     animation-duration: 0.4s
   }
@@ -237,4 +239,12 @@ select {
   @keyframes animatetop {
     from {top: -300px; opacity: 0}
     to {top: 0; opacity: 1}
+  } 
+
+  #hidden-text {
+    display: none;
+    color: gold;
+    font-size: 18px;
+    justify-content: center;
+    align-self: center;
   } 

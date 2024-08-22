@@ -96,20 +96,21 @@
             </div>
             <div id="myModal" class="modal">
                 <div class="modal-content">
-                    <p>Please ensure you load the previous game save <b>before</b> attempting to save. <br> This will prevent accidentally overwriting or deleting your progress.<br> You only need to do this when first loading the page.</p>
+                    <p id="save-text">Please ensure you load the previous game save <b>before</b> attempting to save. <br> This will prevent accidentally overwriting or deleting your progress.<br> You only need to do this when first loading the page.</p>
                     <button id="saveButton" class="save" >Save Canvas</button>
+                    <p id="hidden-text">The game has been saved!</p>
                     <span class="close">&times;</span>
                 </div>
-            </div>
-            <div id=wrapper>
-                <canvas id="gameCanvas" width=3838 height=2559></canvas>
-                <canvas id="canvas2" width=3838 height=2559></canvas>
             </div>
             <div id="myLoadModal" class="modal">
                 <div class="modal-content">
                     <p id="load">The game has successfully been loaded.</p>
                     <span class="loadclose">&times;</span>
                 </div>
+            </div>
+            <div id=wrapper>
+                <canvas id="gameCanvas" width=3838 height=2559></canvas>
+                <canvas id="canvas2" width=3838 height=2559></canvas>
             </div>
         <script type="module" src="/js/app.js" defer></script>
         <script type="module" src="/js/dropdown.js" defer></script>
