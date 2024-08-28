@@ -73,7 +73,7 @@ const io = socketio(server, {
 
 initialize_passport(
     passport, 
-    email => users.find(user => user.email === email),
+    username => users.find(user => user.username === username),
     id => users.find(user => user.id ===id)
 )
 console.log('Initializing Passport');
@@ -143,11 +143,11 @@ app.get('/register', (req, res) => {
 })
 
 app.get('/', check_authenticated, (req, res) => {
-    res.render('index', { name: req.user.name })
+    res.render('index', { name: req.user.username })
   })
 
 app.get('/login', check_not_authenticated, (req, res) => {
-    res.render('index') //CHange this to go back to the login
+    res.render('login') //CHange this to go back to the login
 })
 
 app.post('/login', check_not_authenticated, passport.authenticate('local', {
@@ -165,8 +165,7 @@ app.post('/register', check_not_authenticated, async (req, res) =>{
         const hashed_password = await bcrypt.hash(req.body.password, 10)
         users.push({
             id: Date.now().toString(),
-            name: req.body.name,
-            email: req.body.email,
+            username: req.body.username,
             password: hashed_password
         })
         console.log('User registered:', users);

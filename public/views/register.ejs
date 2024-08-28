@@ -9,17 +9,15 @@
 <body id="register-screen">
     <form action="/register" method="POST">
         <div id="login-inputs">
-            <label for="name" class="login-label">Name
-                <input type="text" name="name" id="name" class="login" required/>
-            </label>
-            <label for="email" class="login-label">Email
-                <input type="email" name="email" id="email" class="login" required/>
-            </label>
-            <label for="password" class="login-label">Password
-                <input type="password" name="password" id="password" class="login" required/>
-            </label>
-            <button type="submit">Register</button>
-            <button type="button" onclick="location.href='/login';">Login</button>
+            <label for="name" class="login-label">Username<label>
+            <input type="text" name="username" id="username" class="login" required/>
+            <label for="password" class="login-label">Password</label>
+            <input type="password" name="password" id="password" class="login" required/>
+            <div id="button-hold">
+                <button type="submit">Register</button>
+                <button type="button" onclick="location.href='/login';">Login</button>    
+            </div>
+            
         </div>
     </form>
 </body>

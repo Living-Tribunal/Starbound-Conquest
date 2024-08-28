@@ -7,8 +7,8 @@ export function add_fighter_da(shipImages, socket) {
       let ship = {
         id: Date.now(),
         type: "Fighter",
-        x: 100,
-        y: 100,
+        x: 500,
+        y: 200,
         width: 58,
         height: 72,
         isSelected: false,
@@ -32,8 +32,8 @@ export function add_fighter_da(shipImages, socket) {
       let ship = {
         id: Date.now(),
         type: "Frigate",
-        x: 100,
-        y: 100,
+        x: 500,
+        y: 200,
         width: 82,
         height: 201,
         isSelected: false,
@@ -43,7 +43,7 @@ export function add_fighter_da(shipImages, socket) {
         globalAlpha: 1,
         maxHP: 2,
         hp: 2,
-      };
+        };
       shipImages[ship.id] = ship_image;
       socket.emit("createShip", ship);
     };
@@ -57,8 +57,8 @@ export function add_fighter_da(shipImages, socket) {
       let ship = {
         id: Date.now(),
         type: "Destroyer",
-        x: 100,
-        y: 100,
+        x: 500,
+        y: 200,
         width: 102,
         height: 327,
         isSelected: false,
@@ -82,8 +82,8 @@ export function add_fighter_da(shipImages, socket) {
       let ship = {
         id: Date.now(),
         type: "Light Cruiser",
-        x: 100,
-        y: 100,
+        x: 500,
+        y: 200,
         width: 69,
         height: 291,
         isSelected: false,
@@ -107,8 +107,8 @@ export function add_fighter_da(shipImages, socket) {
       let ship = {
         id: Date.now(),
         type: "Heavy Cruiser",
-        x: 100,
-        y: 100,
+        x: 500,
+        y: 200,
         width: 172,
         height: 286,
         isSelected: false,
@@ -132,8 +132,8 @@ export function add_fighter_da(shipImages, socket) {
       let ship = {
         id: Date.now(),
         type: "Carrier",
-        x: 100,
-        y: 100,
+        x: 500,
+        y: 200,
         width: 115,
         height: 308,
         isSelected: false,
@@ -157,8 +157,8 @@ export function add_fighter_da(shipImages, socket) {
       let ship = {
         id: Date.now(),
         type: "Battleship",
-        x: 100,
-        y: 100,
+        x: 500,
+        y: 200,
         width: 188,
         height: 512,
         isSelected: false,
@@ -183,8 +183,8 @@ export function add_dreadnought_da(shipImages, socket) {
       let ship = {
         id: Date.now(),
         type: "Dreadnought",
-        x: 100,
-        y: 100,
+        x: 500,
+        y: 200,
         width: 356,
         height: 610,
         isSelected: false,

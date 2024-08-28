@@ -79,20 +79,18 @@ const socket = io("http://starboundconquest.com");
 document.addEventListener("DOMContentLoaded", function () {
   let canvas = document.querySelector("canvas");
   let context = canvas.getContext("2d");
+
+  canvas.width = 3838;
+  canvas.height = 2559;
+
   let ships = [];
   let shipImages = {};
   let is_dragging = false;
-  let offsetX = 0;
-  let offsetY = 0;
   let current_ship_index = -1;
   let stroke_color = "rgba(98, 207, 244)";
   let hex_stroke = "rgba(52, 89, 183)";
   let selectedShip = null;
   let update_ship_hp = 0;
-  let numYBottom = 0;
-  let numYTop = 0;
-  let numXLeft = 0;
-  let numXRight = 0;
 
   //drawing the grid
   let a = (2 * Math.PI) / 6;
@@ -112,6 +110,7 @@ document.addEventListener("DOMContentLoaded", function () {
   const minZoom = 0.25;
   const maxZoom = 1;
   const zoomStep = 0.1;
+
 
   //damage colors
   const full = "rgba(0, 255, 0, 0.25)";
@@ -176,15 +175,11 @@ document.addEventListener("DOMContentLoaded", function () {
     add_dreadnought_ms: () => add_dreadnought_ms(shipImages, socket),
   });
 
-  canvas.width = 3838;
-  canvas.height = 2559;
-
   let background_image = new Image();
   background_image.src = "../images/backgroundimage/starfield.png";
 
   document.getElementById("loadButton").addEventListener("click", load_canvas);
   document.getElementById("saveButton").addEventListener("click", save_canvas);
-
 
   function send_message_discord() {
     const request = new XMLHttpRequest();
@@ -409,7 +404,6 @@ document.addEventListener("DOMContentLoaded", function () {
       ship.x + (ship.width * zoomStep) / 2,
       ship.y + (ship.height * zoomStep) / 2
     );
-    console.log(zoom);
     context.rotate(ship.rotation_angle);
 
     if (ship.isSelected) {
@@ -422,14 +416,23 @@ document.addEventListener("DOMContentLoaded", function () {
       -ship.width / 2,
       -ship.height / 2,
       ship.width,
-      ship.height,
+      ship.height
     );
-    
-    if (ship.type === "CelestialBodies"){
+
+    if (ship.type === "CelestialBodies") {
       context.strokeStyle = "green";
       context.lineWidth = 2;
-      context.strokeRect(-ship.width / 2, -ship.height / 2, ship.width, ship.height )};
-
+      context.strokeRect(
+        -ship.width / 2,
+        -ship.height / 2,
+        ship.width,
+        ship.height
+      );
+    } else {
+      if (!ship.highlighted) {
+        circles_for_hp(ship);
+      }
+    }
     if (ship.highlighted) {
       draw_arc_around_ship(ship);
       draw_hex_under_ship(ship);
@@ -459,6 +462,45 @@ document.addEventListener("DOMContentLoaded", function () {
     context.restore();
     draw_selected_ship_info();
     draw_zoom_percentage();
+  }
+
+  function circles_for_hp(ship) {
+    let maxHP = ship.maxHP;
+    let y = -ship.height / 2;
+    let hpPercentage = (ship.hp / maxHP) * 100;
+    let fillColor;
+    let x = 100;
+    if (hpPercentage >= 50) {
+      fillColor = full;
+      context.beginPath();
+      context.arc(x, y, 20, 0, 2 * Math.PI);
+      context.fillStyle = full;
+      context.lineWidth = 1;
+      context.strokeStyle = stroke_color;
+      context.fill();
+      context.stroke();
+      context.closePath();
+    } else if (hpPercentage > 0) {
+      fillColor = medium;
+      context.beginPath();
+      context.arc(x, y, 20, 0, 2 * Math.PI);
+      context.fillStyle = medium;
+      context.lineWidth = 1;
+      context.strokeStyle = stroke_color;
+      context.fill();
+      context.stroke();
+      context.closePath();
+    } else {
+      fillColor = empty;
+      context.beginPath();
+      context.arc(x, y, 20, 0, 2 * Math.PI);
+      context.fillStyle = empty;
+      context.lineWidth = 1;
+      context.strokeStyle = stroke_color;
+      context.fill();
+      context.stroke();
+      context.closePath();
+    }
   }
 
   function draw_arc_around_ship(ship) {
@@ -500,7 +542,7 @@ document.addEventListener("DOMContentLoaded", function () {
       context.stroke();
       context.closePath();
       context.fill();
-    } 
+    }
   }
 
   function draw_hex_under_ship(ship) {
@@ -520,8 +562,8 @@ document.addEventListener("DOMContentLoaded", function () {
       }
       context.closePath();
       context.stroke();
+    }
   }
-}
 
   function draw_zoom_percentage() {
     context.save();
@@ -552,7 +594,6 @@ document.addEventListener("DOMContentLoaded", function () {
         fillColor = medium;
       } else {
         fillColor = empty;
-        /* send_message_discord(selectedShip); */
       }
       if (selectedShip.type != "CelestialBodies") {
         context.save();
@@ -581,8 +622,10 @@ document.addEventListener("DOMContentLoaded", function () {
   function on_mouse_move(event) {
     if (is_dragging && current_ship_index !== -1) {
       let ship = ships[current_ship_index];
-      ship.x = (event.clientX - canvas.getBoundingClientRect().left - panX) / zoom;
-      ship.y = (event.clientY - canvas.getBoundingClientRect().top - panY) / zoom;
+      ship.x =
+        (event.clientX - canvas.getBoundingClientRect().left - panX) / zoom;
+      ship.y =
+        (event.clientY - canvas.getBoundingClientRect().top - panY) / zoom;
       socket.emit("moveShip", { ...ship, image: { src: ship.image.src } });
     } else if (is_panning) {
       panX = event.clientX - startX;
@@ -593,8 +636,10 @@ document.addEventListener("DOMContentLoaded", function () {
 
   canvas.addEventListener("dblclick", (event) => {
     // Get canvas position and adjust mouse coordinates
-    const mouseX = (event.clientX - canvas.getBoundingClientRect().left - panX) / zoom;
-    const mouseY = (event.clientY - canvas.getBoundingClientRect().top - panY) / zoom;
+    const mouseX =
+      (event.clientX - canvas.getBoundingClientRect().left - panX) / zoom;
+    const mouseY =
+      (event.clientY - canvas.getBoundingClientRect().top - panY) / zoom;
 
     for (let i = ships.length - 1; i >= 0; i--) {
       const ship = ships[i];
@@ -624,7 +669,6 @@ document.addEventListener("DOMContentLoaded", function () {
   });
 
   canvas.addEventListener("mousedown", (event) => {
-    
     const mouseX = (event.clientX - canvas.getBoundingClientRect().left - panX) / zoom;
     const mouseY = (event.clientY - canvas.getBoundingClientRect().top - panY) / zoom;
     let shipClicked = false;
@@ -674,8 +718,10 @@ document.addEventListener("DOMContentLoaded", function () {
 
   canvas.addEventListener("click", (event) => {
     // Calculate mouse position relative to canvas
-    const mouseX = (event.clientX - canvas.getBoundingClientRect().left - panX) / zoom;
-    const mouseY = (event.clientY - canvas.getBoundingClientRect().top - panY) / zoom;
+    const mouseX =
+      (event.clientX - canvas.getBoundingClientRect().left - panX) / zoom;
+    const mouseY =
+      (event.clientY - canvas.getBoundingClientRect().top - panY) / zoom;
 
     let clickedOnShip = false;
 
@@ -712,15 +758,16 @@ document.addEventListener("DOMContentLoaded", function () {
     event.preventDefault();
 
     // Calculate mouse position relative to canvas
-    const mouseX = (event.clientX - canvas.getBoundingClientRect().left - panX) / zoom;
-    const mouseY = (event.clientY - canvas.getBoundingClientRect().top - panY) / zoom;
+    const mouseX =
+      (event.clientX - canvas.getBoundingClientRect().left - panX) / zoom;
+    const mouseY =
+      (event.clientY - canvas.getBoundingClientRect().top - panY) / zoom;
 
     let shipRotated = false;
 
     for (let i = ships.length - 1; i >= 0; i--) {
       let ship = ships[i];
 
-  
       const shipLeft = ship.x - ship.width / 2;
       const shipRight = ship.x + ship.width / 2;
       const shipTop = ship.y - ship.height / 2;
@@ -760,4 +807,6 @@ document.addEventListener("DOMContentLoaded", function () {
 
     draw_scene();
   });
+
+load_canvas();
 });
