@@ -9,13 +9,7 @@ var cursorY;
 var firstClick = [0, 0];
 var intervalLoop = null;
 var drawingEnabled = false;
-var dpi = 15;
-
-const dpr = window.devicePixelRatio || 1;
-
-const rect = canvas2.getBoundingClientRect();
-const widthMultiplier = 1.5;
-const heightMultiplier = 1.5;
+var dpi;
 
 document.getElementById("test").onclick = function () {
     drawingEnabled = !drawingEnabled;

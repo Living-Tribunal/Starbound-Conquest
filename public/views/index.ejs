@@ -1,20 +1,30 @@
 <!DOCTYPE html>
 <html lang="en">
-    <head>
-        <meta charset="UTF-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <title>Starbound Conquest</title>
-        <link rel="stylesheet" href="/css/styles.css">
-        <script src="https://cdn.socket.io/4.7.5/socket.io.js"></script>
-    </head>
-    <body>
-        <div>
-            <label class="ship-info">Use the dropdown to select ship class then ship faction. Enable ruler to measure distance. Save and Load Cavnas to save/load the game. Enter a selected ships HP, and update its HP Value.</label>
-        </div>
-        <div id="button-container">
-            <label class="ship-label">Ship Class</label>
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Starbound Conquest</title>
+    <link rel="stylesheet" href="/css/styles.css">
+    <script src="https://cdn.socket.io/4.7.5/socket.io.js"></script>
+</head>
+<body>
+    <div class="intro-text">
+        <label class="ship-info">Use the dropdown to select ship class then ship faction. Enter a selected ships HP, and
+            update its HP Value. Enable ruler to measure distance. Save and Load Cavnas to save/load the game.</label>
+            <form id="logout" action ="/logout" method="post">
+                <input type="submit" name="Logout" value="Logout">
+            </form>
+    </div>
+    <div id="button-container">
+        <div id="left-column">
+            <label class="ship-info">Welcome, <%= username %></label>
+            <script tpye="text/javascript">
+                let username = "<%= username %>";
+            </script>
+            <label class="ship-info">Ship Class</label>
             <select id="ship-class" aria-label="ship selection" class="ship-class-selection">
-                <option value="" disabled selected>---Select---</option>
+                <option value="" disabled selected>--Select--</option>
                 <option value="1,2,3,4,5,6">Fighter</option>
                 <option value="7,8,9,10,11,12">Frigate</option>
                 <option value="13,14,15,16,17,18">Destroyer</option>
@@ -24,98 +34,370 @@
                 <option value="37,38,39,40,41,42">Battleship</option>
                 <option value="43,44,45,46,47,48">Dreadnought</option>
             </select>
-                <label class="ship-label">Ship Faction</label>
-                <select id="ship-faction" aria-label="ship selection" class="ship-class-selection">
-                    <option value="" disabled selected>---Select---</option>
-                    <option value="1" onclick="add_fighter_da()">DiableAvionics</option>
-                    <option value="2" onclick="add_fighter_ge()">Gensoukyou</option>
-                    <option value="3" onclick="add_fighter_ne()">Neutrino</option>
-                    <option value="4" onclick="add_fighter_vo()">Volantian</option>
-                    <option value="5" onclick="add_fighter_gr()">Galactic Constellate</option>
-                    <option value="6" onclick="add_fighter_ms()">Shadow Wing</option>
-                    <option value="7" onclick="add_frigate_da()">DiableAvionics</option>
-                    <option value="8" onclick="add_frigate_ge()">Gensoukyou</option>
-                    <option value="9" onclick="add_frigate_ne()">Neutrino</option>
-                    <option value="10" onclick="add_frigate_vo()">Volantian</option>
-                    <option value="11" onclick="add_frigate_gr()">Galactic Constellate</option>
-                    <option value="12" onclick="add_frigate_ms()">Shadow Wing</option>
-                    <option value="13" onclick="add_destroyer_da()">DiableAvionics</option>
-                    <option value="14" onclick="add_destroyer_ge()">Gensoukyou</option>
-                    <option value="15" onclick="add_destroyer_ne()">Neutrino</option>
-                    <option value="16" onclick="add_destroyer_vo()">Volantian</option>
-                    <option value="17" onclick="add_destroyer_gr()">Galactic Constellate</option>
-                    <option value="18" onclick="add_destroyer_ms()">Shadow Wing</option>
-                    <option value="19" onclick="add_lightcruiser_da()">DiableAvionics</option>
-                    <option value="20" onclick="add_lightcruiser_ge()">Gensoukyou</option>
-                    <option value="21" onclick="add_lightcruiser_ne()">Neutrino</option>
-                    <option value="22" onclick="add_lightcruiser_vo()">Volantian</option>
-                    <option value="23" onclick="add_lightcruiser_gr()">Galactic Constellate</option>
-                    <option value="24" onclick="add_lightcruiser_ms()">Shadow Wing</option>
-                    <option value="25"  onclick="add_heavycruiser_da()">DiableAvionics</option>
-                    <option value="26"  onclick="add_heavycruiser_ge()">Gensoukyou</option>
-                    <option value="27"  onclick="add_heavycruiser_ne()">Neutrino</option>
-                    <option value="28" onclick="add_lightcruiser_vo()">Volantian</option>
-                    <option value="29" onclick="add_lightcruiser_gr()">Galactic Constellate</option>
-                    <option value="30" onclick="add_lightcruiser_ms()">Shadow Wing</option>
-                    <option value="31"  onclick="add_carrier_da()">DiableAvionics</option>
-                    <option value="32"  onclick="add_carrier_ge()">Gensoukyou</option>
-                    <option value="33"  onclick="add_carrier_ne()">Neutrino</option>
-                    <option value="34"  onclick="add_carrier_vo()">Volantian</option>
-                    <option value="35"  onclick="add_carrier_gr()">Galactic Constellate</option>
-                    <option value="36"  onclick="add_carrier_ms()">Shadow Wing</option>
-                    <option value="37"  onclick="add_battleship_da()">DiableAvionics</option>
-                    <option value="38"  onclick="add_battleship_ge()">Gensoukyou</option>
-                    <option value="39"  onclick="add_battleship_ne()">Neutrino</option>
-                    <option value="40"  onclick="add_battleship_vo()">Volantian</option>
-                    <option value="41"  onclick="add_battleship_gr()">Galactic Constellate</option>
-                    <option value="42"  onclick="add_battleship_ms()">Shadow Wing</option>
-                    <option value="43" onclick="add_dreadnought_da()">DiableAvionics</option>
-                    <option value="44" onclick="add_dreadnought_ge()">Gensoukyou</option>
-                    <option value="45" onclick="add_dreadnought_ne()">Neutrino</option>
-                    <option value="46"  onclick="add_dreadnought_vo()">Volantian</option>
-                    <option value="47"  onclick="add_dreadnought_gr()">Galactic Constellate</option>
-                    <option value="48"  onclick="add_dreadnought_ms()">Shadow Wing</option>
-                </select>
-                <label class="ship-label">Celestial Bodies</label>
-                <select id="ship-class" aria-label="celestial objects" class="ship-class-selection">
-                    <option value="1" onclick="add_planet_azura()">Planet - Azura Prime </option>
-                    <option value="1" onclick="add_planet_crysalon()">Planet - Crysalon </option>
-                    <option value="1" onclick="add_planet_eldoria()">Planet - Eldoria </option>
-                    <option value="1" onclick="add_planet_hesperia()">Planet - Hesperia </option>
-                    <option value="1" onclick="add_planet_pyraxis()">Planet - Pyraxis </option>
-                    <option value="1" onclick="add_planet_moon()">Moon </option>
-                    <option value="2" onclick="add_asteroid()">Asteroid - Single</option>
-                    <option value="2" onclick="add_asteroid_field()">Asteroid - Field</option>
-                </select>
-                <button id="test">Enable Ruler</button>
-                <button id="openModal" >Save Canvas</button>
-                <button id="loadButton">Load Canvas</button>
-                <label for="newShipHP">New HP:</label>
-                <input type="number" id="newShipHP">
-                <button onclick="update_hp()">Update HP</button>
-            </div>
-            <div id="myModal" class="modal">
-                <div class="modal-content">
-                    <p id="save-text">Please ensure you load the previous game save <b>before</b> attempting to save. <br> This will prevent accidentally overwriting or deleting your progress.<br> You only need to do this when first loading the page.</p>
-                    <button id="saveButton" class="save" >Save Canvas</button>
-                    <p id="hidden-text">The game has been saved!</p>
-                    <span class="close">&times;</span>
+            <label class="ship-info">Ship Faction</label>
+            <select id="ship-faction" aria-label="ship selection" class="ship-class-selection">
+                <option value="" disabled selected>--Select--</option>
+                <option value="1" onclick="add_fighter_da()">DiableAvionics</option>
+                <option value="2" onclick="add_fighter_ge()">Gensoukyou</option>
+                <option value="3" onclick="add_fighter_ne()">Neutrino</option>
+                <option value="4" onclick="add_fighter_vo()">Volantian</option>
+                <option value="5" onclick="add_fighter_gr()">Galactic Constellate</option>
+                <option value="6" onclick="add_fighter_ms()">Shadow Wing</option>
+                <option value="7" onclick="add_frigate_da()">DiableAvionics</option>
+                <option value="8" onclick="add_frigate_ge()">Gensoukyou</option>
+                <option value="9" onclick="add_frigate_ne()">Neutrino</option>
+                <option value="10" onclick="add_frigate_vo()">Volantian</option>
+                <option value="11" onclick="add_frigate_gr()">Galactic Constellate</option>
+                <option value="12" onclick="add_frigate_ms()">Shadow Wing</option>
+                <option value="13" onclick="add_destroyer_da()">DiableAvionics</option>
+                <option value="14" onclick="add_destroyer_ge()">Gensoukyou</option>
+                <option value="15" onclick="add_destroyer_ne()">Neutrino</option>
+                <option value="16" onclick="add_destroyer_vo()">Volantian</option>
+                <option value="17" onclick="add_destroyer_gr()">Galactic Constellate</option>
+                <option value="18" onclick="add_destroyer_ms()">Shadow Wing</option>
+                <option value="19" onclick="add_lightcruiser_da()">DiableAvionics</option>
+                <option value="20" onclick="add_lightcruiser_ge()">Gensoukyou</option>
+                <option value="21" onclick="add_lightcruiser_ne()">Neutrino</option>
+                <option value="22" onclick="add_lightcruiser_vo()">Volantian</option>
+                <option value="23" onclick="add_lightcruiser_gr()">Galactic Constellate</option>
+                <option value="24" onclick="add_lightcruiser_ms()">Shadow Wing</option>
+                <option value="25" onclick="add_heavycruiser_da()">DiableAvionics</option>
+                <option value="26" onclick="add_heavycruiser_ge()">Gensoukyou</option>
+                <option value="27" onclick="add_heavycruiser_ne()">Neutrino</option>
+                <option value="28" onclick="add_lightcruiser_vo()">Volantian</option>
+                <option value="29" onclick="add_lightcruiser_gr()">Galactic Constellate</option>
+                <option value="30" onclick="add_lightcruiser_ms()">Shadow Wing</option>
+                <option value="31" onclick="add_carrier_da()">DiableAvionics</option>
+                <option value="32" onclick="add_carrier_ge()">Gensoukyou</option>
+                <option value="33" onclick="add_carrier_ne()">Neutrino</option>
+                <option value="34" onclick="add_carrier_vo()">Volantian</option>
+                <option value="35" onclick="add_carrier_gr()">Galactic Constellate</option>
+                <option value="36" onclick="add_carrier_ms()">Shadow Wing</option>
+                <option value="37" onclick="add_battleship_da()">DiableAvionics</option>
+                <option value="38" onclick="add_battleship_ge()">Gensoukyou</option>
+                <option value="39" onclick="add_battleship_ne()">Neutrino</option>
+                <option value="40" onclick="add_battleship_vo()">Volantian</option>
+                <option value="41" onclick="add_battleship_gr()">Galactic Constellate</option>
+                <option value="42" onclick="add_battleship_ms()">Shadow Wing</option>
+                <option value="43" onclick="add_dreadnought_da()">DiableAvionics</option>
+                <option value="44" onclick="add_dreadnought_ge()">Gensoukyou</option>
+                <option value="45" onclick="add_dreadnought_ne()">Neutrino</option>
+                <option value="46" onclick="add_dreadnought_vo()">Volantian</option>
+                <option value="47" onclick="add_dreadnought_gr()">Galactic Constellate</option>
+                <option value="48" onclick="add_dreadnought_ms()">Shadow Wing</option>
+            </select>
+            <label class="ship-info">Celestial Bodies</label>
+            <select id="ship-class" aria-label="celestial objects" class="ship-class-selection">
+                <option value="" disabled selected>--Select--</option>
+                <option value="1" onclick="add_planet_azura()">Planet - Azura Prime </option>
+                <option value="2" onclick="add_planet_crysalon()">Planet - Crysalon </option>
+                <option value="3" onclick="add_planet_eldoria()">Planet - Eldoria </option>
+                <option value="4" onclick="add_planet_hesperia()">Planet - Hesperia </option>
+                <option value="5" onclick="add_planet_pyraxis()">Planet - Pyraxis </option>
+                <option value="6" onclick="add_planet_moon()">Moon </option>
+                <option value="7" onclick="add_asteroid()">Asteroid - Single</option>
+                <option value="8" onclick="add_asteroid_field()">Asteroid - Field</option>
+            </select>
+            <input placeholder="0" type="number" id="newShipHP">
+            <button onclick="update_hp()">Update HP</button>
+        </div>
+        <div id="right-column">
+            <button id="test">Enable Ruler</button>
+            <!-- <button id="openModal">Save Canvas</button>
+            <button id="loadButton">Load Canvas</button> -->
+            <div id="hp-container">
+                <button id="open-rules">Rules</button>
+                <button id="open-ship-stat-modal">Ship Stats</button>
+                <button class="side-panel-btn" type="button">
+                    <img class="open-span-icon" src="../images/icons/icons8-dice-48-black.png">
+                </button>
                 </div>
             </div>
-            <div id="myLoadModal" class="modal">
-                <div class="modal-content">
-                    <p id="load">The game has successfully been loaded.</p>
-                    <span class="loadclose">&times;</span>
+        </div>
+    </div>
+    <div id="ship-stat-modal">
+        <div id="ship-stat-close">
+            <span class="close" id="stat-close">&times;</span>
+        </div>
+        <div class="modal-header">
+            <h1 class="ship-stat-header">Ship Class Stats</h1>
+        </div>
+        <table id="ship-table">
+            <tr id="value2">
+                <th>Ship Class</th>
+                <th>Hit Point</th>
+                <th>Damage Threshold</th>
+                <th>Threat Level</th>
+                <th>Move Distance</th>
+                <th>Weapon Type</th>
+                <th>Firing Arc</th>
+                <th>Weapon Damage</th>
+                <th>Weapon Range</th>
+                <th>Point Value</th>
+            </tr>
+            <tr id="value1">
+            </tr>
+        </table>
+    </div>
+    <!-- ///game rules modal-->
+    <div id="rules-modal">
+        <div id="ship-stat-close">
+            <span class="close" id="rules-close">&times;</span>
+        </div>
+        <div class="modal-header">
+            <h2 class="rules-header">Movement Rules</h2>
+        </div>
+        <!-- ///movement rules-->
+        <div class="rules-header-category">
+            <h2>Hex Movement Basics:</h2>
+        </div>
+        <div class="rules-container">
+            <div class="rules">
+                <h3 class="lesser-header">Hex Measurement:</h3>
+                <p class="rules-text">Each hex represents a distance of 5 feet</p>
+            </div>
+            <div class="rules">
+                <h3 class="lesser-header">Player Turn Sequence:</h3>
+                <p class="rules-text">All movement and combat actions are resolved during each player's turn.</p>
+            </div>
+            <div class="rules">
+                <h3 class="lesser-header">Movement Distance:</h3>
+                <p class="rules-text">Each ship can move a number of hexes equal to, or less than, its Movement Distance
+                    each turn.</p>
+            </div>
+            <div class="rules">
+                <h3 class="lesser-header">Movement Direction:</h3>
+                <p class="rules-text">Movement can be in any direction, but must follow the hex grid.</p>
+            </div>
+        </div>
+        <!-- ///special movement rules-->
+        <div class="rules-header-category">
+            <h2>Special Movement Rules:</h2>
+        </div>
+        <div class="rules-container">
+            <div class="rules">
+                <h3 class="lesser-header">All Ahead Full:</h3>
+                <p class="rules-text">Roll 2d10. The result is the additoinal hexes the ship can move that turn</p>
+            </div>
+            <div class="rules-warning">
+                <h3 id="lesser-header-restriction">Restriction:</h3>
+                <p class="rules-text">Ships that use All Ahead Full cannot fire any weapons until their next turn. This simulates the fopcus on maximum speed and maneuverability at the cost of offensive capability.</p>
+            </div>
+            <div class="rules">
+                <h3 class="lesser-header">Burn Retros:</h3>
+                <p class="rules-text">allows a ship to reduce its movement by up to 2 hexes, enabling careful maneuvering around obstacles.</p>.</p>
+            </div>
+            <div class="rules">
+                <h3 class="lesser-header">Movement Direction:</h3>
+                <p class="rules-text">Movement can be in any direction, but must follow the hex grid.</p>
+            </div>
+        </div>
+        <!-- ///Combatt rules-->
+        <div class="modal-header">
+            <h2 class="rules-header">Combat System</h2>
+        </div>
+        <div class="rules-header-category">
+            <h2>Hit Roll:</h2>
+        </div>
+        <div class="rules-container">
+            <div class="rules">
+                <h3 class="lesser-header">Check for Obstacles:</h3>
+                <p class="rules-text">Ensure there are no obstacles blocking the direct path to the target. If an
+                    obstacle is present, the shot is blocked.
+            </div>
+            <div class="rules">
+                <h3 class="lesser-header">Roll the Dice:</h3>
+                <p class="rules-text">Roll a d20.</p>
+            </div>
+            <div class="rules">
+                <h3 class="lesser-header">Check Against Threat Level:</h3>
+                <p class="rules-text">Compare the result to the target's Threat Level. If your roll is equal to or
+                    greater than the target's Threat Level, you hit!</p>
+            </div>
+        </div>
+        <!-- ////rolling for damage -->
+        <div class="rules-header-category">
+            <h2>Damage Roll:</h2>
+        </div>
+        <div class="rules-container">
+            <div class="rules">
+                <h3 class="lesser-header">If the Attack Hits:</h3>
+                <p class="rules-text">Proceed with the follwoing steps.</p>
+            </div>
+            <div class="rules">
+                <h3 class="lesser-header">Roll for Damage:</h3>
+                <p class="rules-text">Roll the appropriate dice for the weapon to determine the amount of damage dealt.
+                </p>
+            </div>
+            <div class="rules">
+                <h3 class="lesser-header">Check Against Target Damage Treshold:</h3>
+                <p class="rules-text">Compare the rolled damage to the target ship's Damage Threshold.If the damage
+                    dealth is equal to or greater the the target ship's Damage Threshold,the ship takes damage;
+                    otherwise, it withstands the attack.</p>
+            </div>
+        </div>
+        <!-- /////Firing mechanics -->
+        <div class="modal-header">
+            <h2 class="rules-header">Firing Mechanics</h2>
+        </div>
+        <div class="rules-header-category">
+            <h2>Range Measurement</h2>
+        </div>
+        <div class="rules-container">
+            <div class="rules">
+                <h3 class="lesser-header">Weapon Firing Arcs:</h3>
+                <p class="rules-text">Weapons without a 360-degree firing arc must use one of the follwoing 90-degree firing arcs: <b>Forward, Aft, Portside, or Starboard</b></b></p>
+            </div>
+        </div>
+        <!-- ////Firing Arc Image -->
+        <div class="rules-container">
+            <img src="/images/backgroundimage/firingarc.png" alt="Spaceship Firing Arcs" width="528" height="528"> 
+        </div>
+        <div class="rules-container">
+            <div class="rules">
+                <h3 class="lesser-header">Range:</h2>
+                <p class="rules-text">To determine if a target is within range. measure from the center of the firing ships's hex to the center of the target ship's hex using the in game ruler.</p>
+            </div>
+            <div class="rules">
+                <h3 class="lesser-header">Line of Sight:</h3>
+                <p class="rules-text">Ensure there are no obstacles blocking the direct path to the target. If an
+                    obstacle is present, the shot is blocked.
+            </div>
+        </div>
+<!-- ///Weapon ranges and arcs -->
+        <div class="rules-header-category">
+            <h2>Weapon Ranges and Arcs:</h2>
+        </div>
+        <table class="ship-table">
+            <tr>
+                <th>Laser Cannons</th>
+                <th>Missile Batteries</th>
+                <th>Plasma Torpedos</th>
+                <th>Dual Laser Cannons</th>
+                <th>Rail Guns</th>
+                <th>Ion Beams</th>
+            </tr>
+            <tr class="feet">
+                <td>30ft</td>
+                <td>70ft</td>
+                <td>50ft</td>
+                <td>30ft</td>
+                <td>80ft</td>
+                <td>40ft</td>
+            </tr>
+            <tr class="feet">
+                <td>Turret (360°)</td>
+                <td>Forward (90°) / Aft (90°)</td>
+                <td>Forward (90°)</td>
+                <td>Turret (360°)</td>
+                <td>Portside (90°) / Starboard (90°)</td>
+                <td>Portside (90°) / Starboard (90°)</td>
+            </tr>
+        </table>
+    </div>
+    <div id="dice-modal">
+        <div id="ship-stat-close">
+            <span class="close-dice" id="stat-close">&times;</span>
+        </div>
+        <div class="modal-header">
+            <h1 class="rules-header">Dice Rollers</h1>
+        </div>
+        <div class="dice-rollers">
+            <div id="left">
+                <div class="dice-roll-table">
+                    <label id="d20">The Dice Result: 0 </label>
+                    <button onclick="d20()">Roll d20 </button>
+                </div>
+                <div class="dice-roll-table">
+                    <label id="d3">The Dice Result: 0</label>
+                    <button onclick="d3()">Roll d3 </button>
+                </div>
+                <div class="dice-roll-table">
+                    <label id="d6">The Dice Result: 0</label>
+                    <button onclick="d6()">Roll d6</button>
+                </div>
+                <div class="dice-roll-table">
+                    <label id="d8">The Dice Result: 0</label>
+                    <button onclick="d8()">Roll d8</button>
                 </div>
             </div>
-            <div id=wrapper>
-                <canvas id="gameCanvas" width=3838 height=2559></canvas>
-                <canvas id="canvas2" width=3838 height=2559></canvas>
+            <div id="right">
+                <div class="dice-roll-table">
+                    <label id="2d3">The Dice Result: 0 </label>
+                    <button onclick="twod3()">Roll 2d3 </button>
+                </div>
+                <div class="dice-roll-table">
+                    <label id="2d6">The Dice Result: 0</label>
+                    <button onclick="twod6()">Roll 2d6 </button>
+                </div>
+                <div class="dice-roll-table">
+                    <label id="2d8">The Dice Result: 0</label>
+                    <button onclick="twod8()">Roll 2d8 </button>
+                </div>
+                <div class="dice-roll-table">
+                    <label id="2d10">The Dice Result: 0</label>
+                    <button onclick="twod10()">Roll 2d10 </button>
+                </div>
             </div>
-        <script type="module" src="/js/app.js" defer></script>
-        <script type="module" src="/js/dropdown.js" defer></script>
-        <script type="module" src="/js/test.js" defer></script>
-        <script type="module" src="/js/modal.js" defer></script>
-        <script type="module" src="/js/load.js" defer></script>
-    </body>
-</html>
+        </div>
+        <div class="modal-header">
+            <h1 class="rules-header">Weapon Damage Dice</h1>
+        </div>
+        <table class="ship-table">
+            <tr>
+                <th>Laser Cannons</th>
+                <th>Missile Batteries</th>
+                <th>Plasma Torpedos</th>
+                <th>Dual Laser Cannons</th>
+                <th>Rail Guns</th>
+                <th>Ion Beams</th>
+            </tr>
+            <tr class="feet">
+                <td>1d3</td>
+                <td>1d6</td>
+                <td>1d8</td>
+                <td>2d3</td>
+                <td>2d6</td>
+                <td>2d8</td>
+            </tr>
+        </table>
+        <div class="modal-header">
+            <h1 class="rules-header">Ship Threat Level and Damage Threshold</h1>
+        </div>
+        <table class="ship-table">
+            <tr>
+                <th>Fighter</th>
+                <th>Frigate</th>
+                <th>Destroyer</th>
+                <th>Light Cruiser</th>
+                <th>Heavy Cruiser</th>
+                <th>Carrier</th>
+                <th>Battleship</th>
+                <th>Dreadnought</th>
+            </tr>
+            <tr class="feet">
+                <td>DT: 1<br>TL: 5</td>
+                <td>DT: 2<br>TL: 6</td>
+                <td>DT: 3<br>TL: 7</td>
+                <td>DT: 4<br>TL: 8</td>
+                <td>DT: 6<br>TL: 9</td>
+                <td>DT: 07<br>TL: 10</td>
+                <td>DT: 08<br>TL: 12</td>
+                <td>DT: 10<br>TL: 15</td>
+            </tr>
+        </table>
+    </div>
+    <div id=wrapper>
+        <canvas id="gameCanvas" width=3838 height=2559></canvas>
+        <canvas id="canvas2" width=3838 height=2559></canvas>
+    </div>
+    <script type="module" src="/js/app.js" defer></script>
+    <script type="module" src="/js/dropdown.js" defer></script>
+    <script type="module" src="/js/test.js" defer></script>
+    <script type="module" src="/js/shipstatsmodal.js" defer></script>
+    <script type="module" src="/js/shipstatmodalopenclose.js" defer></script>
+    <script type="module" src="/js/modal.js" defer></script>
+    <script type="module" src="/js/dice.js" defer></script>
+</body>
+
+</html>npm in

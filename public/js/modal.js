@@ -1,34 +1,18 @@
 // Get the modal
-var modal = document.getElementById("myModal");
+var dice_modal = document.querySelector("#dice-modal");
 
 // Get the button that opens the modal
-var btn = document.getElementById("openModal");
-
-var text = document.getElementById("hidden-text");
-
-var savebtn = document.getElementById("saveButton");
+var btn = document.querySelector(".side-panel-btn");
 
 // Get the <span> element that closes the modal
-var span = document.getElementsByClassName("close")[0];
+var span = document.getElementsByClassName("close-dice")[0];
 
 // When the user clicks on the button, open the modal
 btn.onclick = function() {
-  modal.style.display = "flex";
+  dice_modal.style.display = "grid";
 }
-
-savebtn.onclick = function() {
-  text.style.display = "flex";
-};
 
 // When the user clicks on <span> (x), close the modal
 span.onclick = function() {
-  modal.style.display = "none";
-  text.style.display = "none";
-}
-
-// When the user clicks anywhere outside of the modal, close it
-window.onclick = function(event) {
-  if (event.target == modal) {
-    modal.style.display = "none";
-  }
+  dice_modal.style.display = "none";
 }

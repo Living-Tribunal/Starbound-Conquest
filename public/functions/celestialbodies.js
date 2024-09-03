@@ -132,8 +132,8 @@ export function add_planet_azura(shipImages, socket) {
       let ship = {
         id: Date.now(),
         type: "CelestialBodies",
-        x: 100,
-        y: 100,
+        x: 500,
+        y: 200,
         width: 58,
         height: 72,
         isSelected: false,
@@ -157,8 +157,8 @@ export function add_planet_azura(shipImages, socket) {
       let ship = {
         id: Date.now(),
         type: "CelestialBodies",
-        x: 100,
-        y: 100,
+        x: 500,
+        y: 200,
         width: 478,
         height: 241,
         isSelected: false,
