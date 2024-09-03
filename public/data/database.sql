@@ -1,16 +1,25 @@
 
 CREATE TABLE IF NOT EXISTS ships (
-  id INTEGER PRIMARY KEY,       -- Unique identifier for the ship
-  type TEXT NOT NULL,           -- Type or class of the ship
-  x INTEGER NOT NULL,           -- X-coordinate of the ship's position
-  y INTEGER NOT NULL,           -- Y-coordinate of the ship's position
-  width INTEGER NOT NULL,       -- Width of the ship
-  height INTEGER NOT NULL,      -- Height of the ship
-  isSelected INTEGER NOT NULL,  -- Whether the ship is selected (0 or 1)
-  rotation_angle REAL NOT NULL, -- Rotation angle of the ship
-  highlighted INTEGER NOT NULL, -- Whether the ship is highlighted (0 or 1)
-  image TEXT,                   -- URL or path to the ship's image
-  globalAlpha REAL NOT NULL,    -- Alpha value (opacity) of the ship
-  maxHP INTEGER NOT NULL,      -- Ships MAX HP value
-  hp INTEGER NOT NULL           -- Health points of the ship
+  id INTEGER PRIMARY KEY,       
+  type TEXT NOT NULL,           
+  x INTEGER NOT NULL,
+  y INTEGER NOT NULL,
+  width INTEGER NOT NULL,
+  height INTEGER NOT NULL,
+  isSelected INTEGER NOT NULL,
+  rotation_angle REAL NOT NULL,p
+  highlighted INTEGER NOT NULL,
+  image TEXT,
+  globalAlpha REAL NOT NULL,
+  maxHP INTEGER NOT NULL,
+  hp INTEGER NOT NULL,
+  damageThreshold INTEGER NOT NULL,
+  threatLevel INTEGER NOT NULL,
+  moveDistance TEXT NOT NULL,
+  weaponType: TEXT NOT NULL,
+  firingArc: TEXT NOT NULL,
+  weaponDamage: TEXT NOT NULL,
+  weaponRange: TEXT NOT NULL,
+  pointValue: INTEGER NOT NULL,
+
 );

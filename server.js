@@ -4,26 +4,29 @@ if (process.env.NODE_ENV !== 'production'){
     require('dotenv').config()
 }
 
-const port = process.env.PORT || 3000
+const port = process.env.PORT || 3000;
 const express = require('express');
 const sqlite3 = require('sqlite3').verbose();
 const http = require('http');
 const path = require('path');
+const User = require('./public/models/user.js');
 const fs = require('fs');
 const socketio = require('socket.io');
 const methodOverride = require('method-override')
-let users = [];
 let ships = [];
-const bcrypt = require('bcrypt');
-const initialize_passport = require('./passport-config');
 const passport = require('passport');
+const local_strategy = require('passport-local');
 const flash = require('express-flash');
 const session = require('express-session');
 const app = express();
 const server = http.createServer(app);
 const cors = require('cors');
+const crypto = require('crypto');
 
 app.use(express.json({limit: '10mb'}));
+
+const sequelize = require('./database');
+sequelize.sync().then(() => console.log('Connected to the Users database'))
 
 const dataDir = path.join(__dirname, 'public', 'data');
 if (!fs.existsSync(dataDir)) {
@@ -37,15 +40,14 @@ app.set('views', './public/views');
 app.set('view engine', 'ejs')
 app.use(express.urlencoded({ extended: false, limit: '10mb' }))
 app.use(flash())
-app.use(session({
-    secret: process.env.SESSION_SECRET, 
-    resave: false,
-    saveUninitialized: false
-}));
+app.use(session({ 
+    secret: 'SECRETKEY', 
+    resave: true, 
+    saveUninitialized: true, 
+    cookie: { secure: false } }));
 app.use(passport.initialize())
 app.use(passport.session())
 app.use(methodOverride('_method'))
-
 
 const corsOptions = {
     origin: [
@@ -71,21 +73,12 @@ const io = socketio(server, {
     }
 });
 
-initialize_passport(
-    passport, 
-    username => users.find(user => user.username === username),
-    id => users.find(user => user.id ===id)
-)
-console.log('Initializing Passport');
-
-
 let db = new sqlite3.Database('./public/data/ship_data.db', (err) =>{
     if (err) {
         return console.error(err.message);
     }
-    console.log('Connected to the SQLite Game Canvas database.');
+    console.log('Connected to the SQLite Ships database.');
 });
-
 
 io.on('connection', (socket) => {
     console.log(`Socket ${socket.id} connected`);
@@ -138,49 +131,118 @@ io.on('connection', (socket) => {
     });
 });
 
-app.get('/register', (req, res) => {
-    res.render('register')
+passport.use(new local_strategy(async function verify(username, password, done){
+    try {
+        const user = await User.findOne({where: {username: username}})
+        if (!user) {
+            return done(null, false, { message: 'Incorrect username or password' })
+        }
+        crypto.pbkdf2(password, user.salt, 310000, 32, 'sha256', async function(err, hashed_password) {
+            if (err) { return done(err)}
+
+            if (!crypto.timingSafeEqual(user.password, hashed_password)) {
+                return done(null, false, { message: 'Incorrect username or password' });
+            }
+            return done(null, user)
+        })
+    } catch (e) {
+        return done(e);
+    }
+}))
+
+passport.serializeUser(function(user, done){
+    /* console.log('Serializing user:', user.id); */
+    done(null, user.id);
+});
+
+passport.deserializeUser(function(id, done) {
+    User.findByPk(id).then(user => {
+        if (user) {
+            /* console.log('Deserializing user:', user); */
+            done(null, user);
+        } else {
+            done(new Error("User not found"));
+        }
+    }).catch(err => {
+        /* console.error('Error in deserializeUser:', err); */
+        done(err);
+    });
+});
+
+//routes to main
+app.get('/', function(req, res) {
+    if (req.user) {
+    res.render('index', { username: req.user.username})    
+    } else {
+        res.redirect('/login')
+    }
+    
 })
 
-app.get('/', check_authenticated, (req, res) => {
-    res.render('index', { name: req.user.username })
-  })
-
-app.get('/login', check_not_authenticated, (req, res) => {
-    res.render('login') //CHange this to go back to the login
+//route to register
+app.get('/register', (req, res, next) => {
+    const failed = req.query.failed
+    let message = ""
+    switch (failed){
+        case '1':
+            message = 'Something went wrong on our site.'
+          break;
+        case '2':
+            message = 'Username is already taken.'
+            break;
+        case '3':
+            message = 'Failed to login.'
+            break;  
+    }
+    res.render('register', {failed:failed, message:message})
 })
 
-app.post('/login', check_not_authenticated, passport.authenticate('local', {
+app.post('/login', passport.authenticate('local', {
     successRedirect: '/',
-    failureRedirect: '/login',
+    failureRedirect: '/login?failed=1',
     failureFlash: true
 }))
 
-console.log(users)
 
-app.post('/register', check_not_authenticated, async (req, res) =>{
-    console.log('Register route hit');
-    console.log('Request body:', req.body);
-    try {
-        const hashed_password = await bcrypt.hash(req.body.password, 10)
-        users.push({
-            id: Date.now().toString(),
-            username: req.body.username,
-            password: hashed_password
-        })
-        console.log('User registered:', users);
-        res.redirect('/login')
-    } catch {
-        res.redirect('/register')
-        console.log("array", users)
-
-    }
+//to login
+app.get('/login', (req, res, next) => {
+    res.render('login')
 })
 
-app.post('/logout', (req, res) => {
-    req.logOut();
-    res.redirect('/login');
+
+//registartion
+app.post('/register', (req, res, next) => {
+    //setting salt
+    let salt = crypto.randomBytes(16);
+    //hashing passsword
+    crypto.pbkdf2(req.body.password, salt, 310000, 32, 'sha256', async function(err, hashed_password){
+        //if hashing failes redirect to register
+        if (err) {res.redirect('/register?failed=1')}
+        try {
+            //create the user
+            const user = await User.create({username: req.body.username, password: hashed_password, salt})
+            console.log('User created successfully:', user);
+            //
+            req.login(user, function(err){
+                console.error('Error logging in after registration:', err);
+                //if there is a login error after signing up, redirect to login
+                if (err) {res.redirect('/register?failed=3')}
+                res.redirect('/')
+            })
+        } catch (err) {
+            console.error('Error during user creation:', err);
+            //if creating unique user failes redirect to register
+            res.redirect('/register?failed=2')
+        }
+    })
 });
+
+app.post ('/logout', (req, res, next) => {
+    req.logout(function(err){
+        if (err) {return next(err)}
+        res.redirect('/')
+    })
+})
 
 app.post('/upload-ship-data', (req, res) => {
     console.log('Received body:', req.body);
@@ -192,7 +254,6 @@ app.post('/upload-ship-data', (req, res) => {
         return res.status(400).json({ error: "Invalid data format." });
     }
 
-    // Begin transaction
     db.serialize(() => {
         // Prepare to delete obsolete ships
         const currentShipIds = currentShips.map(ship => ship.id);
@@ -208,8 +269,8 @@ app.post('/upload-ship-data', (req, res) => {
             // Prepare insert/update statement
             const statement = db.prepare(`
                 INSERT OR REPLACE INTO ships (
-                    id, type, x, y, width, height, isSelected, rotation_angle, highlighted, image, globalAlpha, maxHP, hp
-                ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+                    id, type, x, y, width, height, isSelected, rotation_angle, highlighted, image, globalAlpha, maxHP, hp, damageThreshold, threatLevel, moveDistance, weaponType, firingArc, WeaponDamage, weaponRange, pointvalue
+                ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
             `);
             currentShips.forEach(ship => {
                 statement.run(
@@ -225,7 +286,15 @@ app.post('/upload-ship-data', (req, res) => {
                     ship.image,
                     ship.globalAlpha,
                     ship.maxHP,
-                    ship.hp
+                    ship.hp,
+                    ship.damageThreshold,
+                    ship.threatLevel,
+                    ship.moveDistance,
+                    ship.weaponType,
+                    ship.firingArc,
+                    ship.weaponDamage,
+                    ship.weaponRange,
+                    ship.pointValue,
                 );
             });
 
@@ -251,23 +320,9 @@ app.get('/load-ship-data', (req, res) => {
         res.json({ ships: rows });
     });
 });
-  
-function check_authenticated(req, res, next) {
-    if (req.isAuthenticated()) {
-        return next()
-    }
-    res.redirect('/login')
-}
-
-function check_not_authenticated(req, res, next){
-    if(req.isAuthenticated()) {
-        return res.redirect('/')
-    }
-    next()
-}
 
 // Start the HTTP server listening on the specified port
-server.listen(port, function(error) {
+server.listen(port, '0.0.0.0', function(error) {
     if (error){
         console.log('Something went wrong', error);
     } else {

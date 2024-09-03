@@ -3,25 +3,27 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="../css/styles.css">
+    <link rel="stylesheet" href="../css/styles.css" defer>
     <title>Login</title>
 </head>
 <body id="login-screen">
+    <div id="error">
+        <% if (messages.error) { %>
+            <%= messages.error %>
+            <% } %>
+    </div>
     <form action="/login" method="POST">
-        <div id="error">
-            <% if (messages.error) { %>
-                <%= messages.error %>
-                <% } %>
-        </div>
         <div id="login-inputs">
             <label class="login-label">Username</label>
             <input class="login" type="text" name="username" required/>
             <label class="login-label">Password</label>
             <input class="login" type="password" name="password" required/>
             <div id="button-hold">
-                <button type="submit">Enter</button>
+                <button type="submit">Login</button>
                 <button type="button" onclick="location.href='/register';">Register</button>
-                <a id="comp-app" href="https://github.com/Living-Tribunal/Starbound-Conquest-Companion-App">Companion App</a>
+                <div id="app-shown">
+                    <a id="comp-app" href="https://github.com/Living-Tribunal/Starbound-Conquest-Companion-App">Companion App</a>
+                </div>
             </div>
         </div>
     </form>

@@ -74,7 +74,7 @@ import {
   add_asteroid_field,
 } from "../functions/celestialbodies.js";
 
-const socket = io("http://starboundconquest.com");
+const socket = io("http://starboundconquest.com:3000");
 
 document.addEventListener("DOMContentLoaded", function () {
   let canvas = document.querySelector("canvas");
@@ -110,7 +110,6 @@ document.addEventListener("DOMContentLoaded", function () {
   const minZoom = 0.25;
   const maxZoom = 1;
   const zoomStep = 0.1;
-
 
   //damage colors
   const full = "rgba(0, 255, 0, 0.25)";
@@ -178,8 +177,9 @@ document.addEventListener("DOMContentLoaded", function () {
   let background_image = new Image();
   background_image.src = "../images/backgroundimage/starfield.png";
 
-  document.getElementById("loadButton").addEventListener("click", load_canvas);
-  document.getElementById("saveButton").addEventListener("click", save_canvas);
+/*   document.getElementById("loadButton").addEventListener("click", load_canvas);
+  document.getElementById("saveButton").addEventListener("click", save_canvas); */
+  console.log('Username from html:', username);
 
   function send_message_discord() {
     const request = new XMLHttpRequest();
@@ -191,7 +191,7 @@ document.addEventListener("DOMContentLoaded", function () {
     const params = {
       username: "Starbound Conquest",
       avatar_url: "",
-      content: `The game was saved.`,
+      content: `The game has been saved by ${username}`,
     };
     request.send(JSON.stringify(params));
   }
@@ -222,7 +222,6 @@ document.addEventListener("DOMContentLoaded", function () {
       })
       .then((data) => {
         console.log("Server response:", data);
-        send_message_discord();
       })
       .catch((error) => console.error("Error:", error));
   }
@@ -598,14 +597,14 @@ document.addEventListener("DOMContentLoaded", function () {
       if (selectedShip.type != "CelestialBodies") {
         context.save();
         context.translate(0, 0);
-        context.fillStyle = "rgba(37, 37, 37, 0.7)";
-        context.font = "30px monospace";
+        context.fillStyle = 'red';
+        context.font = "25px monospace";
         context.lineWidth = 7;
 
         context.beginPath();
-        context.strokeStyle = fillColor;
-        context.rect(4, 15, 400, 150);
-        context.fillStyle = fillColor;
+        context.strokeStyle = 'rgba(0, 0, 0, 0.7)';
+        context.rect(4, 15, 820, 550);
+        context.fillStyle = 'rgba(0, 0, 0, 0.3)';
         context.fill();
         context.stroke();
 
@@ -613,6 +612,14 @@ document.addEventListener("DOMContentLoaded", function () {
         context.fillText(`ID: ${selectedShip.id}`, 10, 50);
         context.fillText(`HP: ${selectedShip.hp}`, 10, 100);
         context.fillText(`Ship Type: ${selectedShip.type}`, 10, 150);
+        context.fillText(`Damage Threshold: ${selectedShip.damageThreshold}`, 10, 200);
+        context.fillText(`Threat Level: ${selectedShip.threatLevel}`, 10, 250);
+        context.fillText(`Move Distance: ${selectedShip.moveDistance}`, 10, 300);
+        context.fillText(`Weapon Type: ${selectedShip.weaponType}`, 10, 350);
+        context.fillText(`Firing Arc: ${selectedShip.firingArc}`, 10, 400);
+        context.fillText(`Weapon Damage: ${selectedShip.weaponDamage}`, 10, 450);
+        context.fillText(`Weapon Range: ${selectedShip.weaponRange}`, 10, 500);
+        context.fillText(`Point Value: ${selectedShip.pointValue}`, 10, 550);
 
         context.restore();
       }
@@ -714,6 +721,7 @@ document.addEventListener("DOMContentLoaded", function () {
       current_ship_index = -1;
     }
     draw_scene();
+    save_canvas();
   });
 
   canvas.addEventListener("click", (event) => {

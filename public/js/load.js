@@ -1,4 +1,4 @@
-// Get the modal
+/* // Get the modal
 var load_modal = document.getElementById("myLoadModal");
 
 // Get the button that opens the modal
@@ -16,3 +16,4 @@ btn.onclick = function() {
 span.onclick = function() {
   load_modal.style.display = "none";
 }
+ */

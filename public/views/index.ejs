@@ -8,14 +8,20 @@
     <link rel="stylesheet" href="/css/styles.css">
     <script src="https://cdn.socket.io/4.7.5/socket.io.js"></script>
 </head>
-
 <body>
-    <div>
+    <div class="intro-text">
         <label class="ship-info">Use the dropdown to select ship class then ship faction. Enter a selected ships HP, and
             update its HP Value. Enable ruler to measure distance. Save and Load Cavnas to save/load the game.</label>
+            <form id="logout" action ="/logout" method="post">
+                <input type="submit" name="Logout" value="Logout">
+            </form>
     </div>
     <div id="button-container">
         <div id="left-column">
+            <label class="ship-info">Welcome, <%= username %></label>
+            <script tpye="text/javascript">
+                let username = "<%= username %>";
+            </script>
             <label class="ship-info">Ship Class</label>
             <select id="ship-class" aria-label="ship selection" class="ship-class-selection">
                 <option value="" disabled selected>--Select--</option>
@@ -97,31 +103,15 @@
         </div>
         <div id="right-column">
             <button id="test">Enable Ruler</button>
-            <button id="openModal">Save Canvas</button>
-            <button id="loadButton">Load Canvas</button>
+            <!-- <button id="openModal">Save Canvas</button>
+            <button id="loadButton">Load Canvas</button> -->
             <div id="hp-container">
                 <button id="open-rules">Rules</button>
                 <button id="open-ship-stat-modal">Ship Stats</button>
-            </div>
-        </div>
-    </div>
-    <div id="myModal" class="modal">
-        <div class="modal-content">
-            <div id="save-button-container">
-                <p id="save-text">Please ensure you load the previous game save <b>before</b> attempting to save. This
-                    will prevent accidentally overwriting or deleting your progress. You only need to do this when first
-                    loading the page.</p>
-                <button id="saveButton" class="save">Save Canvas</button>
-                <span class="close">&times;</span>
-                <p id="hidden-text">The game has been saved!</p>
-            </div>
-        </div>
-    </div>
-    <div id="myLoadModal" class="modal">
-        <div class="modal-content">
-            <div id="p-container">
-                <p id="load">The game has successfully been loaded.</p>
-                <span class="loadclose">&times;</span>
+                <button class="side-panel-btn" type="button">
+                    <img class="open-span-icon" src="../images/icons/icons8-dice-48-black.png">
+                </button>
+                </div>
             </div>
         </div>
     </div>
@@ -180,9 +170,34 @@
                 <p class="rules-text">Movement can be in any direction, but must follow the hex grid.</p>
             </div>
         </div>
-        <!-- ///Special movement rules-->
+        <!-- ///special movement rules-->
         <div class="rules-header-category">
-            <h2>Combat System:</h2>
+            <h2>Special Movement Rules:</h2>
+        </div>
+        <div class="rules-container">
+            <div class="rules">
+                <h3 class="lesser-header">All Ahead Full:</h3>
+                <p class="rules-text">Roll 2d10. The result is the additoinal hexes the ship can move that turn</p>
+            </div>
+            <div class="rules-warning">
+                <h3 id="lesser-header-restriction">Restriction:</h3>
+                <p class="rules-text">Ships that use All Ahead Full cannot fire any weapons until their next turn. This simulates the fopcus on maximum speed and maneuverability at the cost of offensive capability.</p>
+            </div>
+            <div class="rules">
+                <h3 class="lesser-header">Burn Retros:</h3>
+                <p class="rules-text">allows a ship to reduce its movement by up to 2 hexes, enabling careful maneuvering around obstacles.</p>.</p>
+            </div>
+            <div class="rules">
+                <h3 class="lesser-header">Movement Direction:</h3>
+                <p class="rules-text">Movement can be in any direction, but must follow the hex grid.</p>
+            </div>
+        </div>
+        <!-- ///Combatt rules-->
+        <div class="modal-header">
+            <h2 class="rules-header">Combat System</h2>
+        </div>
+        <div class="rules-header-category">
+            <h2>Hit Roll:</h2>
         </div>
         <div class="rules-container">
             <div class="rules">
@@ -222,16 +237,19 @@
             </div>
         </div>
         <!-- /////Firing mechanics -->
-        <div class="rules-header-category">
-            <h2>Firing Mechanics:</h2>
+        <div class="modal-header">
+            <h2 class="rules-header">Firing Mechanics</h2>
         </div>
-<!-- ////Firing Arc Image -->
+        <div class="rules-header-category">
+            <h2>Range Measurement</h2>
+        </div>
         <div class="rules-container">
             <div class="rules">
-                <h3 class="lesser-header">Range Measurement:</h2>
+                <h3 class="lesser-header">Weapon Firing Arcs:</h3>
                 <p class="rules-text">Weapons without a 360-degree firing arc must use one of the follwoing 90-degree firing arcs: <b>Forward, Aft, Portside, or Starboard</b></b></p>
             </div>
         </div>
+        <!-- ////Firing Arc Image -->
         <div class="rules-container">
             <img src="/images/backgroundimage/firingarc.png" alt="Spaceship Firing Arcs" width="528" height="528"> 
         </div>
@@ -269,11 +287,103 @@
             </tr>
             <tr class="feet">
                 <td>Turret (360°)</td>
-                <td>Forward (90°) / Aft (90°)</td>\
+                <td>Forward (90°) / Aft (90°)</td>
                 <td>Forward (90°)</td>
                 <td>Turret (360°)</td>
                 <td>Portside (90°) / Starboard (90°)</td>
                 <td>Portside (90°) / Starboard (90°)</td>
+            </tr>
+        </table>
+    </div>
+    <div id="dice-modal">
+        <div id="ship-stat-close">
+            <span class="close-dice" id="stat-close">&times;</span>
+        </div>
+        <div class="modal-header">
+            <h1 class="rules-header">Dice Rollers</h1>
+        </div>
+        <div class="dice-rollers">
+            <div id="left">
+                <div class="dice-roll-table">
+                    <label id="d20">The Dice Result: 0 </label>
+                    <button onclick="d20()">Roll d20 </button>
+                </div>
+                <div class="dice-roll-table">
+                    <label id="d3">The Dice Result: 0</label>
+                    <button onclick="d3()">Roll d3 </button>
+                </div>
+                <div class="dice-roll-table">
+                    <label id="d6">The Dice Result: 0</label>
+                    <button onclick="d6()">Roll d6</button>
+                </div>
+                <div class="dice-roll-table">
+                    <label id="d8">The Dice Result: 0</label>
+                    <button onclick="d8()">Roll d8</button>
+                </div>
+            </div>
+            <div id="right">
+                <div class="dice-roll-table">
+                    <label id="2d3">The Dice Result: 0 </label>
+                    <button onclick="twod3()">Roll 2d3 </button>
+                </div>
+                <div class="dice-roll-table">
+                    <label id="2d6">The Dice Result: 0</label>
+                    <button onclick="twod6()">Roll 2d6 </button>
+                </div>
+                <div class="dice-roll-table">
+                    <label id="2d8">The Dice Result: 0</label>
+                    <button onclick="twod8()">Roll 2d8 </button>
+                </div>
+                <div class="dice-roll-table">
+                    <label id="2d10">The Dice Result: 0</label>
+                    <button onclick="twod10()">Roll 2d10 </button>
+                </div>
+            </div>
+        </div>
+        <div class="modal-header">
+            <h1 class="rules-header">Weapon Damage Dice</h1>
+        </div>
+        <table class="ship-table">
+            <tr>
+                <th>Laser Cannons</th>
+                <th>Missile Batteries</th>
+                <th>Plasma Torpedos</th>
+                <th>Dual Laser Cannons</th>
+                <th>Rail Guns</th>
+                <th>Ion Beams</th>
+            </tr>
+            <tr class="feet">
+                <td>1d3</td>
+                <td>1d6</td>
+                <td>1d8</td>
+                <td>2d3</td>
+                <td>2d6</td>
+                <td>2d8</td>
+            </tr>
+        </table>
+        <div class="modal-header">
+            <h1 class="rules-header">Ship Threat Level and Damage Threshold</h1>
+        </div>
+        <table class="ship-table">
+            <tr>
+                <th>Fighter</th>
+                <th>Frigate</th>
+                <th>Destroyer</th>
+                <th>Light Cruiser</th>
+                <th>Heavy Cruiser</th>
+                <th>Carrier</th>
+                <th>Battleship</th>
+                <th>Dreadnought</th>
+            </tr>
+            <tr class="feet">
+                <td>DT: 1<br>TL: 5</td>
+                <td>DT: 2<br>TL: 6</td>
+                <td>DT: 3<br>TL: 7</td>
+                <td>DT: 4<br>TL: 8</td>
+                <td>DT: 6<br>TL: 9</td>
+                <td>DT: 07<br>TL: 10</td>
+                <td>DT: 08<br>TL: 12</td>
+                <td>DT: 10<br>TL: 15</td>
             </tr>
         </table>
     </div>
@@ -284,10 +394,10 @@
     <script type="module" src="/js/app.js" defer></script>
     <script type="module" src="/js/dropdown.js" defer></script>
     <script type="module" src="/js/test.js" defer></script>
-    <script type="module" src="/js/modal.js" defer></script>
-    <script type="module" src="/js/load.js" defer></script>
     <script type="module" src="/js/shipstatsmodal.js" defer></script>
     <script type="module" src="/js/shipstatmodalopenclose.js" defer></script>
+    <script type="module" src="/js/modal.js" defer></script>
+    <script type="module" src="/js/dice.js" defer></script>
 </body>
 
 </html>

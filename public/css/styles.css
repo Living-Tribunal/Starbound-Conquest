@@ -23,10 +23,18 @@ body {
     touch-action: none;
 }
 
+.intro-text{
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: var(--dark_gray);
+}
+
 #register-screen,
 #login-screen {
     background-color: var(--dark_gray);
     display: flex;
+    flex-direction: column;
     justify-content: center;
     background-image: url("../images/backgroundimage/sbclogo.png");
     background-position: center;
@@ -74,10 +82,13 @@ a:active {
     padding: 5px
 }
 
-#login-inputs {
+#button-hold {
+  margin-top: 10px;
+}
+
+#app-shown {
   display: flex;
-  flex-direction: column;
-  gap: 10px;
+  margin-top: 10px;
 }
 
 a {
@@ -95,7 +106,7 @@ a:hover {
 
 button{
     cursor: pointer;
-    padding: 10px 20px;
+    padding: 5px;
     border-color: var(--var(--white));
     border-style:solid;
     transition: 200ms ease-in;
@@ -160,9 +171,12 @@ select option{
 
 #error {
   display: flex;
-    color: var(--lightened_deep_red);
-    font-size: 20px;
+  flex-direction: column;
+  color: var(--lightened_deep_red);
+  font-size: 20px;
+  height: 30px;
 }
+
 
 #top-menu{
     display: flex;
@@ -218,7 +232,7 @@ select option{
     font-size: 58px;
     font-weight: bold;
   }
-  
+
   .close:hover {
     color: gold;
     text-decoration: none;
@@ -340,17 +354,28 @@ select option{
     top: 0;
     width: 100%; /* Full width */
     height: 100%;
-    overflow: auto; /* Enable scroll if needed */
-    background-color: rgb(0,0,0); /* Fallback color */
+    overflow: auto;
     background-color: rgba(0, 0, 0, 0.9);
     animation-name: animatetop;
     animation-duration: 0.4s
 }
 
-.rules-container:hover .rules:not(:hover){
-  filter: grayscale(1) blur(10px);
+#dice-modal {
+  display: none;
+  position: fixed; /* Stay in place */
+    z-index: 1; /* Sit on top */
+    align-items: center;
+    justify-content: center;
+    align-content: center;
+    left: 0;
+    top: 0;
+    width: 100%; /* Full width */
+    height: 100%;
+    overflow: auto; /* Enable scroll if needed */
+    background-color: rgba(0, 0, 0, 0.9);
+    animation-name: animatetop;
+    animation-duration: 0.4s
 }
-
 
 .modal-header {
   text-align: center;
@@ -364,7 +389,7 @@ select option{
 
 .rules-header{
   font-size: 50px;
-  color: var(--slate);
+  color: var(--white);
 }
 
 .ship-type{
@@ -393,7 +418,6 @@ td{
   align-self: center;
   padding: 20px;
 }
-
 
 #value3,
 #value2 {
@@ -451,15 +475,29 @@ table tr:nth-child(odd) td{
   transform: scale(1.02);
 }
 
+.rules-warning {
+  border: 2px solid var(--misty_blue);
+  padding: 20px;
+  font-size: 30px;
+  gap: 20px;
+  text-align: center;
+  transition: 200ms;
+  border-top-left-radius: 10px;
+  border-bottom-right-radius: 10px;
+  border-top-right-radius: 10px;
+  border-bottom-left-radius: 10px;
+}
+
+.rules-warning:hover {
+  border: 2px solid var(--lightened_deep_red);
+  transform: scale(1.02);
+}
 
 .rules-text {
   font-size: 25px;
 }
 
 img {
-  transition: 300ms;
-}
-img:hover {
   width: 538px;
   height: 538px;
 }
@@ -474,3 +512,58 @@ img:hover {
   align-items: center;
   text-align: center;
 }
+
+.open-span-icon,
+.close-span-icon {
+  width: 24px;
+  height: 24px;
+}
+
+.side-panel-btn {
+  width: 40px;
+  height: 40px;
+  flex-shrink: 0;
+  display: flex;
+  align-self: flex-end;
+  place-items: center;
+  cursor: pointer;
+  background-color: var(--white);
+}
+
+.dice-table{
+  display: flex;
+}
+
+.close-dice{
+  color: var(--white);
+  font-size: 50px;
+  cursor: pointer;
+}
+
+
+.dice-roll-table {
+  display: grid;
+  justify-content: center;
+  align-self: center;
+  gap: 20px;
+  color: var(--white);
+  font-size: 15px;
+  padding: 10px
+}
+
+.dice-rollers{
+  display: grid;
+  justify-content: center;
+}
+
+#left {
+  display: flex;
+  justify-content:flex-start ;
+}
+
+#right {
+  display: flex;
+  justify-content:flex-end ;
+}
+
+

@@ -7,17 +7,24 @@
     <title>Register</title>
 </head>
 <body id="register-screen">
+    <div id="error">
+        <% if (failed) { %>
+            <%= message %>
+            <% } %>
+    </div>
     <form action="/register" method="POST">
-        <div id="login-inputs">
-            <label for="name" class="login-label">Username<label>
+        <div class="no-error" id="login-inputs"> 
+            <label for="username" class="login-label">Username - Register<label>
             <input type="text" name="username" id="username" class="login" required/>
-            <label for="password" class="login-label">Password</label>
+            <label for="password" class="login-label">Password - Register</label>
             <input type="password" name="password" id="password" class="login" required/>
             <div id="button-hold">
                 <button type="submit">Register</button>
                 <button type="button" onclick="location.href='/login';">Login</button>    
             </div>
-            
+        </div>
+        <div id="app-shown">
+            <a id="comp-app" href="https://github.com/Living-Tribunal/Starbound-Conquest-Companion-App">Companion App</a>
         </div>
     </form>
 </body>
