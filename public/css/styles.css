@@ -9,6 +9,7 @@
   --lightened_deep_red: #B22222;
   --goldenrod: #b6850b;
   --gold: #FFD700;
+  --off_black: #05040c;
 }
 
 
@@ -120,13 +121,19 @@ button{
 
 .ship-info{
   padding: 5px;
-  font-size: clamp(1rem, 8vw, 1.25rem); 
+  font-size: 15px; 
   background-color: var(--dark_gray);
   color: var(--white);
   display: flex;
   justify-content: center;
   align-self: center;
   font-weight: bold;
+}
+
+.ship-table{
+  display: flex;
+  justify-content: center;
+  align-content: center;
 }
 
 #button-container {
@@ -200,20 +207,6 @@ height: 30px;
   display: none;
 }
 
-/* The Modal (background) */
-.modal {
-  display: none; /* Hidden by default */
-  position: fixed; /* Stay in place */
-  z-index: 1; /* Sit on top */
-  left: 0;
-  top: 0;
-  width: 100%; /* Full width */
-  height: 100%; /* Full height */
-  overflow: auto; /* Enable scroll if needed */
-  background-color: var(--black); /* Fallback color */
-  background-color: rgba(0,0,0,0.7); /* blk w/ opacity */
-}
-
 .save{
   display: flex;
   align-self: center;
@@ -268,20 +261,6 @@ height: 30px;
   font-family: monospace;
   justify-content: center;
   align-self: center;
-}
-  
-/* Modal Content */
-.modal-content {
-  position: relative;
-  display: flex;
-  flex-direction: row;
-  justify-content: space-around;
-  background-color: var(--dark_gray);
-  margin: auto;
-  padding: 0;
-  width: 70%;
-  animation-name: animatetop;
-  animation-duration: 0.4s;
 }
 
 p {
@@ -342,6 +321,7 @@ span{
 }
 
 /*   ship stats modal */
+#dice-modal,
 #rules-modal,
 #ship-stat-modal {
   display: none; /* Hidden by default */
@@ -355,23 +335,6 @@ span{
   width: 100%; /* Full width */
   height: 100%;
   overflow: auto;
-  background-color: rgba(0, 0, 0, 0.9);
-  animation-name: animatetop;
-  animation-duration: 0.4s
-}
-
-#dice-modal {
-display: none;
-position: fixed; /* Stay in place */
-  z-index: 1; /* Sit on top */
-  align-items: center;
-  justify-content: center;
-  align-content: center;
-  left: 0;
-  top: 0;
-  width: 100%; /* Full width */
-  height: 100%;
-  overflow: auto; /* Enable scroll if needed */
   background-color: rgba(0, 0, 0, 0.9);
   animation-name: animatetop;
   animation-duration: 0.4s
@@ -400,7 +363,7 @@ font-size: 35px;
 th{
 background-color: var(--slate);
 font-weight: bold;
-font-size: 25px;
+font-size: 20px;
 padding: 10px;
 color: var(--dark_gray);
 }
@@ -408,8 +371,9 @@ color: var(--dark_gray);
 td{
 color: var(--white);
 font-size: 20px;
-padding: 25px;
 white-space: pre;
+padding: 10px;
+justify-content: center;
 }
 
 #threat-damage{
@@ -459,9 +423,9 @@ gap: 20px;
 
 .rules {
 border: 2px solid var(--misty_blue);
-padding: 20px;
-font-size: 30px;
-gap: 20px;
+padding: 18px;
+font-size: 22px;
+gap: 5px;
 text-align: center;
 transition: 200ms;
 border-top-left-radius: 10px;
@@ -502,17 +466,13 @@ width: 538px;
 height: 538px;
 }
 
-.ship-table{
-display: flex;
-justify-content: center;
-align-self: center;
-}
 
 .feet {
 align-items: center;
 text-align: center;
 }
 
+.close-dice,
 .open-span-icon,
 .close-span-icon {
 width: 24px;
@@ -534,18 +494,11 @@ background-color: var(--white);
 display: flex;
 }
 
-.close-dice{
-color: var(--white);
-font-size: 50px;
-cursor: pointer;
-}
-
-
 .dice-roll-table {
 display: grid;
 justify-content: center;
 align-self: center;
-gap: 20px;
+gap: 18px;
 color: var(--white);
 font-size: 15px;
 padding: 10px

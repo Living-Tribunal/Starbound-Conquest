@@ -19,9 +19,8 @@
     <div id="button-container">
         <div id="left-column">
             <label class="ship-info">Welcome, <%= username %></label>
-            <script tpye="text/javascript">
-                let username = "<%= username %>";
-            </script>
+            <label id="gameValue" class="ship-info">Total Fleet Value: 0</label>
+            <label id="shipValue" class="ship-info">Your Fleet Value: 0</label>
             <label class="ship-info">Ship Class</label>
             <select id="ship-class" aria-label="ship selection" class="ship-class-selection">
                 <option value="" disabled selected>--Select--</option>
@@ -35,68 +34,68 @@
                 <option value="43,44,45,46,47,48">Dreadnought</option>
             </select>
             <label class="ship-info">Ship Faction</label>
-            <select id="ship-faction" aria-label="ship selection" class="ship-class-selection">
+            <select id="ship-faction" onclick="handle_dropdown_selection()" aria-label="ship selection" class="ship-class-selection">
                 <option value="" disabled selected>--Select--</option>
-                <option value="1" onclick="add_fighter_da()">DiableAvionics</option>
-                <option value="2" onclick="add_fighter_ge()">Gensoukyou</option>
-                <option value="3" onclick="add_fighter_ne()">Neutrino</option>
-                <option value="4" onclick="add_fighter_vo()">Volantian</option>
-                <option value="5" onclick="add_fighter_gr()">Galactic Constellate</option>
-                <option value="6" onclick="add_fighter_ms()">Shadow Wing</option>
-                <option value="7" onclick="add_frigate_da()">DiableAvionics</option>
-                <option value="8" onclick="add_frigate_ge()">Gensoukyou</option>
-                <option value="9" onclick="add_frigate_ne()">Neutrino</option>
-                <option value="10" onclick="add_frigate_vo()">Volantian</option>
-                <option value="11" onclick="add_frigate_gr()">Galactic Constellate</option>
-                <option value="12" onclick="add_frigate_ms()">Shadow Wing</option>
-                <option value="13" onclick="add_destroyer_da()">DiableAvionics</option>
-                <option value="14" onclick="add_destroyer_ge()">Gensoukyou</option>
-                <option value="15" onclick="add_destroyer_ne()">Neutrino</option>
-                <option value="16" onclick="add_destroyer_vo()">Volantian</option>
-                <option value="17" onclick="add_destroyer_gr()">Galactic Constellate</option>
-                <option value="18" onclick="add_destroyer_ms()">Shadow Wing</option>
-                <option value="19" onclick="add_lightcruiser_da()">DiableAvionics</option>
-                <option value="20" onclick="add_lightcruiser_ge()">Gensoukyou</option>
-                <option value="21" onclick="add_lightcruiser_ne()">Neutrino</option>
-                <option value="22" onclick="add_lightcruiser_vo()">Volantian</option>
-                <option value="23" onclick="add_lightcruiser_gr()">Galactic Constellate</option>
-                <option value="24" onclick="add_lightcruiser_ms()">Shadow Wing</option>
-                <option value="25" onclick="add_heavycruiser_da()">DiableAvionics</option>
-                <option value="26" onclick="add_heavycruiser_ge()">Gensoukyou</option>
-                <option value="27" onclick="add_heavycruiser_ne()">Neutrino</option>
-                <option value="28" onclick="add_lightcruiser_vo()">Volantian</option>
-                <option value="29" onclick="add_lightcruiser_gr()">Galactic Constellate</option>
-                <option value="30" onclick="add_lightcruiser_ms()">Shadow Wing</option>
-                <option value="31" onclick="add_carrier_da()">DiableAvionics</option>
-                <option value="32" onclick="add_carrier_ge()">Gensoukyou</option>
-                <option value="33" onclick="add_carrier_ne()">Neutrino</option>
-                <option value="34" onclick="add_carrier_vo()">Volantian</option>
-                <option value="35" onclick="add_carrier_gr()">Galactic Constellate</option>
-                <option value="36" onclick="add_carrier_ms()">Shadow Wing</option>
-                <option value="37" onclick="add_battleship_da()">DiableAvionics</option>
-                <option value="38" onclick="add_battleship_ge()">Gensoukyou</option>
-                <option value="39" onclick="add_battleship_ne()">Neutrino</option>
-                <option value="40" onclick="add_battleship_vo()">Volantian</option>
-                <option value="41" onclick="add_battleship_gr()">Galactic Constellate</option>
-                <option value="42" onclick="add_battleship_ms()">Shadow Wing</option>
-                <option value="43" onclick="add_dreadnought_da()">DiableAvionics</option>
-                <option value="44" onclick="add_dreadnought_ge()">Gensoukyou</option>
-                <option value="45" onclick="add_dreadnought_ne()">Neutrino</option>
-                <option value="46" onclick="add_dreadnought_vo()">Volantian</option>
-                <option value="47" onclick="add_dreadnought_gr()">Galactic Constellate</option>
-                <option value="48" onclick="add_dreadnought_ms()">Shadow Wing</option>
+                <option value="1" >DiableAvionics</option>
+                <option value="2">Gensoukyou</option>
+                <option value="3">Neutrino</option>
+                <option value="4">Volantian</option>
+                <option value="5">Galactic Constellate</option>
+                <option value="6">Shadow Wing</option>
+                <option value="7">DiableAvionics</option>
+                <option value="8">Gensoukyou</option>
+                <option value="9">Neutrino</option>
+                <option value="10">Volantian</option>
+                <option value="11">Galactic Constellate</option>
+                <option value="12">Shadow Wing</option>
+                <option value="13">DiableAvionics</option>
+                <option value="14">Gensoukyou</option>
+                <option value="15">Neutrino</option>
+                <option value="16">Volantian</option>
+                <option value="17">Galactic Constellate</option>
+                <option value="18">Shadow Wing</option>
+                <option value="19">DiableAvionics</option>
+                <option value="20">Gensoukyou</option>
+                <option value="21">Neutrino</option>
+                <option value="22">Volantian</option>
+                <option value="23">Galactic Constellate</option>
+                <option value="24">Shadow Wing</option>
+                <option value="25">DiableAvionics</option>
+                <option value="26">Gensoukyou</option>
+                <option value="27">Neutrino</option>
+                <option value="28">Volantian</option>
+                <option value="29">Galactic Constellate</option>
+                <option value="30">Shadow Wing</option>
+                <option value="31">DiableAvionics</option>
+                <option value="32">Gensoukyou</option>
+                <option value="33">Neutrino</option>
+                <option value="34">Volantian</option>
+                <option value="35">Galactic Constellate</option>
+                <option value="36">Shadow Wing</option>
+                <option value="37">DiableAvionics</option>
+                <option value="38">Gensoukyou</option>
+                <option value="39">Neutrino</option>
+                <option value="40">Volantian</option>
+                <option value="41">Galactic Constellate</option>
+                <option value="42">Shadow Wing</option>
+                <option value="43">DiableAvionics</option>
+                <option value="44">Gensoukyou</option>
+                <option value="45">Neutrino</option>
+                <option value="46">Volantian</option>
+                <option value="47">Galactic Constellate</option>
+                <option value="48">Shadow Wing</option>
             </select>
             <label class="ship-info">Celestial Bodies</label>
-            <select id="ship-class" aria-label="celestial objects" class="ship-class-selection">
+            <select onchange="hande_planets_dropdown()" id="add-planets" aria-label="celestial objects" class="ship-class-selection">
                 <option value="" disabled selected>--Select--</option>
-                <option value="1" onclick="add_planet_azura()">Planet - Azura Prime </option>
-                <option value="2" onclick="add_planet_crysalon()">Planet - Crysalon </option>
-                <option value="3" onclick="add_planet_eldoria()">Planet - Eldoria </option>
-                <option value="4" onclick="add_planet_hesperia()">Planet - Hesperia </option>
-                <option value="5" onclick="add_planet_pyraxis()">Planet - Pyraxis </option>
-                <option value="6" onclick="add_planet_moon()">Moon </option>
-                <option value="7" onclick="add_asteroid()">Asteroid - Single</option>
-                <option value="8" onclick="add_asteroid_field()">Asteroid - Field</option>
+                <option value="1">Planet - Azura Prime</option>
+                <option value="2">Planet - Crysalon</option>
+                <option value="3">Planet - Eldoria</option>
+                <option value="4">Planet - Hesperia</option>
+                <option value="5">Planet - Pyraxis</option>
+                <option value="6">Moon</option>
+                <option value="7">Asteroid - Single</option>
+                <option value="8">Asteroid - Field</option>
             </select>
             <input placeholder="0" type="number" id="newShipHP">
             <button onclick="update_hp()">Update HP</button>
@@ -108,7 +107,7 @@
             <div id="hp-container">
                 <button id="open-rules">Rules</button>
                 <button id="open-ship-stat-modal">Ship Stats</button>
-                <button class="side-panel-btn" type="button">
+                <button class="side-panel-btn" id="side-panel-btn" type="button">
                     <img class="open-span-icon" src="../images/icons/icons8-dice-48-black.png">
                 </button>
                 </div>
@@ -124,6 +123,7 @@
         </div>
         <table id="ship-table">
             <tr id="value2">
+                <th>Ship Icon</th>
                 <th>Ship Class</th>
                 <th>Hit Point</th>
                 <th>Damage Threshold</th>
@@ -297,7 +297,7 @@
     </div>
     <div id="dice-modal">
         <div id="ship-stat-close">
-            <span class="close-dice" id="stat-close">&times;</span>
+            <span class="close" id="dice-close">&times;</span>
         </div>
         <div class="modal-header">
             <h1 class="rules-header">Dice Rollers</h1>
@@ -398,6 +398,8 @@
     <script type="module" src="/js/shipstatmodalopenclose.js" defer></script>
     <script type="module" src="/js/modal.js" defer></script>
     <script type="module" src="/js/dice.js" defer></script>
+    <script type="module" src="/js/select.js" defer></script>
+    <script tpye="text/javascript">let username = "<%= username %>";</script>
 </body>
 
 </html>npm in

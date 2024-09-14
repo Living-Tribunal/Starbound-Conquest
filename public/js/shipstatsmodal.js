@@ -1,6 +1,7 @@
 const shipTypes = [
     {
       type: "Fighter",
+      shipTypeIcon: "../images/icons/rookie_64.png",
       hp: 1,
       damageThreshold: 1,
       threatLevel: 5,
@@ -13,6 +14,7 @@ const shipTypes = [
     },
     {
       type: "Frigate",
+      shipTypeIcon: "../images/icons/shuttle_64.png",
       hp: 2,
       damageThreshold: 2,
       threatLevel: 6,
@@ -25,6 +27,7 @@ const shipTypes = [
     },
     {
       type: "Destroyer",
+      shipTypeIcon: "../images/icons/destroyer_64.png",
       hp: 3,
       damageThreshold: 3,
       threatLevel: 7,
@@ -37,6 +40,7 @@ const shipTypes = [
     },
     {
       type: "Light Cruiser",
+      shipTypeIcon: "../images/icons/cruiser_64.png",
       hp: 4,
       damageThreshold: 4,
       threatLevel: 8,
@@ -49,6 +53,7 @@ const shipTypes = [
     },
     {
       type: "Heavy Cruiser",
+      shipTypeIcon: "../images/icons/battlecruiser_64.png",
       hp: 5,
       damageThreshold: 6,
       threatLevel: 9,
@@ -61,6 +66,7 @@ const shipTypes = [
     },
     {
       type: "Carrier",
+      shipTypeIcon: "../images/icons/superCapital_64.png",
       hp: 7,
       damageThreshold: 7,
       threatLevel: 10,
@@ -73,6 +79,7 @@ const shipTypes = [
     },
     {
       type: "Battleship",
+      shipTypeIcon: "../images/icons/battleship_64.png",
       hp: 8,
       damageThreshold: 8,
       threatLevel: 12,
@@ -85,6 +92,7 @@ const shipTypes = [
     },
     {
       type: "Dreadnought",
+      shipTypeIcon: "../images/icons/titan_64.png",
       hp: 10,
       damageThreshold: 10,
       threatLevel: 15,
@@ -102,6 +110,7 @@ const shipTypes = [
 shipTypes.forEach(ship => {
   let row = listShip_t.insertRow()
 
+  row.insertCell().innerHTML = `<img style="height: 64px; width: 64px" src="${ship.shipTypeIcon}" alt="Ship Icon">`;
   row.insertCell().textContent = ship.type;
   row.insertCell().textContent = ship.hp;
   row.insertCell().textContent = ship.damageThreshold;

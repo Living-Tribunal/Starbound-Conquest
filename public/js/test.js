@@ -9,7 +9,7 @@ var cursorY;
 var firstClick = [0, 0];
 var intervalLoop = null;
 var drawingEnabled = false;
-var dpi;
+var dpi = 15;
 
 document.getElementById("test").onclick = function () {
     drawingEnabled = !drawingEnabled;

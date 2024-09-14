@@ -70,6 +70,7 @@ import {
   add_planet_hesperia,
   add_planet_crysalon,
   add_planet_pyraxis,
+  add_planet_moon,
   add_asteroid,
   add_asteroid_field,
 } from "../functions/celestialbodies.js";
@@ -80,15 +81,18 @@ document.addEventListener("DOMContentLoaded", function () {
   let canvas = document.querySelector("canvas");
   let context = canvas.getContext("2d");
 
-  canvas.width = 3838;
+  canvas.width = 5838;
   canvas.height = 2559;
 
   let ships = [];
   let shipImages = {};
+  let totalFleetValue = 0;
+  //value for the max fleet size
+  let gameFleetValue = 370;
+
   let is_dragging = false;
   let current_ship_index = -1;
-  let stroke_color = "rgba(98, 207, 244)";
-  let hex_stroke = "rgba(52, 89, 183)";
+  let stroke_color = "rgba(98, 207, 244, .5)";
   let selectedShip = null;
   let update_ship_hp = 0;
 
@@ -113,8 +117,36 @@ document.addEventListener("DOMContentLoaded", function () {
 
   //damage colors
   const full = "rgba(0, 255, 0, 0.25)";
+  const yellow = "rgba(0, 255, 255, 0.25)";
   const medium = "rgba(255, 255, 0, 0.25)";
   const empty = "rgba(255, 0, 0, 0.25)";
+
+  const border_color = "rgba(0, 255, 0, 0.25)";
+
+  //offest for dragging the ships
+  let dragOffsetX = 0;
+  let dragOffsetY = 0;
+
+  //ship icons
+  let background_image = new Image();
+  let fighter = new Image();
+  let frigate = new Image();
+  let destroyer = new Image();
+  let light_cruiser = new Image();
+  let heavy_cruiser = new Image();
+  let carrier = new Image();
+  let battleship = new Image();
+  let dreadnought = new Image();
+
+  background_image.src = "../images/backgroundimage/starfield.png";
+  fighter.src = "../images/icons/rookie_64.png";
+  frigate.src = "../images/icons/shuttle_64.png";
+  destroyer.src = "../images/icons/destroyer_64.png";
+  light_cruiser.src = "../images/icons/cruiser_64.png";
+  heavy_cruiser.src = "../images/icons/battlecruiser_64.png";
+  carrier.src = "../images/icons/superCapital_64.png";
+  battleship.src = "../images/icons/battleship_64.png";
+  dreadnought.src = "../images/icons/titan_64.png";
 
   Object.assign(window, {
     add_planet_azura: () => add_planet_azura(shipImages, socket),
@@ -174,14 +206,11 @@ document.addEventListener("DOMContentLoaded", function () {
     add_dreadnought_ms: () => add_dreadnought_ms(shipImages, socket),
   });
 
-  let background_image = new Image();
-  background_image.src = "../images/backgroundimage/starfield.png";
-
-/*   document.getElementById("loadButton").addEventListener("click", load_canvas);
+  /*   document.getElementById("loadButton").addEventListener("click", load_canvas);
   document.getElementById("saveButton").addEventListener("click", save_canvas); */
-  console.log('Username from html:', username);
+  console.log("Username from html:", username);
 
-  function send_message_discord() {
+ /*  function send_message_discord() {
     const request = new XMLHttpRequest();
     request.open(
       "POST",
@@ -194,7 +223,7 @@ document.addEventListener("DOMContentLoaded", function () {
       content: `The game has been saved by ${username}`,
     };
     request.send(JSON.stringify(params));
-  }
+  } */
 
   function save_canvas() {
     const shipState = ships.map((ship) => ({
@@ -261,17 +290,8 @@ document.addEventListener("DOMContentLoaded", function () {
       .catch((error) => console.error("Error loading ship data:", error));
   }
 
-  function init() {
-    background_image.onload = function () {
-      const ptrn = context.createPattern(background_image, "repeat");
-      context.fillStyle = ptrn;
-      context.fillRect(0, 0, canvas.width, canvas.height);
-      drawGrid(canvas.width, canvas.height);
-    };
-  }
-  init();
-
-  function drawGrid() {
+  //taking out the grid to the gameboard for now. just using measurements for distance
+ /* function drawGrid() {
     context.save();
     for (let y = r; y + r * Math.sin(a) < canvas.height; y += r * Math.sin(a)) {
       for (
@@ -293,7 +313,7 @@ document.addEventListener("DOMContentLoaded", function () {
     context.closePath();
     context.strokeStyle = hex_stroke;
     context.stroke();
-  }
+  } */
 
   socket.on("initialize", (initialShips) => {
     initialShips.forEach((shipData) => {
@@ -353,6 +373,7 @@ document.addEventListener("DOMContentLoaded", function () {
       console.log(ships);
       shipImages[ship.id] = ship_image;
       draw_scene();
+      add_ship_value(ship);
       /* send_message_discord(ship); */
     };
     ship_image.src = shipData.image;
@@ -393,11 +414,39 @@ document.addEventListener("DOMContentLoaded", function () {
     }
   });
 
-  function draw_ship(ship) {
-    if (!shipImages[ship.id] || !shipImages[ship.id].complete) {
-      return;
-    }
+  function select_ship_icons(ship) {
+    let y = -ship.height / 4;
+    let x = 76;
+    if (ship.type != "CelestialBodies")
+      switch (ship.type) {
+        case "Fighter":
+          context.drawImage(fighter, x, y, 48, 48);
+          break;
+        case "Frigate":
+          context.drawImage(frigate, x, y, 48, 48);
+          break;
+        case "Destroyer":
+          context.drawImage(destroyer, x, y, 48, 48);
+          break;
+        case "Light Cruiser":
+          context.drawImage(light_cruiser, x, y, 48, 48);
+          break;
+        case "Heavy Cruiser":
+          context.drawImage(heavy_cruiser, x, y, 48, 48);
+          break;
+        case "Carrier":
+          context.drawImage(carrier, x, y, 48, 48);
+          break;
+        case "Battleship":
+          context.drawImage(battleship, x, y, 48, 48);
+          break;
+        case "Dreadnought":
+          context.drawImage(dreadnought, x, y, 48, 48);
+          break;
+      }
+  }
 
+  function draw_ship(ship) {
     context.save();
     context.translate(
       ship.x + (ship.width * zoomStep) / 2,
@@ -419,8 +468,8 @@ document.addEventListener("DOMContentLoaded", function () {
     );
 
     if (ship.type === "CelestialBodies") {
-      context.strokeStyle = "green";
-      context.lineWidth = 2;
+      context.strokeStyle = full;
+      context.lineWidth = 3;
       context.strokeRect(
         -ship.width / 2,
         -ship.height / 2,
@@ -430,11 +479,12 @@ document.addEventListener("DOMContentLoaded", function () {
     } else {
       if (!ship.highlighted) {
         circles_for_hp(ship);
+        select_ship_icons(ship);
       }
     }
     if (ship.highlighted) {
       draw_arc_around_ship(ship);
-      draw_hex_under_ship(ship);
+      /* draw_hex_under_ship(ship); */
     }
 
     context.restore();
@@ -446,12 +496,16 @@ document.addEventListener("DOMContentLoaded", function () {
     context.translate(panX, panY);
     context.scale(zoom, zoom);
 
-    if (background_image.complete) {
+    if (background_image) {
       const pattern = context.createPattern(background_image, "repeat");
       context.fillStyle = pattern;
       context.fillRect(0, 0, canvas.width, canvas.height);
+
+      context.strokeStyle = stroke_color;
+      context.lineWidth = 3;
+      context.strokeRect(0, 0, canvas.width, canvas.height);
     }
-    drawGrid();
+    /* drawGrid(); */
 
     ships.forEach((ship) => {
       draw_ship(ship);
@@ -473,19 +527,19 @@ document.addEventListener("DOMContentLoaded", function () {
       fillColor = full;
       context.beginPath();
       context.arc(x, y, 20, 0, 2 * Math.PI);
-      context.fillStyle = full;
-      context.lineWidth = 1;
-      context.strokeStyle = stroke_color;
+      context.fillStyle = fillColor;
+      context.lineWidth = 3;
+      context.strokeStyle = fillColor;
       context.fill();
       context.stroke();
       context.closePath();
-    } else if (hpPercentage > 0) {
+    } else if (hpPercentage < 50 && hpPercentage >= 25) {
       fillColor = medium;
       context.beginPath();
       context.arc(x, y, 20, 0, 2 * Math.PI);
-      context.fillStyle = medium;
-      context.lineWidth = 1;
-      context.strokeStyle = stroke_color;
+      context.fillStyle = fillColor;
+      context.lineWidth = 3;
+      context.strokeStyle = fillColor;
       context.fill();
       context.stroke();
       context.closePath();
@@ -493,9 +547,9 @@ document.addEventListener("DOMContentLoaded", function () {
       fillColor = empty;
       context.beginPath();
       context.arc(x, y, 20, 0, 2 * Math.PI);
-      context.fillStyle = empty;
-      context.lineWidth = 1;
-      context.strokeStyle = stroke_color;
+      context.fillStyle = fillColor;
+      context.lineWidth = 3;
+      context.strokeStyle = fillColor;
       context.fill();
       context.stroke();
       context.closePath();
@@ -505,7 +559,7 @@ document.addEventListener("DOMContentLoaded", function () {
   function draw_arc_around_ship(ship) {
     if (ship.type != "CelestialBodies") {
       context.beginPath();
-      context.strokeStyle = stroke_color; //right firing angle
+      context.strokeStyle = "transparent"; //right firing angle
       context.fillStyle = sides_color;
       context.lineWidth = 2;
       context.moveTo(0, 0);
@@ -517,7 +571,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
       context.beginPath();
       context.moveTo(0, 0); //rear firing angle
-      context.strokeStyle = stroke_color;
+      context.strokeStyle = "transparent";
       context.fillStyle = front_rear_color;
       context.arc(0, 0, radius2, 0.25 * Math.PI, 0.75 * Math.PI);
       context.stroke();
@@ -526,7 +580,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
       context.beginPath();
       context.moveTo(0, 0);
-      context.strokeStyle = stroke_color; //left side
+      context.strokeStyle = "transparent"; //left side
       context.fillStyle = sides_color;
       context.arc(0, 0, radius2, 0.75 * Math.PI, 1.25 * Math.PI);
       context.stroke();
@@ -535,7 +589,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
       context.beginPath();
       context.moveTo(0, 0);
-      context.strokeStyle = stroke_color;
+      context.strokeStyle = "transparent";
       context.fillStyle = front_rear_color;
       context.arc(0, 0, radius2, 1.25 * Math.PI, -0.75);
       context.stroke();
@@ -544,7 +598,7 @@ document.addEventListener("DOMContentLoaded", function () {
     }
   }
 
-  function draw_hex_under_ship(ship) {
+  /* function draw_hex_under_ship(ship) {
     if (ship.type != "CelestialBodies") {
       context.beginPath();
       context.strokeStyle = stroke_color;
@@ -562,14 +616,14 @@ document.addEventListener("DOMContentLoaded", function () {
       context.closePath();
       context.stroke();
     }
-  }
+  } */
 
   function draw_zoom_percentage() {
     context.save();
-    context.fillStyle = "rgba(37, 37, 37, 0.7)";
+    context.fillStyle = full;
     context.font = "30px monospace";
-    context.strokeStyle = stroke_color;
-    context.lineWidth = 2;
+    context.strokeStyle = full;
+    context.lineWidth = 3;
     if (zoom < 1) {
       context.beginPath();
       context.rect(4, 170, 200, 50);
@@ -587,52 +641,70 @@ document.addEventListener("DOMContentLoaded", function () {
       let hpPercentage = (selectedShip.hp / maxHP) * 100;
       let fillColor;
 
-      if (hpPercentage >= 50) {
+      if (hpPercentage >= 75) {
         fillColor = full;
-      } else if (hpPercentage > 0) {
+      } else if (hpPercentage >= 50) {
+        fillColor = yellow;
+      } else if (hpPercentage >= 25){
         fillColor = medium;
-      } else {
+      }else{
         fillColor = empty;
       }
       if (selectedShip.type != "CelestialBodies") {
         context.save();
         context.translate(0, 0);
-        context.fillStyle = 'red';
         context.font = "25px monospace";
-        context.lineWidth = 7;
 
         context.beginPath();
-        context.strokeStyle = 'rgba(0, 0, 0, 0.7)';
-        context.rect(4, 15, 820, 550);
-        context.fillStyle = 'rgba(0, 0, 0, 0.3)';
+        context.strokeStyle = fillColor;
+        context.rect(4, 15, 325, 50);
+        context.fillStyle = fillColor;
+        context.fill();
+        context.stroke();
+
+        context.beginPath();
+        context.strokeStyle = fillColor;
+        context.rect(4, 70, 325, 50);
+        context.fillStyle = fillColor;
         context.fill();
         context.stroke();
 
         context.fillStyle = "white";
-        context.fillText(`ID: ${selectedShip.id}`, 10, 50);
+        context.fillText(`Ship Type: ${selectedShip.type}`, 10, 50);
         context.fillText(`HP: ${selectedShip.hp}`, 10, 100);
-        context.fillText(`Ship Type: ${selectedShip.type}`, 10, 150);
-        context.fillText(`Damage Threshold: ${selectedShip.damageThreshold}`, 10, 200);
-        context.fillText(`Threat Level: ${selectedShip.threatLevel}`, 10, 250);
-        context.fillText(`Move Distance: ${selectedShip.moveDistance}`, 10, 300);
-        context.fillText(`Weapon Type: ${selectedShip.weaponType}`, 10, 350);
-        context.fillText(`Firing Arc: ${selectedShip.firingArc}`, 10, 400);
-        context.fillText(`Weapon Damage: ${selectedShip.weaponDamage}`, 10, 450);
-        context.fillText(`Weapon Range: ${selectedShip.weaponRange}`, 10, 500);
-        context.fillText(`Point Value: ${selectedShip.pointValue}`, 10, 550);
+
 
         context.restore();
       }
     }
   }
 
+  function show_game_value() {
+    const game_value_element = document.getElementById("gameValue");
+    game_value_element.textContent = `Total Fleet Value: ${gameFleetValue}`;
+  }
+
+  function update_fleet_value() {
+    const fleet_value_element = document.getElementById("shipValue");
+    fleet_value_element.textContent = `Your Fleet Value: ${totalFleetValue}`;
+  }
+
+  function add_ship_value(ship) {
+    totalFleetValue += ship.pointValue;
+    if (totalFleetValue > gameFleetValue) {
+      alert(`Your fleet value is too large. Keep it under: ${gameFleetValue}`);
+    }
+    console.log(totalFleetValue);
+    update_fleet_value();
+  }
+
   function on_mouse_move(event) {
     if (is_dragging && current_ship_index !== -1) {
       let ship = ships[current_ship_index];
       ship.x =
-        (event.clientX - canvas.getBoundingClientRect().left - panX) / zoom;
+        (event.clientX - canvas.getBoundingClientRect().left - panX) / zoom + dragOffsetX;
       ship.y =
-        (event.clientY - canvas.getBoundingClientRect().top - panY) / zoom;
+        (event.clientY - canvas.getBoundingClientRect().top - panY) / zoom + dragOffsetY;
       socket.emit("moveShip", { ...ship, image: { src: ship.image.src } });
     } else if (is_panning) {
       panX = event.clientX - startX;
@@ -668,16 +740,24 @@ document.addEventListener("DOMContentLoaded", function () {
         selectedShip = null;
         socket.emit("deleteShip", { id: ship.id });
         ships.splice(i, 1);
+        //dont go below zero
+        totalFleetValue -= ship.pointValue;
+        if (totalFleetValue <= 0) {
+          totalFleetValue = 0;
+        }
         console.log(ships);
         draw_scene();
+        update_fleet_value();
         break; // Exit loop after removing the ship
       }
     }
   });
 
   canvas.addEventListener("mousedown", (event) => {
-    const mouseX = (event.clientX - canvas.getBoundingClientRect().left - panX) / zoom;
-    const mouseY = (event.clientY - canvas.getBoundingClientRect().top - panY) / zoom;
+    const mouseX =
+      (event.clientX - canvas.getBoundingClientRect().left - panX) / zoom;
+    const mouseY =
+      (event.clientY - canvas.getBoundingClientRect().top - panY) / zoom;
     let shipClicked = false;
 
     for (let i = ships.length - 1; i >= 0; i--) {
@@ -700,6 +780,10 @@ document.addEventListener("DOMContentLoaded", function () {
         ship.isSelected = true;
         ship.highlighted = true;
         shipClicked = true;
+
+
+        dragOffsetX = ship.x - mouseX;
+        dragOffsetY = ship.y - mouseY;
         break;
       }
     }
@@ -789,9 +873,9 @@ document.addEventListener("DOMContentLoaded", function () {
       ) {
         //ship rotation increment now its 45deg
         if (event.deltaY > 0) {
-          ship.rotation_angle += Math.PI / 4;
+          ship.rotation_angle += Math.PI / 3;
         } else if (event.deltaY < 0) {
-          ship.rotation_angle -= Math.PI / 4;
+          ship.rotation_angle -= Math.PI / 3;
         }
         socket.emit("updateShipRotate", {
           id: ship.id,
@@ -816,5 +900,6 @@ document.addEventListener("DOMContentLoaded", function () {
     draw_scene();
   });
 
-load_canvas();
+  load_canvas();
+  show_game_value();
 });
