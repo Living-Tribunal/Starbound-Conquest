@@ -87,6 +87,7 @@ document.addEventListener("DOMContentLoaded", function () {
   let ships = [];
   let shipImages = {};
   let totalFleetValue = 0;
+
   //value for the max fleet size
   let gameFleetValue = 370;
 
@@ -110,18 +111,16 @@ document.addEventListener("DOMContentLoaded", function () {
   let startY = 0;
 
   // Zoom variables
-  let zoom = 1;
+  window.zoom = 1;
   const minZoom = 0.25;
   const maxZoom = 1;
   const zoomStep = 0.1;
 
   //damage colors
   const full = "rgba(0, 255, 0, 0.25)";
-  const yellow = "rgba(0, 255, 255, 0.25)";
-  const medium = "rgba(255, 255, 0, 0.25)";
+  const yellow = "rgba(255, 255, 0, 0.25)";
+  const medium = "rgba(255, 162, 0, 0.25)";
   const empty = "rgba(255, 0, 0, 0.25)";
-
-  const border_color = "rgba(0, 255, 0, 0.25)";
 
   //offest for dragging the ships
   let dragOffsetX = 0;
@@ -210,7 +209,7 @@ document.addEventListener("DOMContentLoaded", function () {
   document.getElementById("saveButton").addEventListener("click", save_canvas); */
   console.log("Username from html:", username);
 
- /*  function send_message_discord() {
+  window.send_message_discord = function () {
     const request = new XMLHttpRequest();
     request.open(
       "POST",
@@ -220,10 +219,10 @@ document.addEventListener("DOMContentLoaded", function () {
     const params = {
       username: "Starbound Conquest",
       avatar_url: "",
-      content: `The game has been saved by ${username}`,
+      content: `${username} has ended their turn.`,
     };
     request.send(JSON.stringify(params));
-  } */
+  }
 
   function save_canvas() {
     const shipState = ships.map((ship) => ({
@@ -447,6 +446,9 @@ document.addEventListener("DOMContentLoaded", function () {
   }
 
   function draw_ship(ship) {
+    if (!shipImages[ship.id].complete) {
+      return;
+    }
     context.save();
     context.translate(
       ship.x + (ship.width * zoomStep) / 2,
@@ -496,13 +498,13 @@ document.addEventListener("DOMContentLoaded", function () {
     context.translate(panX, panY);
     context.scale(zoom, zoom);
 
-    if (background_image) {
+    if (background_image.complete) {
       const pattern = context.createPattern(background_image, "repeat");
       context.fillStyle = pattern;
       context.fillRect(0, 0, canvas.width, canvas.height);
 
       context.strokeStyle = stroke_color;
-      context.lineWidth = 3;
+      context.lineWidth = 10;
       context.strokeRect(0, 0, canvas.width, canvas.height);
     }
     /* drawGrid(); */
@@ -626,11 +628,11 @@ document.addEventListener("DOMContentLoaded", function () {
     context.lineWidth = 3;
     if (zoom < 1) {
       context.beginPath();
-      context.rect(4, 170, 200, 50);
+      context.rect(4, 180, 250, 50);
       context.fill();
       context.stroke();
       context.fillStyle = "white";
-      context.fillText(`Zoom: ${(zoom * 100).toFixed(0)}%`, 10, 205);
+      context.fillText(`Zoom: ${(zoom * 100).toFixed(0)}%`, 10, 213);
       context.restore();
     }
   }
@@ -639,6 +641,7 @@ document.addEventListener("DOMContentLoaded", function () {
     if (selectedShip) {
       let maxHP = selectedShip.maxHP;
       let hpPercentage = (selectedShip.hp / maxHP) * 100;
+      let angleInDegrees = selectedShip.rotation_angle * (180 / Math.PI);
       let fillColor;
 
       if (hpPercentage >= 75) {
@@ -669,9 +672,17 @@ document.addEventListener("DOMContentLoaded", function () {
         context.fill();
         context.stroke();
 
+        context.beginPath();
+        context.strokeStyle = fillColor;
+        context.rect(4, 125, 325, 50);
+        context.fillStyle = fillColor;
+        context.fill();
+        context.stroke();
+
         context.fillStyle = "white";
         context.fillText(`Ship Type: ${selectedShip.type}`, 10, 50);
         context.fillText(`HP: ${selectedShip.hp}`, 10, 100);
+        context.fillText(`Ship Rotation: ${angleInDegrees.toFixed(2)}°`, 10, 157);
 
 
         context.restore();
@@ -846,6 +857,10 @@ document.addEventListener("DOMContentLoaded", function () {
     draw_scene();
   });
 
+  function radiansToDegrees(radians) {
+    return radians * (180 / Math.PI);
+}
+
   canvas.addEventListener("wheel", (event) => {
     event.preventDefault();
 
@@ -873,10 +888,20 @@ document.addEventListener("DOMContentLoaded", function () {
       ) {
         //ship rotation increment now its 45deg
         if (event.deltaY > 0) {
-          ship.rotation_angle += Math.PI / 3;
+          ship.rotation_angle += Math.PI / 4;
         } else if (event.deltaY < 0) {
-          ship.rotation_angle -= Math.PI / 3;
+          ship.rotation_angle -= Math.PI / 4;
         }
+
+            // Ensure the rotation stays within 0 to 2 * Math.PI radians (0 to 360 degrees)
+        if (ship.rotation_angle >= 2 * Math.PI) {
+          ship.rotation_angle -= 2 * Math.PI; //wraps back to 0
+        } else if (ship.rotation_angle < 0) {
+          ship.rotation_angle += 2 * Math.PI; // Wrap back to 360 degrees (2π radians)
+        }
+
+  
+
         socket.emit("updateShipRotate", {
           id: ship.id,
           rotation_angle: ship.rotation_angle,

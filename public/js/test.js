@@ -11,6 +11,7 @@ var intervalLoop = null;
 var drawingEnabled = false;
 var dpi = 15;
 
+
 document.getElementById("test").onclick = function () {
     drawingEnabled = !drawingEnabled;
 
@@ -70,7 +71,7 @@ function startDragLine(e) {
         ctx2.stroke();
 
         var lineLengthPixels = Math.sqrt(Math.pow(cursorX - firstClick[0], 2) + Math.pow(cursorY - firstClick[1], 2)).toFixed(2);
-        var lineLengthInches = (lineLengthPixels / dpi).toFixed(0);
+        var lineLengthInches = ((lineLengthPixels / dpi) / zoom).toFixed(0);
 
         var midX = (firstClick[0] + cursorX - 100) / 2;
         var midY = (firstClick[1] + cursorY - 100) / 2;
