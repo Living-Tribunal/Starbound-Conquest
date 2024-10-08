@@ -520,6 +520,7 @@ function load_canvas() {
   }
 
   function draw_selected_ship_firing_range(ship) {
+    if (!is_dragging && !is_panning){
         switch (ship.type) {
           case "Fighter":
             context.beginPath();
@@ -611,9 +612,11 @@ function load_canvas() {
             context.fill();
           break;
           }
-  }
+        }
+      }
 
   function draw_arc_around_ship(ship) {
+    if (!is_dragging && !is_panning){
     if (ship.type != "CelestialBodies") {
       context.beginPath();
       context.strokeStyle = "transparent"; //right firing angle
@@ -654,6 +657,7 @@ function load_canvas() {
       context.fill();
     }
   }
+}
 
 function draw_zoom_percentage() {
     context.save();
@@ -673,7 +677,7 @@ function draw_zoom_percentage() {
   }
 
   function draw_selected_ship_info() {
-    if (selectedShip) {
+    if (selectedShip && !is_dragging) {
       let maxHP = selectedShip.maxHP;
       let hpPercentage = (selectedShip.hp / maxHP) * 100;
       let angleInDegrees = selectedShip.rotation_angle * (180 / Math.PI);
@@ -726,7 +730,6 @@ function draw_zoom_percentage() {
         context.fillText(`${selectedShip.shipId}`, 10, 100);
         context.fillText(`HP: ${selectedShip.hp}`, 10, 157);
         context.fillText(`Ship Rotation: ${angleInDegrees.toFixed(2)}°`, 10, 211);
-        context.fillText(`HP: ${selectedShip.weaponTypes}`, 10, 457);
         
         context.restore();
       }
