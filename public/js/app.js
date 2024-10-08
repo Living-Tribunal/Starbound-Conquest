@@ -1,66 +1,48 @@
 import {
   add_fighter_da,
-  add_frigate_da,
   add_destroyer_da,
-  add_lightcruiser_da,
-  add_heavycruiser_da,
+  add_cruiser_da,
   add_carrier_da,
-  add_battleship_da,
   add_dreadnought_da,
 } from "../functions/da.js";
 
 import {
   add_fighter_ge,
-  add_frigate_ge,
   add_destroyer_ge,
-  add_lightcruiser_ge,
-  add_heavycruiser_ge,
+  add_cruiser_ge,
   add_carrier_ge,
-  add_battleship_ge,
   add_dreadnought_ge,
 } from "../functions/ge.js";
 
 import {
   add_fighter_ne,
-  add_frigate_ne,
   add_destroyer_ne,
-  add_lightcruiser_ne,
-  add_heavycruiser_ne,
+  add_cruiser_ne,
   add_carrier_ne,
-  add_battleship_ne,
   add_dreadnought_ne,
 } from "../functions/ne.js";
 
 import {
   add_fighter_vo,
-  add_frigate_vo,
   add_destroyer_vo,
-  add_lightcruiser_vo,
-  add_heavycruiser_vo,
+  add_cruiser_vo,
   add_carrier_vo,
-  add_battleship_vo,
   add_dreadnought_vo,
 } from "../functions/vo.js";
 
 import {
   add_fighter_ms,
-  add_frigate_ms,
   add_destroyer_ms,
-  add_lightcruiser_ms,
-  add_heavycruiser_ms,
+  add_cruiser_ms,
   add_carrier_ms,
-  add_battleship_ms,
   add_dreadnought_ms,
 } from "../functions/sw.js";
 
 import {
   add_fighter_gr,
-  add_frigate_gr,
   add_destroyer_gr,
-  add_lightcruiser_gr,
-  add_heavycruiser_gr,
+  add_cruiser_gr,
   add_carrier_gr,
-  add_battleship_gr,
   add_dreadnought_gr,
 } from "../functions/gr.js";
 
@@ -97,6 +79,11 @@ document.addEventListener("DOMContentLoaded", function () {
   let selectedShip = null;
   let update_ship_hp = 0;
 
+  //markers
+  let markers = [];
+  let drawingMarker = false;
+
+
   //drawing the grid
   let a = (2 * Math.PI) / 6;
   let r = 40;
@@ -121,6 +108,25 @@ document.addEventListener("DOMContentLoaded", function () {
   const yellow = "rgba(255, 255, 0, 0.25)";
   const medium = "rgba(255, 162, 0, 0.25)";
   const empty = "rgba(255, 0, 0, 0.25)";
+
+  //weapon range colors and distanmces
+  const lightCannon = "rgba(245, 213, 112, 0.5)"; // Light yellow
+  const heavyCannon = "rgba(255, 99, 132, 0.5)"; // Soft red
+  const mediumCannon = "rgba(54, 162, 235, 0.5)";  // Light blue
+  const plasmaCannon = "rgba(153, 102, 255, 0.5)"; // Light purple
+  const railguns = "rgba(255, 159, 64, 0.5)"; // Orange
+  const missiles = "rgba(75, 192, 192, 0.5)"; // Aqua green
+  const particleBeam = "rgba(201, 203, 207, 0.5)"; // Light gray
+
+  const light = 445;
+  const mediumBlaster = 440;
+  const heavy = 440;
+  const plasma = 890;
+  const rail = 1800;
+  const rocket = 900;
+  const particle = 900;
+  const dreadPlasma = 1200;
+
 
   //offest for dragging the ships
   let dragOffsetX = 0;
@@ -156,58 +162,36 @@ document.addEventListener("DOMContentLoaded", function () {
     add_asteroid: () => add_asteroid(shipImages, socket),
     add_asteroid_field: () => add_asteroid_field(shipImages, socket),
     add_fighter_da: () => add_fighter_da(shipImages, socket),
-    add_frigate_da: () => add_frigate_da(shipImages, socket),
     add_destroyer_da: () => add_destroyer_da(shipImages, socket),
-    add_lightcruiser_da: () => add_lightcruiser_da(shipImages, socket),
-    add_heavycruiser_da: () => add_heavycruiser_da(shipImages, socket),
-    add_battleship_da: () => add_battleship_da(shipImages, socket),
+    add_cruiser_da: () => add_cruiser_da(shipImages, socket),
     add_carrier_da: () => add_carrier_da(shipImages, socket),
     add_dreadnought_da: () => add_dreadnought_da(shipImages, socket),
     add_fighter_ge: () => add_fighter_ge(shipImages, socket),
-    add_frigate_ge: () => add_frigate_ge(shipImages, socket),
     add_destroyer_ge: () => add_destroyer_ge(shipImages, socket),
-    add_lightcruiser_ge: () => add_lightcruiser_ge(shipImages, socket),
-    add_heavycruiser_ge: () => add_heavycruiser_ge(shipImages, socket),
-    add_battleship_ge: () => add_battleship_ge(shipImages, socket),
+    add_cruiser_ge: () => add_cruiser_ge(shipImages, socket),
     add_carrier_ge: () => add_carrier_ge(shipImages, socket),
     add_dreadnought_ge: () => add_dreadnought_ge(shipImages, socket),
     add_fighter_ne: () => add_fighter_ne(shipImages, socket),
-    add_frigate_ne: () => add_frigate_ne(shipImages, socket),
     add_destroyer_ne: () => add_destroyer_ne(shipImages, socket),
-    add_lightcruiser_ne: () => add_lightcruiser_ne(shipImages, socket),
-    add_heavycruiser_ne: () => add_heavycruiser_ne(shipImages, socket),
-    add_battleship_ne: () => add_battleship_ne(shipImages, socket),
+    add_cruiser_ne: () => add_cruiser_ne(shipImages, socket),
     add_carrier_ne: () => add_carrier_ne(shipImages, socket),
     add_dreadnought_ne: () => add_dreadnought_ne(shipImages, socket),
     add_fighter_vo: () => add_fighter_vo(shipImages, socket),
-    add_frigate_vo: () => add_frigate_vo(shipImages, socket),
     add_destroyer_vo: () => add_destroyer_vo(shipImages, socket),
-    add_lightcruiser_vo: () => add_lightcruiser_vo(shipImages, socket),
-    add_heavycruiser_vo: () => add_heavycruiser_vo(shipImages, socket),
-    add_battleship_vo: () => add_battleship_vo(shipImages, socket),
+    add_cruiser_vo: () => add_cruiser_vo(shipImages, socket),
     add_carrier_vo: () => add_carrier_vo(shipImages, socket),
     add_dreadnought_vo: () => add_dreadnought_vo(shipImages, socket),
     add_fighter_gr: () => add_fighter_gr(shipImages, socket),
-    add_frigate_gr: () => add_frigate_gr(shipImages, socket),
     add_destroyer_gr: () => add_destroyer_gr(shipImages, socket),
-    add_lightcruiser_gr: () => add_lightcruiser_gr(shipImages, socket),
-    add_heavycruiser_gr: () => add_heavycruiser_gr(shipImages, socket),
-    add_battleship_gr: () => add_battleship_gr(shipImages, socket),
+    add_cruiser_gr: () => add_cruiser_gr(shipImages, socket),
     add_carrier_gr: () => add_carrier_gr(shipImages, socket),
     add_dreadnought_gr: () => add_dreadnought_gr(shipImages, socket),
     add_fighter_ms: () => add_fighter_ms(shipImages, socket),
-    add_frigate_ms: () => add_frigate_ms(shipImages, socket),
     add_destroyer_ms: () => add_destroyer_ms(shipImages, socket),
-    add_lightcruiser_ms: () => add_lightcruiser_ms(shipImages, socket),
-    add_heavycruiser_ms: () => add_heavycruiser_ms(shipImages, socket),
-    add_battleship_ms: () => add_battleship_ms(shipImages, socket),
+    add_cruiser_ms: () => add_cruiser_ms(shipImages, socket),
     add_carrier_ms: () => add_carrier_ms(shipImages, socket),
     add_dreadnought_ms: () => add_dreadnought_ms(shipImages, socket),
   });
-
-  /*   document.getElementById("loadButton").addEventListener("click", load_canvas);
-  document.getElementById("saveButton").addEventListener("click", save_canvas); */
-  console.log("Username from html:", username);
 
   window.send_message_discord = function () {
     const request = new XMLHttpRequest();
@@ -224,7 +208,7 @@ document.addEventListener("DOMContentLoaded", function () {
     request.send(JSON.stringify(params));
   }
 
-  function save_canvas() {
+function save_canvas() {
     const shipState = ships.map((ship) => ({
       ...ship,
       image: ship.image.src,
@@ -254,14 +238,14 @@ document.addEventListener("DOMContentLoaded", function () {
       .catch((error) => console.error("Error:", error));
   }
 
-  function load_canvas() {
+function load_canvas() {
     fetch("/load-ship-data", {
       method: "GET",
       mode: "cors",
     })
       .then((response) => response.json())
       .then((data) => {
-        console.log("Loaded data:", data);
+      console.log("Loaded data:", data);
 
         const shipsData = Array.isArray(data.ships) ? data.ships : [];
 
@@ -271,13 +255,16 @@ document.addEventListener("DOMContentLoaded", function () {
         shipsData.forEach((shipData) => {
           console.log("Processing shipData:", shipData);
 
+          shipData.weaponTypes = shipData.weaponTypes ? shipData.weaponTypes.split(',') : [];
+          shipData.maneuvers = shipData.maneuvers ? shipData.maneuvers.split(',') : [];
+
           let ship_image = new Image();
           ship_image.onload = function () {
             let ship = {
               ...shipData,
               image: ship_image,
-              isSelected: false,
               highlighted: false,
+              isSelected: false,
             };
             ships.push(ship);
             shipImages[shipData.id] = ship_image;
@@ -288,31 +275,6 @@ document.addEventListener("DOMContentLoaded", function () {
       })
       .catch((error) => console.error("Error loading ship data:", error));
   }
-
-  //taking out the grid to the gameboard for now. just using measurements for distance
- /* function drawGrid() {
-    context.save();
-    for (let y = r; y + r * Math.sin(a) < canvas.height; y += r * Math.sin(a)) {
-      for (
-        let x = r, j = 0;
-        x + r * (1 + Math.cos(a)) < canvas.width;
-        x += r * (1 + Math.cos(a)), y += (-1) ** j++ * r * Math.sin(a)
-      ) {
-        drawHexagon(x, y);
-      }
-    }
-    context.restore();
-  }
-
-  function drawHexagon(x, y) {
-    context.beginPath();
-    for (let i = 0; i < 6; i++) {
-      context.lineTo(x + r * Math.cos(a * i), y + r * Math.sin(a * i));
-    }
-    context.closePath();
-    context.strokeStyle = hex_stroke;
-    context.stroke();
-  } */
 
   socket.on("initialize", (initialShips) => {
     initialShips.forEach((shipData) => {
@@ -416,28 +378,18 @@ document.addEventListener("DOMContentLoaded", function () {
   function select_ship_icons(ship) {
     let y = -ship.height / 4;
     let x = 76;
-    if (ship.type != "CelestialBodies")
       switch (ship.type) {
         case "Fighter":
           context.drawImage(fighter, x, y, 48, 48);
           break;
-        case "Frigate":
-          context.drawImage(frigate, x, y, 48, 48);
-          break;
         case "Destroyer":
           context.drawImage(destroyer, x, y, 48, 48);
           break;
-        case "Light Cruiser":
+        case "Cruiser":
           context.drawImage(light_cruiser, x, y, 48, 48);
-          break;
-        case "Heavy Cruiser":
-          context.drawImage(heavy_cruiser, x, y, 48, 48);
           break;
         case "Carrier":
           context.drawImage(carrier, x, y, 48, 48);
-          break;
-        case "Battleship":
-          context.drawImage(battleship, x, y, 48, 48);
           break;
         case "Dreadnought":
           context.drawImage(dreadnought, x, y, 48, 48);
@@ -469,7 +421,7 @@ document.addEventListener("DOMContentLoaded", function () {
       ship.height
     );
 
-    if (ship.type === "CelestialBodies") {
+    if (ship.type === "CelestialBodies" /* || ship.type === ship.type */) {
       context.strokeStyle = full;
       context.lineWidth = 3;
       context.strokeRect(
@@ -486,7 +438,7 @@ document.addEventListener("DOMContentLoaded", function () {
     }
     if (ship.highlighted) {
       draw_arc_around_ship(ship);
-      /* draw_hex_under_ship(ship); */
+      draw_selected_ship_firing_range(ship);
     }
 
     context.restore();
@@ -511,6 +463,15 @@ document.addEventListener("DOMContentLoaded", function () {
 
     ships.forEach((ship) => {
       draw_ship(ship);
+    });
+
+    markers.forEach((marker) => {
+      context.fillStyle = full;
+      context.beginPath();
+      context.lineWidth = 1;
+      context.arc(marker.x, marker.y, 30, 0, 2 * Math.PI);
+      context.fill();
+      context.stroke();
     });
 
     context.globalAlpha = 1.0;
@@ -558,6 +519,100 @@ document.addEventListener("DOMContentLoaded", function () {
     }
   }
 
+  function draw_selected_ship_firing_range(ship) {
+        switch (ship.type) {
+          case "Fighter":
+            context.beginPath();
+            context.strokeStyle = lightCannon;
+            context.fillStyle = 'transparent';
+            context.lineWidth = 5;
+            context.arc(0, 0, light, 0, 2 * Math.PI);
+            context.stroke();
+            context.closePath();
+            context.fill();
+            break;
+          case "Destroyer":
+            context.beginPath();
+            context.strokeStyle = mediumCannon;
+            context.fillStyle = 'transparent';
+            context.lineWidth = 5;
+            context.arc(0, 0, mediumBlaster, 0, 2 * Math.PI);
+            context.stroke();
+            context.closePath();
+            context.fill();
+            break;
+          case "Cruiser":
+            //heavy blaster
+            context.beginPath();
+            context.strokeStyle = heavyCannon;
+            context.fillStyle = 'transparent';
+            context.lineWidth = 5;
+            context.arc(0, 0, heavy, 0, 2 * Math.PI);
+            context.stroke();
+            context.closePath();
+            context.fill();
+            //plasma cannon
+            context.beginPath();
+            context.strokeStyle = plasmaCannon;
+            context.fillStyle = 'transparent';
+            context.lineWidth = 5;
+            context.arc(0, 0, plasma, 0, 2 * Math.PI);
+            context.stroke();
+            context.closePath();
+            context.fill();
+            break;
+          case "Carrier":
+            //350 railguns
+            context.beginPath();
+            context.strokeStyle = railguns;
+            context.fillStyle = 'transparent';
+            context.lineWidth = 5;
+            context.arc(0, 0, rail, 0, 2 * Math.PI);
+            context.stroke();
+            context.closePath();
+            context.fill();
+            //missiel launches
+            context.beginPath();
+            context.strokeStyle = missiles;
+            context.fillStyle = 'transparent';
+            context.lineWidth = 5;
+            context.arc(0, 0, rocket, 0, 2 * Math.PI);
+            context.stroke();
+            context.closePath();
+            context.fill();
+          break;
+          case "Dreadnought":
+            //350 railgun
+            context.beginPath();
+            context.strokeStyle = railguns;
+            context.fillStyle = 'transparent';
+            context.lineWidth = 5;
+            context.arc(0, 0, rail, 0, 2 * Math.PI);
+            context.stroke();
+            context.closePath();
+            context.fill();
+            //plasma cannon
+            context.beginPath();
+            context.strokeStyle = plasmaCannon;
+            context.fillStyle = 'transparent';
+            context.lineWidth = 5;
+            context.arc(0, 0, dreadPlasma, 0, 2 * Math.PI);
+            context.stroke();
+            context.closePath();
+            context.fill();
+            //paRTicle beam
+            context.beginPath();
+            context.strokeStyle = particleBeam;
+            context.fillStyle = 'transparent';
+            context.lineWidth = 5;
+            context.arc(0, 0, particle, 0, 2 * Math.PI);
+            context.stroke();
+            context.closePath();
+            context.fill();
+          break;
+          }
+  }
+
   function draw_arc_around_ship(ship) {
     if (ship.type != "CelestialBodies") {
       context.beginPath();
@@ -600,27 +655,7 @@ document.addEventListener("DOMContentLoaded", function () {
     }
   }
 
-  /* function draw_hex_under_ship(ship) {
-    if (ship.type != "CelestialBodies") {
-      context.beginPath();
-      context.strokeStyle = stroke_color;
-      context.lineWidth = 5;
-      let radius = Math.max(40, 40) / 2 + 20;
-      for (let i = 0; i < 6; i++) {
-        let x = -25 + 50 / 2 + radius * Math.cos(a * i);
-        let y = -25 + 50 / 2 + radius * Math.sin(a * i);
-        if (i === 0) {
-          context.moveTo(x, y);
-        } else {
-          context.lineTo(x, y);
-        }
-      }
-      context.closePath();
-      context.stroke();
-    }
-  } */
-
-  function draw_zoom_percentage() {
+function draw_zoom_percentage() {
     context.save();
     context.fillStyle = full;
     context.font = "30px monospace";
@@ -628,11 +663,11 @@ document.addEventListener("DOMContentLoaded", function () {
     context.lineWidth = 3;
     if (zoom < 1) {
       context.beginPath();
-      context.rect(4, 180, 250, 50);
+      context.rect(4, 235, 250, 50);
       context.fill();
       context.stroke();
       context.fillStyle = "white";
-      context.fillText(`Zoom: ${(zoom * 100).toFixed(0)}%`, 10, 213);
+      context.fillText(`Zoom: ${(zoom * 100).toFixed(0)}%`, 10, 269);
       context.restore();
     }
   }
@@ -679,12 +714,20 @@ document.addEventListener("DOMContentLoaded", function () {
         context.fill();
         context.stroke();
 
+        context.beginPath();
+        context.strokeStyle = fillColor;
+        context.rect(4, 180, 325, 50);
+        context.fillStyle = fillColor;
+        context.fill();
+        context.stroke();
+
         context.fillStyle = "white";
         context.fillText(`Ship Type: ${selectedShip.type}`, 10, 50);
-        context.fillText(`HP: ${selectedShip.hp}`, 10, 100);
-        context.fillText(`Ship Rotation: ${angleInDegrees.toFixed(2)}°`, 10, 157);
-
-
+        context.fillText(`${selectedShip.shipId}`, 10, 100);
+        context.fillText(`HP: ${selectedShip.hp}`, 10, 157);
+        context.fillText(`Ship Rotation: ${angleInDegrees.toFixed(2)}°`, 10, 211);
+        context.fillText(`HP: ${selectedShip.weaponTypes}`, 10, 457);
+        
         context.restore();
       }
     }
@@ -724,6 +767,40 @@ document.addEventListener("DOMContentLoaded", function () {
     draw_scene();
   }
 
+  document.getElementById("marker").onclick = function () {
+    drawingMarker = !drawingMarker;
+    if (drawingMarker) {
+        document.getElementById("marker").style.backgroundColor = 'gold';
+        canvas.addEventListener('click', drawMarker);
+        remove_markers();
+    } else {
+        document.getElementById("marker").style.backgroundColor = 'white';
+        canvas.removeEventListener('click', drawMarker);
+    }
+  };
+
+//drawing markers
+function drawMarker(event) {
+    let position = getCursorPosition(canvas, event);
+    markers.push(position);
+    console.log(position);
+    draw_scene();
+}
+
+function getCursorPosition(canvas, event) {
+  const mouseX = (event.clientX - canvas.getBoundingClientRect().left - panX) / zoom;
+  const mouseY = (event.clientY - canvas.getBoundingClientRect().top - panY) / zoom;
+    return{
+        x: mouseX,
+        y: mouseY
+    };
+}
+
+function remove_markers(){
+  markers = [];
+  draw_scene();
+}
+
   canvas.addEventListener("dblclick", (event) => {
     // Get canvas position and adjust mouse coordinates
     const mouseX =
@@ -746,7 +823,6 @@ document.addEventListener("DOMContentLoaded", function () {
         mouseY >= shipTop &&
         mouseY <= shipBottom
       ) {
-        // Remove the ship from the array
         ship.highlighted = false;
         selectedShip = null;
         socket.emit("deleteShip", { id: ship.id });
@@ -759,7 +835,7 @@ document.addEventListener("DOMContentLoaded", function () {
         console.log(ships);
         draw_scene();
         update_fleet_value();
-        break; // Exit loop after removing the ship
+        break;
       }
     }
   });
@@ -918,13 +994,10 @@ document.addEventListener("DOMContentLoaded", function () {
         zoom -= zoomStep;
       }
     }
-
-    // Clamp zoom to min/max values
     zoom = Math.max(minZoom, Math.min(maxZoom, zoom));
 
     draw_scene();
   });
-
-  load_canvas();
-  show_game_value();
+    load_canvas();
+    show_game_value();  
 });

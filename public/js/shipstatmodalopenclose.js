@@ -11,11 +11,6 @@ let rules_btn = document.getElementById("open-rules");
 let span = document.getElementById("stat-close");
 let rules_span = document.getElementById("rules-close");
 
-// When the user clicks on the button, open the modal
-btn.onclick = function() {
-  stat_modal.style.display = "block";
-}
-
 rules_btn.onclick = function() {
   modal_rules.style.display = "block";
 }

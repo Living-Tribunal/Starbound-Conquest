@@ -9,6 +9,7 @@
   --lightened_deep_red: #B22222;
   --goldenrod: #b6850b;
   --gold: #FFD700;
+  --blue: #0051ff;
   --off_black: #05040c;
 }
 
@@ -107,7 +108,7 @@ a:hover {
 
 button{
   cursor: pointer;
-  padding: 5px;
+  padding: 3px;
   border-color: var(--var(--white));
   border-style:solid;
   transition: 200ms ease-in;
@@ -121,7 +122,7 @@ button{
 
 .ship-info{
   padding: 5px;
-  font-size: 15px; 
+  font-size: 13px; 
   background-color: var(--dark_gray);
   color: var(--white);
   display: flex;
@@ -484,7 +485,7 @@ width: 40px;
 height: 40px;
 flex-shrink: 0;
 display: flex;
-align-self: flex-end;
+justify-content: center;
 place-items: center;
 cursor: pointer;
 background-color: var(--white);
@@ -498,20 +499,30 @@ display: flex;
 display: grid;
 justify-content: center;
 align-self: center;
-gap: 18px;
+gap: 15px;
 color: var(--white);
-font-size: 15px;
+font-size: 20px;
 padding: 10px
 }
 
-.dice-rollers{
-display: grid;
-justify-content: center;
+.d20{
+  font-weight: bold;
+  background-color: var(--blue_gray);
+  text-align: center;
+  padding: 5px;
+}
+
+#d20rolls,
+#d3rolls,
+#d6rolls,
+#d8rolls{
+  font-size: 20px;
+  text-align: center;
 }
 
 #left {
 display: flex;
-justify-content:flex-start ;
+justify-content:center;
 }
 
 #right {

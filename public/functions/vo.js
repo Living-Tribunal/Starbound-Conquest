@@ -1,3 +1,5 @@
+let shipNum = 0;
+
 export function add_fighter_vo(shipImages, socket) {
   let ship_image = new Image();
   ship_image.src = "../images/Volantian/metatron.png";
@@ -5,6 +7,7 @@ export function add_fighter_vo(shipImages, socket) {
     console.log("Fighter loaded");
     let ship = {
       id: Date.now(),
+      shipId: "FG-ID:" +" " + (++shipNum),
       type: "Fighter",
       x: 500,
       y: 200,
@@ -17,47 +20,13 @@ export function add_fighter_vo(shipImages, socket) {
       globalAlpha: 1,
       maxHP: 1,
       hp: 1,
-      damageThreshold: 1,
-      threatLevel: 5,
-      moveDistance: "14 hexes",
-      weaponType: "Laser Cannon",
-      firingArc: "Turret(360°)",
-      weaponDamage: "1d3",
-      weaponRange: "30ft",
-      pointValue: 30,
-    };
-    shipImages[ship.id] = ship_image;
-    socket.emit("createShip", ship);
-  };
-}
-
-export function add_frigate_vo(shipImages, socket) {
-  let ship_image = new Image();
-  ship_image.src = "../images/Volantian/glint.png";
-  ship_image.onload = function () {
-    console.log("Frigate loaded");
-    let ship = {
-      id: Date.now(),
-      type: "Frigate",
-      x: 500,
-      y: 200,
-      width: 128,
-      height: 93,
-      isSelected: false,
-      highlighted: false,
-      rotation_angle: 0,
-      image: ship_image.src,
-      globalAlpha: 1,
-      maxHP: 2,
-      hp: 2,
-      damageThreshold: 2,
-      threatLevel: 6,
-      moveDistance: "12 hexes",
-      weaponType: "Missile Batteries",
-      firingArc: "Forward(90°)",
-      weaponDamage: "1d6",
-      weaponRange: "70ft",
-      pointValue: 50,
+      speed: 80,
+      to_hit: 15,
+      soak: 1,
+      pointValue: 10,
+      capacity_value: 0,
+      weaponTypes: ["Light Blaster"],
+      maneuvers: ["Full Throttle", "Evasive Maneuvers", "Combine Fire"]
     };
     shipImages[ship.id] = ship_image;
     socket.emit("createShip", ship);
@@ -71,6 +40,7 @@ export function add_destroyer_vo(shipImages, socket) {
     console.log("Destroyer loaded");
     let ship = {
       id: Date.now(),
+      shipId: "DE-ID:" +" " + (++shipNum),
       type: "Destroyer",
       x: 500,
       y: 200,
@@ -81,30 +51,30 @@ export function add_destroyer_vo(shipImages, socket) {
       rotation_angle: 0,
       image: ship_image.src,
       globalAlpha: 1,
-      maxHP: 3,
-      hp: 3,
-      damageThreshold: 3,
-      threatLevel: 7,
-      moveDistance: "10 hexes",
-      weaponType: "Plasma Torpedos",
-      firingArc: "Forward(90°)",
-      weaponDamage: "1d8",
-      weaponRange: "50ft",
-      pointValue: 70,
+      maxHP: 8,
+      hp: 8,
+      speed: 60,
+      to_hit: 10,
+      soak: 1,
+      pointValue: 30,
+      capacity_value: 0,
+      weaponTypes: ["Medium Blaster"],
+      maneuvers: ["Full Throttle", "Anti-Fighter Barrage", "Power Up Main Guns"]
     };
     shipImages[ship.id] = ship_image;
     socket.emit("createShip", ship);
   };
 }
 
-export function add_lightcruiser_vo(shipImages, socket) {
+export function add_cruiser_vo(shipImages, socket) {
   let ship_image = new Image();
   ship_image.src = "../images/Volantian/pyralis_vri.png";
   ship_image.onload = function () {
-    console.log("Light Cruiser loaded");
+    console.log("Cruiser loaded");
     let ship = {
       id: Date.now(),
-      type: "Light Cruiser",
+      shipId: "CR-ID:" +" " + (++shipNum),
+      type: "Cruiser",
       x: 500,
       y: 200,
       width: 216,
@@ -114,49 +84,15 @@ export function add_lightcruiser_vo(shipImages, socket) {
       rotation_angle: 0,
       image: ship_image.src,
       globalAlpha: 1,
-      maxHP: 4,
-      hp: 4,
-      damageThreshold: 4,
-      threatLevel: 8,
-      moveDistance: "10 hexes",
-      weaponType: "Dual Laser Cannon",
-      firingArc: "Turret(360°)",
-      weaponDamage: "2d3",
-      weaponRange: "30ft",
-      pointValue: 90,
-    };
-    shipImages[ship.id] = ship_image;
-    socket.emit("createShip", ship);
-  };
-}
-
-export function add_heavycruiser_vo(shipImages, socket) {
-  let ship_image = new Image();
-  ship_image.src = "../images/Volantian/curator.png";
-  ship_image.onload = function () {
-    console.log("Heavy Cruiser loaded");
-    let ship = {
-      id: Date.now(),
-      type: "Heavy Cruiser",
-      x: 500,
-      y: 200,
-      width: 132,
-      height: 280,
-      isSelected: false,
-      highlighted: false,
-      rotation_angle: 0,
-      image: ship_image.src,
-      globalAlpha: 1,
-      maxHP: 5,
-      hp: 5,
-      damageThreshold: 6,
-      threatLevel: 9,
-      moveDistance: "6 hexes",
-      weaponType: "Railguns",
-      firingArc: "Portside(90°)/Starboard(90°)",
-      weaponDamage: "2d6",
-      weaponRange: "80ft",
-      pointValue: 120,
+      maxHP: 12,
+      hp: 12,
+      speed: 50,
+      to_hit: 8,
+      soak: 6,
+      pointValue: 80,
+      capacity_value: 0,
+      weaponTypes: ["Medium Blaster", "Plasma Cannon"],
+      maneuvers: ["Full Throttle", "All Systems Fire", "Reinforce Shields", "Broadside"]
     };
     shipImages[ship.id] = ship_image;
     socket.emit("createShip", ship);
@@ -170,6 +106,7 @@ export function add_carrier_vo(shipImages, socket) {
     console.log("Carrier loaded");
     let ship = {
       id: Date.now(),
+      shipId: "CA-ID:" +" " + (++shipNum),
       type: "Carrier",
       x: 500,
       y: 200,
@@ -180,49 +117,15 @@ export function add_carrier_vo(shipImages, socket) {
       rotation_angle: 0,
       image: ship_image.src,
       globalAlpha: 1,
-      maxHP: 7,
-      hp: 7,
-      damageThreshold: 6,
-      threatLevel: 9,
-      moveDistance: "6 hexes",
-      weaponType: "Railguns",
-      firingArc: "Portside(90°)/Starboard(90°)",
-      weaponDamage: "2d6",
-      weaponRange: "80ft",
+      maxHP: 14,
+      hp: 14,
+      speed: 40,
+      to_hit: 7,
+      soak: 7,
       pointValue: 120,
-    };
-    shipImages[ship.id] = ship_image;
-    socket.emit("createShip", ship);
-  };
-}
-
-export function add_battleship_vo(shipImages, socket) {
-  let ship_image = new Image();
-  ship_image.src = "../images/Volantian/ionos_vri.png";
-  ship_image.onload = function () {
-    console.log("Battleship loaded");
-    let ship = {
-      id: Date.now(),
-      type: "Battleship",
-      x: 500,
-      y: 200,
-      width: 154,
-      height: 286,
-      isSelected: false,
-      rotation_angle: 0,
-      highlighted: false,
-      image: "http://starboundconquest.com/images/Volantian/Caelum.png",
-      globalAlpha: 1,
-      maxHP: 8,
-      hp: 8,
-      damageThreshold: 8,
-      threatLevel: 12,
-      moveDistance: "6 hexes",
-      weaponType: "Ion Beams",
-      firingArc: "Portside(90°)/Starboard(90°)",
-      weaponDamage: "2d8",
-      weaponRange: "40ft",
-      pointValue: 150,
+      capacity_value: 20,
+      weaponTypes: ["350mm Railgun", "Rockets"],
+      maneuvers: ["Full Throttle", "All Systems Fire", "Reinforce Shields", "Broadside"]
     };
     shipImages[ship.id] = ship_image;
     socket.emit("createShip", ship);
@@ -236,6 +139,7 @@ export function add_dreadnought_vo(shipImages, socket) {
     console.log("Dreadnought loaded");
     let ship = {
       id: Date.now(),
+      shipId: "DR-ID:" +" " + (++shipNum),
       type: "Dreadnought",
       x: 500,
       y: 200,
@@ -246,16 +150,15 @@ export function add_dreadnought_vo(shipImages, socket) {
       rotation_angle: 0,
       image: ship_image.src,
       globalAlpha: 1,
-      maxHP: 10,
-      hp: 10,
-      damageThreshold: 10,
-      threatLevel: 15,
-      moveDistance: "4 hexes",
-      weaponType: "Plasma Torpedos \nRailGuns \nIon Beams",
-      firingArc: "Forward(90°)/Port(90°) \nStarboard(90°)/Aft(90°)",
-      weaponDamage: "2d8\n2d6\n2d8",
-      weaponRange: "50ft\n80ft\n40ft",
-      pointValue: 200,
+      maxHP: 30,
+      hp: 30,
+      speed: 30,
+      to_hit: 4,
+      soak: 8,
+      pointValue: 240,
+      capacity_value: 20,
+      weaponTypes: ["Plasma Cannon", "350mm Railgun", "Ion Particle Beam"],
+      maneuvers: ["Full Throttle", "Reinforce Shields", "All Systems Fire", "Charge Ion Beams"]
     };
     shipImages[ship.id] = ship_image;
     socket.emit("createShip", ship);

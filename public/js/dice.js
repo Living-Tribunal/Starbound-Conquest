@@ -1,21 +1,88 @@
 
-window.d3 = function () {
-  document.getElementById('d3').innerHTML = 'The Dice Result: ' + Math.floor((Math.random() * 3) + 1);
+let value = 1;
+
+window.increment_dice = function (labelId) {
+  const element = document.getElementById(labelId);
+  let dice_count = parseInt(element.innerHTML);
+  dice_count++;
+
+  value = dice_count;
+  element.innerHTML = dice_count;
+};
+
+window.decrement_dice = function (labelId) {
+  const element = document.getElementById(labelId);
+  let dice_count = parseInt(element.innerHTML);
+  dice_count--;
+  if(dice_count <= 1){
+    dice_count = 1;
+  }
+  value = dice_count;
+  element.innerHTML = dice_count;
+};
+
+window.d20 = function () {
+  let result = '';
+  for(let number = 0; number < value; number++) {
+    let roll = Math.floor((Math.random() * 20) + 1);
+    result += roll + ' ';  
+    //page break every so numbers
+    if ((number + 1) % 5 === 0){
+      result += '<br>';  
+    }
+    
+    document.getElementById('d20rolls').innerHTML = result;
+    console.log(value);
+}
 }
 
+window.d3 = function () {
+  let result = '';
+  for(let number = 0; number < value; number++) {
+    let roll = Math.floor((Math.random() * 3) + 1);
+    result += roll + ' ';  
+    //page break every so numbers
+    if ((number + 1) % 5 === 0){
+      result += '<br>';  
+    }
+    
+    document.getElementById('d3rolls').innerHTML = result;
+    console.log(value);
+}
+}
+
+
 window.d6 = function () {
-  document.getElementById('d6').innerHTML = 'The Dice Result: ' + Math.floor((Math.random() * 6) + 1);
+  let result = '';
+  for(let number = 0; number < value; number++) {
+    let roll = Math.floor((Math.random() * 6) + 1);
+    result += roll + ' ';  
+    //page break every so numbers
+    if ((number + 1) % 5 === 0){
+      result += '<br>';  
+    }
+    
+    document.getElementById('d6rolls').innerHTML = result;
+    console.log(value);
+}
 }
 
 window.d8 = function () {
-  document.getElementById('d8').innerHTML = 'The Dice Result: ' + Math.floor((Math.random() * 8) + 1);
+  let result = '';
+  for(let number = 0; number < value; number++) {
+    let roll = Math.floor((Math.random() * 8) + 1);
+    result += roll + ' ';  
+    //page break every so numbers
+    if ((number + 1) % 5 === 0){
+      result += '<br>';  
+    }
+    
+    document.getElementById('d8rolls').innerHTML = result;
+    console.log(value);
+}
 }
 
-window.d20 = function () {
-  document.getElementById('d20').innerHTML = 'The Dice Result: ' + Math.floor((Math.random() * 20) + 1);
-}
-
-window.twod3 = function () {
+/* window.twod3 = function () {
   // Generate two independent dice rolls
   const die1 = Math.floor(Math.random() * 3) + 1;
   const die2 = Math.floor(Math.random() * 3) + 1;
@@ -61,4 +128,4 @@ window.twod10 = function () {
   
   // Display the result
   document.getElementById('2d10').innerHTML = 'The Dice Result: ' + result;
-}
+} */

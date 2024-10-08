@@ -11,20 +11,15 @@ var intervalLoop = null;
 var drawingEnabled = false;
 var dpi = 15;
 
-
-document.getElementById("test").onclick = function () {
+document.getElementById("ruler").onclick = function () {
     drawingEnabled = !drawingEnabled;
 
     if (drawingEnabled) {
         enableLineDrawing();
-        document.getElementById("test").textContent = 'Disable Ruler';
-        document.getElementById("test").style.backgroundColor = "gold";
-        document.getElementById("test").style.color = "black";
+        document.getElementById("ruler").textContent = 'Disable Ruler';
     } else {
         disableLineDrawing();
-        document.getElementById("test").textContent = 'Enable Ruler';
-        document.getElementById("test").style.backgroundColor = "rgb(37, 37, 37)";
-        document.getElementById("test").style.color = "white";
+        document.getElementById("ruler").textContent = 'Enable Ruler';
     }
 };
 
@@ -72,6 +67,8 @@ function startDragLine(e) {
 
         var lineLengthPixels = Math.sqrt(Math.pow(cursorX - firstClick[0], 2) + Math.pow(cursorY - firstClick[1], 2)).toFixed(2);
         var lineLengthInches = ((lineLengthPixels / dpi) / zoom).toFixed(0);
+
+
 
         var midX = (firstClick[0] + cursorX - 100) / 2;
         var midY = (firstClick[1] + cursorY - 100) / 2;

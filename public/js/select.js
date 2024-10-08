@@ -22,129 +22,75 @@ window.handle_dropdown_selection = function () {
       add_fighter_ms();
       break;
     case "7":
-      add_frigate_da();
-      break;
-    case "8":
-      add_frigate_ge();
-      break;
-    case "9":
-      add_frigate_ne();
-      break;
-    case "10":
-      add_frigate_vo();
-      break;
-    case "11":
-      add_frigate_gr();
-      break;
-    case "12":
-      add_frigate_ms();
-      break;
-    case "13":
       add_destroyer_da();
       break;
-    case "14":
+    case "8":
       add_destroyer_ge();
       break;
-    case "15":
+    case "9":
       add_destroyer_ne();
       break;
-    case "16":
+    case "10":
       add_destroyer_vo();
       break;
-    case "17":
+    case "11":
       add_destroyer_gr();
       break;
-    case "18":
+    case "12":
       add_destroyer_ms();
       break;
+    case "13":
+      add_cruiser_da();
+      break;
+    case "14":
+      add_cruiser_ge();
+      break;
+    case "15":
+      add_cruiser_ne();
+      break;
+    case "16":
+      add_cruiser_vo();
+      break;
+    case "17":
+      add_cruiser_gr();
+      break;
+    case "18":
+      add_cruiser_ms();
+      break;
     case "19":
-      add_lightcruiser_da();
-      break;
-    case "20":
-      add_lightcruiser_ge();
-      break;
-    case "21":
-      add_lightcruiser_ne();
-      break;
-    case "22":
-      add_lightcruiser_vo();
-      break;
-    case "23":
-      add_lightcruiser_gr();
-      break;
-    case "24":
-      add_lightcruiser_ms();
-      break;
-    case "25":
-      add_heavycruiser_da();
-      break;
-    case "26":
-      add_heavycruiser_ge();
-      break;
-    case "27":
-      add_heavycruiser_ne();
-      break;
-    case "28":
-      add_heavycruiser_vo();
-      break;
-    case "29":
-      add_heavycruiser_gr();
-      break;
-    case "30":
-      add_heavycruiser_ms();
-      break;
-    case "31":
       add_carrier_da();
       break;
-    case "32":
+    case "20":
       add_carrier_ge();
       break;
-    case "33":
+    case "21":
       add_carrier_ne();
       break;
-    case "34":
+    case "22":
       add_carrier_vo();
       break;
-    case "35":
+    case "23":
       add_carrier_gr();
       break;
-    case "36":
+    case "24":
       add_carrier_ms();
       break;
-    case "37":
-      add_battleship_da();
-      break;
-    case "38":
-      add_battleship_ge();
-      break;
-    case "39":
-      add_battleship_ne();
-      break;
-    case "40":
-      add_battleship_vo();
-      break;
-    case "41":
-      add_battleship_gr();
-      break;
-    case "42":
-      add_battleship_ms();
-      break;
-    case "43":
+    case "25":
       add_dreadnought_da();
       break;
-    case "44":
+    case "26":
       add_dreadnought_ge();
       break;
-    case "45":
+    case "27":
       add_dreadnought_ne();
       break;
-    case "46":
+    case "28":
       add_dreadnought_vo();
       break;
-    case "47":
+    case "29":
       add_dreadnought_gr();
       break;
-    case "48":
+    case "30":
       add_dreadnought_ms();
       break;
   }

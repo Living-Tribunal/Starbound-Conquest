@@ -1,4 +1,4 @@
-const shipTypes = [
+/* const shipTypes = [
     {
       type: "Fighter",
       shipTypeIcon: "../images/icons/rookie_64.png",
@@ -121,4 +121,4 @@ shipTypes.forEach(ship => {
   row.insertCell().textContent = ship.weaponDamage;
   row.insertCell().textContent = ship.weaponRange;
   row.insertCell().textContent = ship.pointValue;
-});
+}); */
