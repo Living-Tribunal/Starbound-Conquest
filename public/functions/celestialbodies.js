@@ -5,6 +5,7 @@ export function add_planet_azura(shipImages, socket) {
     console.log("Planet loaded");
     let ship = {
       id: Date.now(),
+      shipId: "CB:" +" " + new Date().getMilliseconds(5),
       type: "CelestialBodies",
       x: 500,
       y: 500,
@@ -38,6 +39,7 @@ export function add_planet_eldoria(shipImages, socket) {
     console.log("Planet loaded");
     let ship = {
       id: Date.now(),
+      shipId: "CB:" +" " + new Date().getMilliseconds(5),
       type: "CelestialBodies",
       x: 500,
       y: 500,
@@ -71,6 +73,7 @@ export function add_planet_hesperia(shipImages, socket) {
     console.log("Planet loaded");
     let ship = {
       id: Date.now(),
+      shipId: "CB:" +" " + new Date().getMilliseconds(5),
       type: "CelestialBodies",
       x: 500,
       y: 500,
@@ -104,6 +107,7 @@ export function add_planet_crysalon(shipImages, socket) {
     console.log("Planet loaded");
     let ship = {
       id: Date.now(),
+      shipId: "CB:" +" " + new Date().getMilliseconds(5),
       type: "CelestialBodies",
       x: 500,
       y: 500,
@@ -137,6 +141,7 @@ export function add_planet_pyraxis(shipImages, socket) {
     console.log("Planet loaded");
     let ship = {
       id: Date.now(),
+      shipId: "CB:" +" " + new Date().getMilliseconds(5),
       type: "CelestialBodies",
       x: 500,
       y: 500,
@@ -170,11 +175,12 @@ export function add_planet_moon(shipImages, socket) {
     console.log("Planet loaded");
     let ship = {
       id: Date.now(),
+      shipId: "CB:" +" " + new Date().getMilliseconds(5),
       type: "CelestialBodies",
       x: 500,
       y: 500,
-      width: 1000,
-      height: 1000,
+      width: 125,
+      height: 125,
       isSelected: false,
       highlighted: false,
       rotation_angle: 0,
@@ -204,6 +210,7 @@ export function add_asteroid(shipImages, socket) {
 
     let ship = {
       id: Date.now(),
+      shipId: "CB:" +" " + new Date().getMilliseconds(5),
       type: "CelestialBodies",
       x: 500,
       y: 200,
@@ -237,6 +244,7 @@ export function add_asteroid_field(shipImages, socket) {
 
     let ship = {
       id: Date.now(),
+      shipId: "CB:" +" " + new Date().getMilliseconds(5),
       type: "CelestialBodies",
       x: 500,
       y: 200,

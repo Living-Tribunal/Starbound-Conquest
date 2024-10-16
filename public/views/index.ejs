@@ -10,29 +10,30 @@
 </head>
 <body>
     <div class="intro-text">
-        <label class="ship-info">Use the dropdown to select ship class then ship faction. Enter a selected ships HP, and
-            update its HP Value. Enable ruler to measure distance. Save and Load Cavnas to save/load the game.</label>
+        <label class="ship-info-color">Welcome, <%= username %></label>
+        <label class="ship-info">-  Use the dropdown to select ship class then ship faction. Enter a selected ships HP, and
+            update its HP Value. Enable ruler to measure distance.</label>
             <form id="logout" action ="/logout" method="post">
                 <input type="submit" name="Logout" value="Logout">
             </form>
+            <button id="reset" onclick="reset_ship_status()">Reset Toggles</button>
     </div>
     <div id="button-container">
         <div id="left-column">
-            <label class="ship-info">Welcome, <%= username %></label>
             <label id="gameValue" class="ship-info">Total Fleet Value: 0</label>
             <label id="shipValue" class="ship-info">Your Fleet Value: 0</label>
             <label class="ship-info">Ship Class</label>
             <select id="ship-class" aria-label="ship selection" class="ship-class-selection">
-                <option value="0" disabled selected>--Select--</option>
-                <option value="1,2,3,4,5,6">Fighter</option>
-                <option value="7,8,9,10,11,12">Destroyer</option>
-                <option value="13,14,15,16,17,18">Cruiser</option>
-                <option value="19,20,21,22,23,24">Carrier</option>
-                <option value="25,26,27,28,29,30">Dreadnought</option>
+                <option value="0">---Select---</option>
+                <option value="0,1,2,3,4,5,6">Fighter</option>
+                <option value="0,7,8,9,10,11,12">Destroyer</option>
+                <option value="0,13,14,15,16,17,18">Cruiser</option>
+                <option value="0,19,20,21,22,23,24">Carrier</option>
+                <option value="0,25,26,27,28,29,30">Dreadnought</option>
             </select>
             <label class="ship-info">Ship Faction</label>
             <select id="ship-faction" onclick="handle_dropdown_selection()" aria-label="ship selection" class="ship-class-selection">
-                <option value="0" disabled selected>--Select--</option>
+                <option value="0">---Select---</option>
                 <option value="1" >DiableAvionics</option>
                 <option value="2">Gensoukyou</option>
                 <option value="3">Neutrino</option>
@@ -101,7 +102,10 @@
             <button id="ruler">Enable Ruler</button>
             <button id="AOE">Enable AOE</button>
             <button id="marker" class="side-panel-btn">
-                <img class="open-span-icon" src="../images\icons\icons8-refresh-48.png">
+                <img class="open-span-icon" src="../images\icons\icons8-location-50.png">
+            </button>
+            <button id="toggle" onclick="ship_toggle()" class="side-panel-btn">
+                <img class="open-span-icon" src="../images\icons\icons8-toggle-50.png">
             </button>
             <div id="hp-container">
                 <button id="open-rules">Rules</button>
@@ -116,6 +120,14 @@
             </div>
         </div>
     </div>
+    <div id="myLoadModal">
+        <div class="ldbtn">
+            <label class="ship-info-load"><%= username %>, I implore thee to load<br> thy previous game state.<br>Or thy existence, as thou knowest it,<br> may be sent to oblivion.</label>
+            <label class="ship-info-load-acknowledge" id="acknowledge"><%= username %>, Thou hast loaded thy previous game.<br> Embark on thy adventure henceforth.</label>
+            <button class="load-btn" id="loadButton" onclick="load_canvas()">Load Thine Game</button>
+            <button class="loadclose" id="load-close" disabled>Enter</button>  
+        </div>
+    </div>
     <div id="ship-stat-modal">
         <div id="ship-stat-close">
             <span class="close" id="stat-close">&times;</span>
@@ -128,14 +140,16 @@
                 <th>Ship Icon</th>
                 <th>Ship Class</th>
                 <th>Hit Point</th>
-                <th>Damage Threshold</th>
-                <th>Threat Level</th>
-                <th>Move Distance</th>
+                <th>To Hit</th>
+                <th>Soak</th>
+                <th>Move Distance(ft)</th>
+                <th>Maneuvers</th>
                 <th>Weapon Type</th>
                 <th>Firing Arc</th>
                 <th>Weapon Damage</th>
-                <th>Weapon Range</th>
+                <th>Weapon Range(ft)</th>
                 <th>Point Value</th>
+                <th>Capacity</th>
             </tr>
             <tr id="value1">
             </tr>
@@ -151,25 +165,17 @@
         </div>
         <!-- ///movement rules-->
         <div class="rules-header-category">
-            <h2>Hex Movement Basics:</h2>
+            <h2>Movement Basics:</h2>
         </div>
         <div class="rules-container">
             <div class="rules">
-                <h3 class="lesser-header">Hex Measurement:</h3>
-                <p class="rules-text">Each hex represents a distance of 5 feet</p>
-            </div>
-            <div class="rules">
-                <h3 class="lesser-header">Player Turn Sequence:</h3>
+                <h3 class="lesser-header">Player Sequence:</h3>
                 <p class="rules-text">All movement and combat actions are resolved during each player's turn.</p>
             </div>
             <div class="rules">
                 <h3 class="lesser-header">Movement Distance:</h3>
-                <p class="rules-text">Each ship can move a number of hexes equal to, or less than, its Movement Distance
+                <p class="rules-text">Each ship can move a number of feet equal to, or less than, its Movement Distance
                     each turn.</p>
-            </div>
-            <div class="rules">
-                <h3 class="lesser-header">Movement Direction:</h3>
-                <p class="rules-text">Movement can be in any direction, but must follow the hex grid.</p>
             </div>
         </div>
         <!-- ///special movement rules-->
@@ -301,6 +307,7 @@
         <div id="ship-stat-close">
             <span class="close" id="dice-close">&times;</span>
         </div>
+        <div id="dice-container">
         <div class="modal-header">
             <h1 class="rules-header">Dice Rollers</h1>
         </div>
@@ -316,11 +323,11 @@
                 </div>
                 <div class="dice-roll-table">
                     <label class="d20">The Dice Result</label>
-                    <label id="d3rolls">0 </label>
+                    <label id="d4rolls">0 </label>
                     <div>
-                        <button class="minus" onclick="decrement_dice('d3label')">-</button>
-                        <button onclick="d3()">Roll <label id="d3label">1</label> - d3 </button>
-                        <button class="plus" onclick="increment_dice('d3label')">+</button>
+                        <button class="minus" onclick="decrement_dice('d4label')">-</button>
+                        <button onclick="d4()">Roll <label id="d4label">1</label> - d4 </button>
+                        <button class="plus" onclick="increment_dice('d4label')">+</button>
                     </div>
                 </div>
                 <div class="dice-roll-table">
@@ -341,102 +348,87 @@
                         <button class="plus" onclick="increment_dice('d8label')">+</button>
                     </div>
                 </div>
-            </div>
-            <!-- <div id="right">
                 <div class="dice-roll-table">
-                    <label id="2d3">The Dice Result:<br> 0 </label>
+                    <label class="d20">The Dice Result</label>
+                    <label id="d10rolls">0 </label>
                     <div>
-                        <button class="minus" onclick="decrement_dice('2d3label')">-</button>
-                        <button onclick="twod3()">Roll <label id="2d3label">1</label> - 2d3 </button>
-                        <button class="plus" onclick="increment_dice('2d3label')">+</button>    
+                        <button class="minus" onclick="decrement_dice('d10label')">-</button>
+                        <button onclick="d10()">Roll <label id="d10label">1</label> - d10 </button>
+                        <button class="plus" onclick="increment_dice('d10label')">+</button>
                     </div>
                 </div>
                 <div class="dice-roll-table">
-                    <label id="2d6">The Dice Result:<br> 0</label>
+                    <label class="d20">The Dice Result</label>
+                    <label id="d12rolls">0 </label>
                     <div>
-                        <button class="minus" onclick="decrement_dice('2d6label')">-</button>
-                        <button onclick="twod6()">Roll <label id="2d6label">1</label> - 2d6 </button>
-                        <button class="plus" onclick="increment_dice('2d6label')">+</button>   
-                    </div>
-                </div>
-                <div class="dice-roll-table">
-                    <label id="2d8">The Dice Result:<br> 0</label>
-                    <div>
-                        <button class="minus" onclick="decrement_dice('2d8label')">-</button>
-                        <button onclick="twod8()">Roll <label id="2d8label">1</label> - 2d6 </button>
-                        <button class="plus" onclick="increment_dice('2d8label')">+</button> 
-                    </div>
-                </div>
-                <div class="dice-roll-table">
-                    <label id="2d10">The Dice Result:<br> 0</label>
-                    <div>
-                        <button class="minus" onclick="decrement_dice('2d10label')">-</button>
-                        <button onclick="twod10()">Roll <label id="2d10label">1</label> - 2d10 </button>
-                        <button class="plus" onclick="increment_dice('2d10label')">+</button> 
+                        <button class="minus" onclick="decrement_dice('d12label')">-</button>
+                        <button onclick="d12()">Roll <label id="d12label">1</label> - d12 </button>
+                        <button class="plus" onclick="increment_dice('d12label')">+</button>
                     </div>
                 </div>
             </div>
-        </div> -->
-        <div class="modal-header">
-            <h1 class="rules-header">Weapon Damage Dice</h1>
         </div>
-        <table class="ship-table">
-            <tr>
-                <th>Laser Cannons</th>
-                <th>Missile Batteries</th>
-                <th>Plasma Torpedos</th>
-                <th>Dual Laser Cannons</th>
-                <th>Rail Guns</th>
-                <th>Ion Beams</th>
-            </tr>
-            <tr class="feet">
-                <td>1d3</td>
-                <td>1d6</td>
-                <td>1d8</td>
-                <td>2d3</td>
-                <td>2d6</td>
-                <td>2d8</td>
-            </tr>
-        </table>
-        <div class="modal-header">
-            <h1 class="rules-header">Ship Threat Level and Damage Threshold</h1>
+        <div id="stats-holder-container">
+        <div id="ship-table-container">
+            <div class="modal-header">
+                <h1 class="rules-header">Weapon Damage Dice</h1>
+            </div>
+            <table class="ship-table">
+                <tr>
+                    <th>Light Cannon</th>
+                    <th>Medium Cannon</th>
+                    <th>Heavy Cannon</th>
+                    <th>Plasma Cannon</th>
+                    <th>350 Railgun</th>
+                    <th>Ion Particle Beam</th>
+                </tr>
+                <tr class="feet">
+                    <td>1d4</td>
+                    <td>1d6</td>
+                    <td>1d8</td>
+                    <td>1d10</td>
+                    <td>1d8</td>
+                    <td>1d12</td>
+                </tr>
+            </table>
         </div>
+        <div id="class-container">
+            <div class="modal-header">
+                <h1 class="rules-header">To Hit and Soak</h1>
+            </div>
         <table class="ship-table">
             <tr>
                 <th>Fighter</th>
-                <th>Frigate</th>
                 <th>Destroyer</th>
-                <th>Light Cruiser</th>
-                <th>Heavy Cruiser</th>
+                <th>Cruiser</th>
                 <th>Carrier</th>
-                <th>Battleship</th>
                 <th>Dreadnought</th>
             </tr>
             <tr class="feet">
-                <td>DT: 1<br>TL: 5</td>
-                <td>DT: 2<br>TL: 6</td>
-                <td>DT: 3<br>TL: 7</td>
-                <td>DT: 4<br>TL: 8</td>
-                <td>DT: 6<br>TL: 9</td>
-                <td>DT: 07<br>TL: 10</td>
-                <td>DT: 08<br>TL: 12</td>
-                <td>DT: 10<br>TL: 15</td>
+                <td>Hit: 15<br>Soak: 1</td>
+                <td>Hit: 10<br>Soak: 4</td>
+                <td>Hit: 8<br>Soak: 6</td>
+                <td>Hit: 6<br>Soak: 7</td>
+                <td>Hit: 4<br>Soak: 8</td>
             </tr>
         </table>
+        </div>
     </div>
+</div>
     <div id=wrapper>
         <canvas id="gameCanvas" width=3838 height=2559></canvas>
         <canvas id="canvas2" width=3838 height=2559></canvas>
     </div>
+    <script type="module" src="/js/ruler.js" defer></script>
     <script type="module" src="/js/app.js" defer></script>
     <script type="module" src="/js/dropdown.js" defer></script>
-    <script type="module" src="/js/ruler.js" defer></script>
-    <!-- <script type="module" src="/js/shipstatsmodal.js" defer></script> -->
     <script type="module" src="/js/shipstatmodalopenclose.js" defer></script>
+    <script type="module" src="/js/shipstatsmodal.js" defer></script>
     <script type="module" src="/js/modal.js" defer></script>
     <script type="module" src="/js/dice.js" defer></script>
     <script type="module" src="/js/select.js" defer></script>
     <script type="module" src="/js/aoe.js" defer></script>
+    <script type="module" src="/js/load.js" defer></script>
     <script tpye="text/javascript">let username = "<%= username %>";</script>
 </body>
 

@@ -1,4 +1,3 @@
-let shipNum = 0;
 
 export function add_fighter_da(shipImages, socket) {
   let ship_image = new Image();
@@ -7,59 +6,68 @@ export function add_fighter_da(shipImages, socket) {
     console.log("Fighter loaded");
     let ship = {
       id: Date.now(),
-      shipId: "FG-ID:" +" " + (++shipNum),
+      shipId: "FG-ID:" +" " + new Date().getMilliseconds(5),
       type: "Fighter",
       x: 500,
       y: 200,
+      prevX: 0,
+      prevY: 0,
       width: 58,
       height: 72,
       isSelected: false,
       highlighted: false,
+      isToggled: false,
       rotation_angle: 0,
       image: ship_image.src,
       globalAlpha: 1,
       maxHP: 1,
       hp: 1,
-      speed: 80,
-      to_hit: 15,
-      soak: 1,
-      pointValue: 10,
-      capacity_value: 0,
-      weaponTypes: ["Light Blaster"],
-      maneuvers: ["Full Throttle", "Evasive Maneuvers", "Combine Fire"] 
+      damageThreshold: 1,
+      threatLevel: 5,
+      moveDistance: "14 hexes",
+      weaponType: "Laser Cannon",
+      firingArc: "Turret(360°)",
+      weaponDamage: "1d3",
+      weaponRange: "30ft",
+      pointValue: 1,
     };
     shipImages[ship.id] = ship_image;
     socket.emit("createShip", ship);
   };
 }
 
+
 export function add_destroyer_da(shipImages, socket) {
   let ship_image = new Image();
-  ship_image.src = "../images/DiableAvionics/diableavionics_gust.png";
+  ship_image.src = "../images/DiableAvionics/diableavionics_calm_deck.png";
   ship_image.onload = function () {
     console.log("Destroyer loaded");
     let ship = {
       id: Date.now(),
-      shipId: "DE-ID:" +" " + (++shipNum),
+      shipId: "DE-ID:" +" " + new Date().getMilliseconds(5),
       type: "Destroyer",
       x: 500,
       y: 200,
-      width: 102,
-      height: 327,
+      prevX: 0,
+      prevY: 0,
+      width: 82,
+      height: 201,
       isSelected: false,
       highlighted: false,
+      isToggled: false,
       rotation_angle: 0,
       image: ship_image.src,
       globalAlpha: 1,
-      maxHP: 8,
-      hp: 8,
-      speed: 60,
-      to_hit: 10,
-      soak: 1,
+      maxHP: 3,
+      hp: 3,
+      damageThreshold: 3,
+      threatLevel: 7,
+      moveDistance: "10 hexes",
+      weaponType: "Plasma Torpedos",
+      firingArc: "Forward(90°)",
+      weaponDamage: "1d8",
+      weaponRange: "50ft",
       pointValue: 30,
-      capacity_value: 0,
-      weaponTypes: ["Medium Blaster"],
-      maneuvers: ["Full Throttle", "Anti-Fighter Barrage", "Power Up Main Guns"]
     };
     shipImages[ship.id] = ship_image;
     socket.emit("createShip", ship);
@@ -68,36 +76,41 @@ export function add_destroyer_da(shipImages, socket) {
 
 export function add_cruiser_da(shipImages, socket) {
   let ship_image = new Image();
-  ship_image.src = "../images/DiableAvionics/diableavionics_minigust.png";
+  ship_image.src = "../images/DiableAvionics/diableavionics_maelstrom.png";
   ship_image.onload = function () {
     console.log("Cruiser loaded");
     let ship = {
       id: Date.now(),
-      shipId: "CR-ID:" +" " + (++shipNum),
+      shipId: "CR-ID:" +" " + new Date().getMilliseconds(5),
       type: "Cruiser",
       x: 500,
       y: 200,
-      width: 69,
-      height: 291,
+      prevX: 0,
+      prevY: 0,
+      width: 94,
+      height: 256,
       isSelected: false,
       highlighted: false,
+      isToggled: false,
       rotation_angle: 0,
       image: ship_image.src,
       globalAlpha: 1,
-      maxHP: 12,
-      hp: 12,
-      speed: 50,
-      to_hit: 8,
-      soak: 6,
+      maxHP: 4,
+      hp: 4,
+      damageThreshold: 4,
+      threatLevel: 8,
+      moveDistance: "10 hexes",
+      weaponType: "Dual Laser Cannon",
+      firingArc: "Turret(360°)",
+      weaponDamage: "2d3",
+      weaponRange: "30ft",
       pointValue: 80,
-      capacity_value: 0,
-      weaponTypes: ["Medium Blaster", "Plasma Cannon"],
-      maneuvers: ["Full Throttle", "All Systems Fire", "Reinforce Shields", "Broadside"]
     };
     shipImages[ship.id] = ship_image;
     socket.emit("createShip", ship);
   };
 }
+
 
 export function add_carrier_da(shipImages, socket) {
   let ship_image = new Image();
@@ -106,26 +119,30 @@ export function add_carrier_da(shipImages, socket) {
     console.log("Carrier loaded");
     let ship = {
       id: Date.now(),
-      shipId: "CA-ID:" +" " + (++shipNum),
+      shipId: "CA-ID:" +" " + new Date().getMilliseconds(5),
       type: "Carrier",
       x: 500,
       y: 200,
+      prevX: 0,
+      prevY: 0,
       width: 115,
       height: 308,
       isSelected: false,
       highlighted: false,
+      isToggled: false,
       rotation_angle: 0,
       image: ship_image.src,
       globalAlpha: 1,
-      maxHP: 14,
-      hp: 14,
-      speed: 40,
-      to_hit: 7,
-      soak: 7,
+      maxHP: 7,
+      hp: 7,
+      damageThreshold: 6,
+      threatLevel: 9,
+      moveDistance: "6 hexes",
+      weaponType: "Railguns",
+      firingArc: "Portside(90°)/Starboard(90°)",
+      weaponDamage: "2d6",
+      weaponRange: "80ft",
       pointValue: 120,
-      capacity_value: 20,
-      weaponTypes: ["350mm Railgun", "Rockets"],
-      maneuvers: ["Full Throttle", "All Systems Fire", "Reinforce Shields", "Broadside"]
     };
     shipImages[ship.id] = ship_image;
     socket.emit("createShip", ship);
@@ -139,26 +156,30 @@ export function add_dreadnought_da(shipImages, socket) {
     console.log("Dreadnought loaded");
     let ship = {
       id: Date.now(),
-      shipId: "DR-ID:" +" " + (++shipNum),
+      shipId: "DR-ID:" +" " + new Date().getMilliseconds(5),
       type: "Dreadnought",
       x: 500,
       y: 200,
+      prevX: 0,
+      prevY: 0,
       width: 356,
       height: 610,
       isSelected: false,
       highlighted: false,
+      isToggled: false,
       rotation_angle: 0,
       image: ship_image.src,
       globalAlpha: 1,
-      maxHP: 30,
-      hp: 30,
-      speed: 30,
-      to_hit: 4,
-      soak: 8,
+      maxHP: 10,
+      hp: 10,
+      damageThreshold: 10,
+      threatLevel: 15,
+      moveDistance: "4 hexes",
+      weaponType: "Plasma Torpedos \nRailGuns \nIon Beams",
+      firingArc: "Forward(90°)/Port(90°) \nStarboard(90°)/Aft(90°)",
+      weaponDamage: "2d8\n2d6\n2d8",
+      weaponRange: "50ft\n80ft\n40ft",
       pointValue: 240,
-      capacity_value: 20,
-      weaponTypes: ["Plasma Cannon", "350mm Railgun", "Ion Particle Beam"],
-      maneuvers: ["Full Throttle", "Reinforce Shields", "All Systems Fire", "Charge Ion Beams"]
     };
     shipImages[ship.id] = ship_image;
     socket.emit("createShip", ship);

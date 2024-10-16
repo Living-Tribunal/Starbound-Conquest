@@ -9,7 +9,6 @@
   --lightened_deep_red: #B22222;
   --goldenrod: #b6850b;
   --gold: #FFD700;
-  --blue: #0051ff;
   --off_black: #05040c;
 }
 
@@ -30,6 +29,8 @@ display: flex;
 justify-content: center;
 align-items: center;
 background-color: var(--dark_gray);
+gap: 10px;
+padding-top: 5px;
 }
 
 #register-screen,
@@ -48,7 +49,7 @@ background-color: var(--dark_gray);
 }
 
 
-#comp-app {
+.comp-app {
 text-align: center;
 border-top-left-radius: 10px;
 border-bottom-right-radius: 10px;
@@ -84,12 +85,18 @@ a:active {
   padding: 5px
 }
 
-#button-hold {
-margin-top: 10px;
+.button-hold {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-evenly;
+  gap: 10px;
+  margin-top: 5px;
+  align-items: center;
 }
 
-#app-shown {
+.app-shown {
 display: flex;
+justify-content: center;
 margin-top: 10px;
 }
 
@@ -108,13 +115,13 @@ a:hover {
 
 button{
   cursor: pointer;
-  padding: 3px;
+  padding: 5px;
   border-color: var(--var(--white));
   border-style:solid;
   transition: 200ms ease-in;
   background-color: var(--blue_gray);
   color: var(--white);
-  font-size: 15px;
+  font-size: 13px;
   border-top-left-radius: 10px;
   border-bottom-right-radius: 10px;
   font-weight: bold;
@@ -122,9 +129,19 @@ button{
 
 .ship-info{
   padding: 5px;
-  font-size: 13px; 
+  font-size: 15px; 
   background-color: var(--dark_gray);
   color: var(--white);
+  display: flex;
+  justify-content: center;
+  align-self: center;
+  font-weight: bold;
+}
+.ship-info-color{
+  padding: 5px;
+  font-size: 15px; 
+  background-color: var(--dark_gray);
+  color: var(--gold);
   display: flex;
   justify-content: center;
   align-self: center;
@@ -242,7 +259,7 @@ height: 30px;
   
   .loadclose:hover,
   .loadclose:focus {
-  color: gold;
+  color: var(--dark_gray);
   text-decoration: none;
   cursor: pointer;
   }
@@ -324,7 +341,7 @@ span{
 /*   ship stats modal */
 #dice-modal,
 #rules-modal,
-#ship-stat-modal {
+#ship-stat-modal{
   display: none; /* Hidden by default */
   position: fixed; /* Stay in place */
   z-index: 1; /* Sit on top */
@@ -339,6 +356,26 @@ span{
   background-color: rgba(0, 0, 0, 0.9);
   animation-name: animatetop;
   animation-duration: 0.4s
+}
+
+#myLoadModal {
+  display: block; /* Hidden by default */
+  position: fixed; /* Stay in place */
+  z-index: 1; /* Sit on top */
+  align-items: center;
+  align-content: center;
+  left: 0;
+  top: 0;
+  width: 100%; /* Full width */
+  height: 100%;
+  overflow: auto;
+  background-color: var(--dark_gray);
+  animation-duration: 0.4s;
+  background-image: url("../images/backgroundimage/sbclogo.png");
+  background-position: center;
+  background-repeat: no-repeat;
+  background-attachment: fixed;
+  background-size: contain;
 }
 
 .modal-header {
@@ -485,7 +522,7 @@ width: 40px;
 height: 40px;
 flex-shrink: 0;
 display: flex;
-justify-content: center;
+align-self: flex-end;
 place-items: center;
 cursor: pointer;
 background-color: var(--white);
@@ -499,25 +536,15 @@ display: flex;
 display: grid;
 justify-content: center;
 align-self: center;
-gap: 15px;
+gap: 18px;
 color: var(--white);
-font-size: 20px;
+font-size: 15px;
 padding: 10px
 }
 
-.d20{
-  font-weight: bold;
-  background-color: var(--blue_gray);
-  text-align: center;
-  padding: 5px;
-}
-
-#d20rolls,
-#d3rolls,
-#d6rolls,
-#d8rolls{
-  font-size: 20px;
-  text-align: center;
+.dice-rollers{
+display: grid;
+justify-content: center;
 }
 
 #left {
@@ -528,6 +555,62 @@ justify-content:center;
 #right {
 display: flex;
 justify-content:flex-end ;
+}
+
+.ldbtn{
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+  margin-top: 20%;
+}
+
+.ship-info-load{
+  font-size: 25px;
+  padding: 10px;
+  color: var(--white);
+  text-align: center;
+}
+
+.ship-info-load-acknowledge{
+    font-size: 20px;
+    color: var(--gold);
+    text-align: center;
+    opacity: 0;
+    margin-top: 5px;
+  }
+
+#loadButton{
+  font-size: 20px;
+  margin-top: 5px;
+}
+
+
+#load-close{
+  opacity: 0;
+  margin-top: 5px;
+  width: 100px;
+  font-size: 15px;
+  background-color: var(--dark_gray);
+  color: var(--white);
+  border-color: var(--white);
+}
+
+#load-close:hover{
+  background-color: var(--gold);
+  border-color: var(--goldenrod);
+  color: var(--dark_gray);
+}
+
+#reset{
+color: var(--white);
+background-color: var(--deep_red);
+border-color: var(--lightened_deep_red);
+font-size: 10px;
+}
+
+#comp-app{
+  font-size: 13px;
 }
 
 
